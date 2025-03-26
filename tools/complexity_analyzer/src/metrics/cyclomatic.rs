@@ -217,4 +217,246 @@ mod tests {
         // Should still calculate based on what's available
         assert_eq!(calculate_cyclomatic_complexity(code), 3); // Base 1 + 2 (two ifs)
     }
+
+    #[test]
+    fn test_complex_async_patterns() {
+        let code = r#"
+            async fn process_data() -> Result<(), Error> {
+                if let Ok(data) = fetch_data().await {
+                    if let Ok(processed) = process_data(data).await {
+                        if let Ok(result) = save_result(processed).await {
+                            return Ok(());
+                        }
+                    }
+                }
+                Err(Error::ProcessingFailed)
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (if let patterns)
+    }
+
+    #[test]
+    fn test_complex_generic_constraints() {
+        let code = r#"
+            fn process_generic<T: Display + Debug>(value: T) -> Result<String, Error> 
+            where T: Clone {
+                if value.to_string().is_empty() {
+                    return Err(Error::EmptyValue);
+                }
+                if value.to_string().len() > MAX_LENGTH {
+                    return Err(Error::TooLong);
+                }
+                Ok(value.to_string())
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 3); // Base 1 + 2 (conditions)
+    }
+
+    #[test]
+    fn test_complex_trait_bounds() {
+        let code = r#"
+            impl<T> Display for ComplexType<T> 
+            where T: Display + Debug {
+                fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+                    if self.value.is_none() {
+                        return write!(f, "None");
+                    }
+                    if let Some(ref value) = self.value {
+                        if value.to_string().is_empty() {
+                            return write!(f, "Empty");
+                        }
+                        return write!(f, "{}", value);
+                    }
+                    write!(f, "Unknown")
+                }
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 2 (if) + 1 (if let)
+    }
+
+    #[test]
+    fn test_complex_guard_patterns() {
+        let code = r#"
+            fn process_value(value: Value) -> Result<(), Error> {
+                match value {
+                    Value::Number(n) if n > 0 => {
+                        if n > 100 {
+                            return Err(Error::TooLarge);
+                        }
+                        Ok(())
+                    }
+                    Value::String(s) if !s.is_empty() => {
+                        if s.len() > MAX_LENGTH {
+                            return Err(Error::TooLong);
+                        }
+                        Ok(())
+                    }
+                    Value::Array(arr) if !arr.is_empty() => {
+                        if arr.len() > MAX_SIZE {
+                            return Err(Error::TooManyItems);
+                        }
+                        Ok(())
+                    }
+                    _ => Err(Error::InvalidValue)
+                }
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 7); // Base 1 + 3 (match arms) + 3 (guards)
+    }
+
+    #[test]
+    fn test_complex_closure_with_control_flow() {
+        let code = r#"
+            fn create_processor() -> impl Fn(&str) -> Result<(), Error> {
+                |input: &str| {
+                    if input.is_empty() {
+                        return Err(Error::EmptyInput);
+                    }
+                    if input.len() > MAX_LENGTH {
+                        return Err(Error::TooLong);
+                    }
+                    if !input.chars().all(|c| c.is_ascii()) {
+                        return Err(Error::InvalidCharacters);
+                    }
+                    Ok(())
+                }
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (conditions)
+    }
+
+    #[test]
+    fn test_complex_macro_expansion() {
+        let code = r#"
+            macro_rules! process_data {
+                ($data:expr) => {
+                    if $data.is_empty() {
+                        return Err(Error::EmptyInput);
+                    }
+                    if $data.len() > MAX_LENGTH {
+                        return Err(Error::TooLong);
+                    }
+                    Ok(())
+                };
+                ($data:expr, $max:expr) => {
+                    if $data.is_empty() {
+                        return Err(Error::EmptyInput);
+                    }
+                    if $data.len() > $max {
+                        return Err(Error::TooLong);
+                    }
+                    Ok(())
+                };
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 2 (conditions) + 1 (macro variant)
+    }
+
+    #[test]
+    fn test_complex_associated_types() {
+        let code = r#"
+            trait ComplexTrait {
+                type Output;
+                type Error;
+                
+                fn process(&self) -> Result<Self::Output, Self::Error> {
+                    if self.is_valid() {
+                        if self.has_data() {
+                            return Ok(self.get_data());
+                        }
+                    }
+                    Err(Self::Error::default())
+                }
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 3); // Base 1 + 2 (conditions)
+    }
+
+    #[test]
+    fn test_complex_unsafe_blocks() {
+        let code = r#"
+            unsafe fn process_raw_data(data: *const u8) -> Result<(), Error> {
+                if data.is_null() {
+                    return Err(Error::NullPointer);
+                }
+                if unsafe { *data } == 0 {
+                    return Err(Error::InvalidData);
+                }
+                unsafe {
+                    if *(data.add(1)) > 100 {
+                        return Err(Error::ValueTooLarge);
+                    }
+                }
+                Ok(())
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (conditions)
+    }
+
+    #[test]
+    fn test_complex_const_generics() {
+        let code = r#"
+            fn process_array<const N: usize>(arr: [u8; N]) -> Result<(), Error> {
+                if N == 0 {
+                    return Err(Error::EmptyArray);
+                }
+                if N > MAX_SIZE {
+                    return Err(Error::ArrayTooLarge);
+                }
+                if arr.iter().all(|&x| x == 0) {
+                    return Err(Error::AllZeros);
+                }
+                Ok(())
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (conditions)
+    }
+
+    #[test]
+    fn test_complex_lifetime_bounds() {
+        let code = r#"
+            fn process_lifetimes<'a, 'b, T>(data: &'a T, other: &'b T) -> Result<(), Error>
+            where 'a: 'b, T: 'a + Display {
+                if data.to_string().is_empty() {
+                    return Err(Error::EmptyData);
+                }
+                if other.to_string().is_empty() {
+                    return Err(Error::EmptyOther);
+                }
+                if data.to_string() == other.to_string() {
+                    return Err(Error::DuplicateData);
+                }
+                Ok(())
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (conditions)
+    }
+
+    #[test]
+    fn test_complex_union_types() {
+        let code = r#"
+            union ComplexUnion {
+                i: i32,
+                f: f32,
+            }
+
+            impl ComplexUnion {
+                fn process(&self) -> Result<(), Error> {
+                    unsafe {
+                        if self.i == 0 {
+                            return Err(Error::ZeroValue);
+                        }
+                        if self.f.is_nan() {
+                            return Err(Error::InvalidFloat);
+                        }
+                        if self.i < 0 && self.f > 0.0 {
+                            return Err(Error::InconsistentSigns);
+                        }
+                    }
+                    Ok(())
+                }
+            }
+        "#;
+        assert_eq!(calculate_cyclomatic_complexity(code), 4); // Base 1 + 3 (conditions)
+    }
 }

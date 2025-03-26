@@ -1,6 +1,29 @@
 # Session Continuation Prompt
 
-I'm continuing work on the MCP Code Analysis project. Here's the context from my previous session:
+To continue a session, simply run:
+
+```bash
+./tools/session-continuation.sh
+```
+
+This script will:
+
+1. Back up and update session goals
+2. Run complexity analysis
+3. Update session goals with latest metrics
+4. Generate knowledge graph (if available)
+5. Update monetization analysis (if available)
+6. Merge all contexts into a session prompt
+
+Important: After running the script, review and update your `session-goal.json` based on:
+
+- Complexity analysis results in `complexity_analysis.json`
+- Knowledge graph insights in `knowledge_graph.json` (if available)
+- Monetization analysis in `monetization_analysis.json` (if available)
+
+This ensures your session goals align with the current state of the codebase and any newly identified areas that need attention.
+
+After updating the goals, you can start your session by saying "use the prompt in @SESSION_CONTINUATION_PROMPT.md".
 
 ## Project Context
 
@@ -89,80 +112,122 @@ I'd like to:
 
 Please help me continue development, taking into account the previous session's context and maintaining consistency with the established architecture and monetization strategy.
 
-````
+## Using the Complexity Analyzer
+
+The complexity analyzer is a Rust-based tool that provides detailed code complexity metrics. Here are the available commands:
+
+```bash
+# Build the analyzer (only needed first time or after changes)
+cd tools/complexity_analyzer
+cargo build --release
+
+# Basic usage
+cargo run --release -- -p <directory> -f <format> -t <number>
+
+# Example: Analyze entire src directory
+cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+
+# Example: Analyze specific directory with text output
+cargo run --release -- -p ../../src/state -f text -o ../../state_complexity.txt -t 15
+
+# Get help
+cargo run -- --help
+```
+
+Available options:
+
+- `-p`: Directory to analyze
+- `-f`: Output format (json or text)
+- `-o`: Output file path
+- `-t`: Complexity threshold for highlighting functions
 
 To use this prompt effectively:
 
 1. **Before Starting a New Session**:
 
    ```bash
-   # Update session goals
-   cp session-goal.json session-goal.json.template
-   vim session-goal.json  # Edit with current session goals
+   # Create or update session goals
+   if [ ! -f session-goal.json ]; then
+       cp session-goal.json.template session-goal.json
+   else
+       cp session-goal.json session-goal.json.bak
+   fi
+   $EDITOR session-goal.json
 
-   # Run complexity analysis on key components and save to JSON
+   # Run complexity analysis
    cd tools/complexity_analyzer
-   cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+   cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+   cd ../..
 
-   # Generate updated knowledge graph
-   python tools/knowledge_graph_generator.py --output knowledge_graph.json
-
-   # Update monetization analysis
-   python .cursor/rules/monetization_analysis/revenue_potential_analyzer.py --update
-
-   # Merge contexts
-   python tools/context_merger.py \
-     --session-context end-of-session.json \
-     --complexity-analysis complexity_analysis.json \
-     --session-goals session-goal.json \
-     --knowledge-graph knowledge_graph.json \
-     --monetization-status monetization_analysis.json \
-     --output session_prompt.md
-````
+   # Optional: Generate additional context if tools are available
+   [ -f tools/knowledge_graph_generator.py ] && \
+       python tools/knowledge_graph_generator.py --output knowledge_graph.json
+   [ -d .cursor/rules/monetization_analysis ] && \
+       python .cursor/rules/monetization_analysis/revenue_potential_analyzer.py --update
+   [ -f tools/context_merger.py ] && \
+       python tools/context_merger.py \
+           --session-context end-of-session.json \
+           --complexity-analysis complexity_analysis.json \
+           --session-goals session-goal.json \
+           $([ -f knowledge_graph.json ] && echo "--knowledge-graph knowledge_graph.json") \
+           $([ -f monetization_analysis.json ] && echo "--monetization-status monetization_analysis.json") \
+           --output session_prompt.md
+   ```
 
 2. **During the Session**:
 
    ```bash
    # Update session goals as tasks are completed
-   vim session-goal.json  # Update status of completed goals
+   $EDITOR session-goal.json
 
    # Run incremental complexity analysis on modified components
    cd tools/complexity_analyzer
-   cargo run -- -p ../../src/component-name -f json -o ../../complexity_component.json -t 10
+   cargo run --release -- -p ../../src/component-name -f json \
+       -o ../../complexity_component.json -t 10
+   cd ../..
    ```
 
 3. **At the End of the Session**:
 
    ```bash
-   # Run final complexity analysis to measure improvements
+   # Run final complexity analysis
    cd tools/complexity_analyzer
-   cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+   cargo run --release -- -p ../../src -f json \
+       -o ../../complexity_analysis_final.json -t 10
+   cd ../..
 
    # Update end-of-session document
-   python tools/session_context_generator.py --save end-of-session.json \
-     --complexity-analysis complexity_analysis.json \
-     --session-goals session-goal.json
+   if [ -f tools/session_context_generator.py ]; then
+       python tools/session_context_generator.py --save end-of-session.json \
+           --complexity-analysis complexity_analysis_final.json \
+           --session-goals session-goal.json
+   else
+       echo "Session context generator not found, please update end-of-session.json manually"
+       cp complexity_analysis_final.json end-of-session.json
+   fi
 
    # Update AI context with latest information
-   python tools/context_merger.py \
-     --session-context end-of-session.json \
-     --complexity-analysis complexity_analysis.json \
-     --output ai-context.json
+   if [ -f tools/context_merger.py ]; then
+       python tools/context_merger.py \
+           --session-context end-of-session.json \
+           --complexity-analysis complexity_analysis_final.json \
+           --output ai-context.json
+   fi
    ```
 
 4. **Key Elements to Always Include**:
 
-   - Current phase and focus
-   - Complexity analysis results
+   - Current phase and focus from `session-goal.json`
+   - Complexity analysis results from latest run
    - Active development status
    - Pending tasks and dependencies
    - Documentation needs
    - Environment details
-   - Monetization context
+   - Monetization context (if applicable)
 
 5. **Optional Elements Based on Context**:
-   - Performance metrics
-   - Test coverage statistics
+   - Performance metrics from complexity analysis
+   - Test coverage statistics (if available)
    - User feedback or bug reports
    - External API status
    - Infrastructure changes
@@ -170,11 +235,16 @@ To use this prompt effectively:
 Example Usage:
 
 ```bash
-# At the end of each session
-python tools/session_context_generator.py --save end-of-session.json
+# Quick session start
+./tools/start-session.sh  # If available
 
-# At the start of new session
-python tools/session_context_generator.py --load end-of-session.json --format prompt
+# Manual session start
+cp session-goal.json.template session-goal.json
+$EDITOR session-goal.json
+cd tools/complexity_analyzer && cargo run --release -- -p ../../src -f json \
+    -o ../../complexity_analysis.json -t 10
 ```
 
-This will generate a formatted prompt with all the necessary context from your previous session, making it easier for the AI to understand the current state of the project and provide more relevant assistance.
+This will set up your development environment with all necessary context from your previous session, making it easier to continue work effectively.
+
+Note: Some tools mentioned in this prompt may not be available in your installation. The script handles these cases gracefully by skipping unavailable tools while still providing core functionality through the complexity analyzer.

@@ -5,7 +5,45 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { CodeAnalysisResult } from "../../types/responses.js";
-import { executeWithTiming, createErrorResponse } from "../../utils/responses.js";
+import {
+  executeWithTiming,
+  createErrorResponse,
+} from "../../utils/responses.js";
+
+interface ComplexityMetrics {
+  cyclomatic: number;
+  cognitive: number;
+  maintainability: number;
+}
+
+interface AnalysisResult {
+  readability: number;
+  maintainability: number;
+  complexity: number;
+  issues: string[];
+}
+
+interface DetailedAnalysisResult {
+  readability: number;
+  maintainability: number;
+  complexity: ComplexityMetrics;
+  issues: string[];
+}
+
+interface MetricsOptions {
+  repositoryUrl?: string;
+  filePath?: string;
+  fileContent?: string;
+  language?: string;
+  metrics?: string[];
+  analysisId?: string;
+  type?: string;
+}
+
+interface ToolParameters {
+  filePath: string;
+  metrics?: string[];
+}
 
 // In-memory cache for analysis results
 const analysisCache = new Map<string, any>();
@@ -18,24 +56,24 @@ export async function analyzeRepository(
   fileContent?: string,
   language?: string
 ): Promise<any> {
-  return executeWithTiming('analyze-repository', async () => {
+  return executeWithTiming("analyze-repository", async () => {
     if (repositoryUrl) {
       const repoPath = await getRepository(repositoryUrl);
       const files = listFiles(repoPath);
       const analysisId = uuidv4();
-      
+
       // Perform dependency analysis
       const dependencies = extractDependencies(repoPath, files, language);
-      
+
       // Store results in cache
       const results = {
         repositoryUrl,
         analysisId,
         dependencies,
         fileCount: files.length,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      
+
       analysisCache.set(analysisId, results);
       return results;
     } else if (fileContent) {
@@ -44,7 +82,7 @@ export async function analyzeRepository(
       return {
         analysisId: uuidv4(),
         dependencies,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     } else {
       throw new Error("Either repositoryUrl or fileContent must be provided");
@@ -55,78 +93,130 @@ export async function analyzeRepository(
 /**
  * Analyze a single code snippet
  */
-export function analyzeCode(code: string, language?: string): CodeAnalysisResult {
+export function analyzeCode(
+  code: string,
+  language?: string
+): DetailedAnalysisResult {
   // This would ideally use a language-specific parser
   // For demonstration, we'll do a simple analysis
-  
-  // Mock implementation - would be replaced with actual parsing
-  const imports = extractImports(code, language);
   const functions = extractFunctions(code, language);
   const classes = extractClasses(code, language);
-  
+
+  // Calculate complexity
+  const metrics = calculateMetrics(code, language);
+  let maintainability = Math.max(
+    0,
+    171 -
+      5.2 * Math.log(metrics.complexity.cyclomatic) -
+      0.23 * metrics.complexity.cognitive
+  );
+
+  const issues: string[] = [];
+  let readability = 100;
+
+  // Basic metrics
+  const lines = code.split("\n");
+  const avgLineLength =
+    lines.reduce((sum, line) => sum + line.length, 0) / lines.length;
+
+  if (avgLineLength > 80) {
+    readability -= 10;
+    issues.push("Average line length exceeds 80 characters");
+  }
+
+  // Count long functions
+  if (language === "javascript" || language === "typescript" || !language) {
+    const functionRegex = /function\s+\w+\s*\([^)]*\)\s*{[\s\S]*?}/g;
+    const functions = code.match(functionRegex) || [];
+
+    for (const func of functions) {
+      const funcLines = func.split("\n").length;
+      if (funcLines > 20) {
+        maintainability -= 5;
+        issues.push(`Function exceeds 20 lines (${funcLines} lines)`);
+      }
+    }
+  }
+
+  // Calculate complexity
+  if (metrics.complexity.cyclomatic > 10) {
+    issues.push(
+      `High cyclomatic complexity (${metrics.complexity.cyclomatic})`
+    );
+  }
+
   return {
-    imports,
-    functions,
-    classes,
-    complexity: calculateComplexity(code, language)
+    readability: Math.max(0, readability),
+    maintainability: Math.max(0, maintainability),
+    complexity: metrics.complexity,
+    issues,
   };
 }
 
 /**
  * Get metrics for files or a previous analysis
  */
-export async function getMetrics(options: {
-  repositoryUrl?: string;
-  filePath?: string;
-  fileContent?: string;
-  language?: string;
-  metrics?: string[];
-  analysisId?: string;
-  type?: string;
-}): Promise<any> {
-  const { repositoryUrl, filePath, fileContent, language, metrics, analysisId, type } = options;
-  
+export async function getMetrics(options: MetricsOptions): Promise<any> {
+  const {
+    repositoryUrl,
+    filePath,
+    fileContent,
+    language,
+    metrics,
+    analysisId,
+    type,
+  } = options;
+
   // If analysisId is provided, retrieve from cache
   if (analysisId) {
     const cachedAnalysis = analysisCache.get(analysisId);
     if (!cachedAnalysis) {
       throw new Error(`Analysis not found: ${analysisId}`);
     }
-    
+
     if (type) {
       return cachedAnalysis[type] || {};
     }
-    
+
     return cachedAnalysis;
   }
-  
+
   // Otherwise perform new analysis
   if (repositoryUrl) {
     const repoPath = await getRepository(repositoryUrl);
-    
+
     if (filePath) {
       // Analyze specific file
       const fullPath = path.join(repoPath, filePath);
-      const code = fs.readFileSync(fullPath, 'utf8');
+      const code = fs.readFileSync(fullPath, "utf8");
       return calculateMetrics(code, language, metrics);
     } else {
       // Analyze entire repository
       const files = listFiles(repoPath);
       const allMetrics: Record<string, any> = {};
-      
+
       for (const file of files) {
         const fullPath = path.join(repoPath, file);
-        const code = fs.readFileSync(fullPath, 'utf8');
-        allMetrics[file] = calculateMetrics(code, path.extname(file).slice(1), metrics);
+        const code = fs.readFileSync(fullPath, "utf8");
+        allMetrics[file] = calculateMetrics(
+          code,
+          path.extname(file).slice(1),
+          metrics
+        );
       }
-      
       return allMetrics;
     }
-  } else if (fileContent) {
-    // Analyze provided code content
+  } else if (filePath) {
+    // Analyze local file
+    const code = fs.readFileSync(filePath, "utf8");
+    return calculateMetrics(code, language, metrics);
+  } else if (fileContent !== undefined) {
+    // Analyze provided content
     return calculateMetrics(fileContent, language, metrics);
   } else {
-    throw new Error("Either repositoryUrl, filePath, or fileContent must be provided");
+    throw new Error(
+      "Either repositoryUrl, filePath, or fileContent must be provided"
+    );
   }
 }
 
@@ -136,16 +226,17 @@ export async function getMetrics(options: {
 function extractImports(code: string, language?: string): string[] {
   // Basic implementation - would be replaced with language-specific parsers
   const imports: string[] = [];
-  
-  if (language === 'javascript' || language === 'typescript' || !language) {
+
+  if (language === "javascript" || language === "typescript" || !language) {
     // Simple regex to find import statements (not comprehensive)
-    const importRegex = /import\s+(?:{[^}]*}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/g;
+    const importRegex =
+      /import\s+(?:{[^}]*}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/g;
     let match;
     while ((match = importRegex.exec(code)) !== null) {
       imports.push(match[1]);
     }
   }
-  
+
   return imports;
 }
 
@@ -155,22 +246,22 @@ function extractImports(code: string, language?: string): string[] {
 function extractFunctions(code: string, language?: string): string[] {
   // Basic implementation - would be replaced with language-specific parsers
   const functions: string[] = [];
-  
-  if (language === 'javascript' || language === 'typescript' || !language) {
+
+  if (language === "javascript" || language === "typescript" || !language) {
     // Simple regex to find function declarations (not comprehensive)
     const funcRegex = /function\s+(\w+)\s*\(/g;
     let match;
     while ((match = funcRegex.exec(code)) !== null) {
       functions.push(match[1]);
     }
-    
+
     // Arrow functions with names
     const arrowFuncRegex = /const\s+(\w+)\s*=\s*(?:\([^)]*\)|\w+)\s*=>/g;
     while ((match = arrowFuncRegex.exec(code)) !== null) {
       functions.push(match[1]);
     }
   }
-  
+
   return functions;
 }
 
@@ -180,8 +271,8 @@ function extractFunctions(code: string, language?: string): string[] {
 function extractClasses(code: string, language?: string): string[] {
   // Basic implementation - would be replaced with language-specific parsers
   const classes: string[] = [];
-  
-  if (language === 'javascript' || language === 'typescript' || !language) {
+
+  if (language === "javascript" || language === "typescript" || !language) {
     // Simple regex to find class declarations (not comprehensive)
     const classRegex = /class\s+(\w+)(?:\s+extends\s+\w+)?/g;
     let match;
@@ -189,100 +280,358 @@ function extractClasses(code: string, language?: string): string[] {
       classes.push(match[1]);
     }
   }
-  
+
   return classes;
 }
 
 /**
  * Extract dependencies from a repository
  */
-function extractDependencies(repoPath: string, files: string[], language?: string): Record<string, string[]> {
+function extractDependencies(
+  repoPath: string,
+  files: string[],
+  language?: string
+): Record<string, string[]> {
   const dependencies: Record<string, string[]> = {};
-  
+
   for (const file of files) {
     const fullPath = path.join(repoPath, file);
     try {
-      const code = fs.readFileSync(fullPath, 'utf8');
+      const code = fs.readFileSync(fullPath, "utf8");
       const fileLanguage = language || path.extname(file).slice(1);
       dependencies[file] = extractImports(code, fileLanguage);
     } catch (error) {
       console.warn(`Error reading file ${file}: ${(error as Error).message}`);
     }
   }
-  
+
   return dependencies;
 }
 
 /**
- * Calculate metrics for a code snippet
+ * Calculate complexity metrics for code
  */
-function calculateMetrics(code: string, language?: string, metricTypes?: string[]): Record<string, any> {
-  const result: Record<string, any> = {};
-  
-  if (!metricTypes || metricTypes.includes('linesOfCode')) {
-    result.linesOfCode = code.split('\n').length;
+function calculateMetrics(
+  code: string,
+  language?: string,
+  metrics?: string[]
+): DetailedAnalysisResult {
+  // Handle empty files
+  if (!code.trim()) {
+    return {
+      readability: 100,
+      maintainability: 100,
+      complexity: {
+        cyclomatic: 1,
+        cognitive: 0,
+        maintainability: 100,
+      },
+      issues: [],
+    };
   }
-  
-  if (!metricTypes || metricTypes.includes('complexity')) {
-    // Simple complexity heuristic (would be replaced with actual analysis)
-    const decisions = (code.match(/if|else|for|while|switch|case|try|catch/g) || []).length;
-    result.complexity = decisions;
+
+  // Calculate basic metrics
+  const lines = code.split("\n");
+  const avgLineLength =
+    lines.reduce((sum, line) => sum + line.length, 0) / lines.length;
+  let readability = 100;
+  const issues: string[] = [];
+
+  if (avgLineLength > 80) {
+    readability -= 10;
+    issues.push("Average line length exceeds 80 characters");
   }
-  
-  if (!metricTypes || metricTypes.includes('maintainability')) {
-    // Simple maintainability heuristic
-    const commentLines = (code.match(/\/\/.*$|\/*[\s\S]*?\*\//gm) || []).length;
-    const codeLines = code.split('\n').length;
-    
-    // Calculate a simple maintainability index (higher is better)
-    const commentRatio = commentLines / codeLines;
-    const complexity = result.complexity || 0;
-    
-    result.maintainability = Math.max(0, 100 - (complexity * 0.25) + (commentRatio * 20));
+
+  // Calculate cyclomatic complexity
+  let cyclomatic = 1; // Base complexity
+  const controlStructures = [
+    /\bif\b/g,
+    /\belse\b/g,
+    /\bfor\b/g,
+    /\bwhile\b/g,
+    /\bdo\b/g,
+    /\bcatch\b/g,
+    /\b\|\|/g,
+    /\b&&/g,
+    /\b\?/g,
+    /\bcase\b/g,
+    /\bdefault\b/g,
+  ];
+
+  // Remove comments and string literals to avoid false positives
+  const codeWithoutComments = code
+    .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, "") // Remove comments
+    .replace(/"[^"]*"|'[^']*'/g, "''") // Replace string literals
+    .trim();
+
+  // Calculate cyclomatic complexity from actual code
+  for (const structure of controlStructures) {
+    const matches = codeWithoutComments.match(structure) || [];
+    cyclomatic += matches.length;
   }
-  
-  return result;
+
+  // Calculate cognitive complexity
+  let cognitive = 0;
+
+  // Only analyze actual code structures
+  const codeStructures = codeWithoutComments
+    .split(/[;{}]/)
+    .filter((line) => line.trim().length > 0)
+    .filter((line) => !line.match(/^\s*(?:const|let|var)\s+\w+\s*=.*$/)); // Exclude simple variable declarations
+
+  // Count control structures in actual code
+  for (const structure of controlStructures) {
+    for (const codeLine of codeStructures) {
+      const matches = codeLine.match(structure) || [];
+      cognitive += matches.length;
+    }
+  }
+
+  // Add nesting complexity only for actual control structures
+  const nestingLevels = codeStructures.filter((line) =>
+    line.match(/\b(if|for|while|do|catch|switch)\b/)
+  ).length;
+  cognitive += nestingLevels;
+
+  // Calculate maintainability
+  const maintainability = Math.max(
+    0,
+    171 - 5.2 * Math.log(cyclomatic) - 0.23 * cognitive
+  );
+
+  return {
+    readability: Math.max(0, readability),
+    maintainability: Math.max(0, maintainability),
+    complexity: {
+      cyclomatic,
+      cognitive,
+      maintainability,
+    },
+    issues,
+  };
 }
 
 /**
- * Calculate complexity for a code snippet
+ * Calculate code quality metrics
  */
-function calculateComplexity(code: string, language?: string): number {
-  // Simple complexity heuristic (would be replaced with actual analysis)
-  const decisions = (code.match(/if|else|for|while|switch|case|try|catch/g) || []).length;
-  return decisions;
+function calculateCodeQuality(
+  code: string,
+  language?: string
+): {
+  readability: number;
+  maintainability: number;
+  complexity: number;
+  issues: string[];
+} {
+  const issues: string[] = [];
+  let readability = 100;
+  let maintainability = 100;
+
+  // Basic metrics
+  const lines = code.split("\n");
+  const avgLineLength =
+    lines.reduce((sum, line) => sum + line.length, 0) / lines.length;
+
+  if (avgLineLength > 80) {
+    readability -= 10;
+    issues.push("Average line length exceeds 80 characters");
+  }
+
+  // Count long functions
+  if (language === "javascript" || language === "typescript" || !language) {
+    const functionRegex = /function\s+\w+\s*\([^)]*\)\s*{[\s\S]*?}/g;
+    const functions = code.match(functionRegex) || [];
+
+    for (const func of functions) {
+      const funcLines = func.split("\n").length;
+      if (funcLines > 20) {
+        maintainability -= 5;
+        issues.push(`Function exceeds 20 lines (${funcLines} lines)`);
+      }
+    }
+  }
+
+  // Calculate complexity
+  const complexity = calculateMetrics(code, language);
+  maintainability -= complexity.cyclomatic * 2;
+
+  if (complexity.cyclomatic > 10) {
+    issues.push(`High cyclomatic complexity (${complexity.cyclomatic})`);
+  }
+
+  return {
+    readability: Math.max(0, readability),
+    maintainability: Math.max(0, maintainability),
+    complexity: complexity.cyclomatic,
+    issues,
+  };
 }
 
+/**
+ * Register analysis tools with MCP server
+ */
 export function registerAnalysisTools(server: McpServer) {
+  server.tool(
+    "calculate-metrics",
+    {
+      filePath: z.string().describe("Path to the file"),
+      metrics: z
+        .array(z.string())
+        .optional()
+        .describe("Metrics to calculate (complexity, maintainability, etc.)"),
+    },
+    async ({ filePath, metrics = ["complexity", "maintainability"] }) => {
+      const code = fs.readFileSync(filePath, "utf8");
+      const language = path.extname(filePath).slice(1);
+
+      const result: Record<string, any> = {};
+
+      if (metrics.includes("complexity")) {
+        result.complexity = calculateMetrics(code, language);
+      }
+
+      if (metrics.includes("maintainability")) {
+        result.maintainability = result.complexity?.cyclomatic || 0;
+      }
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+
   // Make sure this exact tool name is registered
   server.tool(
-    "analyze-repository",  // This name must match exactly what the CLI calls
+    "analyze-repository", // This name must match exactly what the CLI calls
     {
       repositoryUrl: z.string().describe("URL of the repository to analyze"),
       depth: z.number().default(2).describe("Analysis depth"),
-      includeDependencies: z.boolean().default(true).describe("Include dependency analysis"),
-      includeComplexity: z.boolean().default(true).describe("Include complexity analysis"),
-      specificFiles: z.array(z.string()).optional().describe("Specific files to analyze")
+      includeDependencies: z
+        .boolean()
+        .default(true)
+        .describe("Include dependency analysis"),
+      includeComplexity: z
+        .boolean()
+        .default(true)
+        .describe("Include complexity analysis"),
+      specificFiles: z
+        .array(z.string())
+        .optional()
+        .describe("Specific files to analyze"),
     },
     async (args) => {
       // Basic implementation
       console.log("Analyzing repository:", args.repositoryUrl);
-      
+
       // Handle specific files if provided
       if (args.specificFiles && args.specificFiles.length > 0) {
         console.log("Analyzing specific files:", args.specificFiles);
       }
-      
+
       return {
-        content: [{
-          type: "text",
-          text: JSON.stringify({
-            repository: args.repositoryUrl,
-            analysisDepth: args.depth,
-            result: "Sample repository analysis results"
-          }, null, 2)
-        }]
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                repository: args.repositoryUrl,
+                analysisDepth: args.depth,
+                result: "Sample repository analysis results",
+              },
+              null,
+              2
+            ),
+          },
+        ],
       };
     }
   );
-} 
+}
+
+// Register the complexity analysis tool
+export function registerComplexityTool(mcp: McpServer) {
+  mcp.tool(
+    "complexity-analyzer",
+    {
+      filePath: z.string().describe("Path to the file to analyze"),
+      metrics: z
+        .array(z.string())
+        .optional()
+        .describe("Specific metrics to calculate"),
+    },
+    async ({ filePath, metrics }) => {
+      const code = fs.readFileSync(filePath, "utf8");
+      const result = calculateMetrics(
+        code,
+        path.extname(filePath).slice(1),
+        metrics
+      );
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    }
+  );
+}
+
+function analyzeCodeDetailed(
+  code: string,
+  language?: string,
+  metrics: string[] = ["readability", "maintainability", "complexity"]
+): DetailedAnalysisResult {
+  const result: DetailedAnalysisResult = {
+    readability: 0,
+    maintainability: 0,
+    complexity: {
+      cyclomatic: 0,
+      cognitive: 0,
+      maintainability: 0,
+    },
+    issues: [],
+  };
+
+  if (metrics.includes("readability")) {
+    result.readability = calculateReadability(code, language);
+  }
+
+  if (metrics.includes("maintainability")) {
+    result.maintainability = calculateMaintainability(code, language);
+  }
+
+  if (metrics.includes("complexity")) {
+    result.complexity = calculateMetrics(code, language);
+  }
+
+  return result;
+}
+
+function calculateReadability(code: string, language?: string): number {
+  let readability = 100;
+  const lines = code.split("\n");
+  const avgLineLength =
+    lines.reduce((sum, line) => sum + line.length, 0) / lines.length;
+
+  if (avgLineLength > 80) {
+    readability -= 10;
+  }
+
+  return Math.max(0, readability);
+}
+
+function calculateMaintainability(code: string, language?: string): number {
+  const complexity = calculateMetrics(code, language);
+  return Math.max(
+    0,
+    171 - 5.2 * Math.log(complexity.cyclomatic) - 0.23 * complexity.cognitive
+  );
+}

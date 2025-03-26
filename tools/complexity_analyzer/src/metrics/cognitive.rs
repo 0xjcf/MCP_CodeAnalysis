@@ -274,4 +274,149 @@ mod tests {
         "#;
         assert_eq!(calculate_cognitive_complexity(code), 7); // Updated based on actual implementation behavior
     }
+
+    #[test]
+    fn test_recursive_function_with_deep_nesting() {
+        let code = r#"
+            fn fibonacci(n: u32) -> u32 {
+                if n <= 1 {
+                    return n;
+                }
+                if n == 2 {
+                    return 1;
+                }
+                if n > 2 {
+                    return fibonacci(n - 1) + fibonacci(n - 2);
+                }
+                0
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 4); // 1 + 1 + 1 + 1 (recursive call)
+    }
+
+    #[test]
+    fn test_complex_error_handling() {
+        let code = r#"
+            fn process_data(data: &str) -> Result<(), Error> {
+                if data.is_empty() {
+                    return Err(Error::EmptyInput);
+                }
+                if !data.chars().all(|c| c.is_ascii()) {
+                    return Err(Error::InvalidCharacters);
+                }
+                if data.len() > MAX_LENGTH {
+                    return Err(Error::TooLong);
+                }
+                Ok(())
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 4); // 1 + 1 + 1 + 1 (early returns)
+    }
+
+    #[test]
+    fn test_async_await_patterns() {
+        let code = r#"
+            async fn fetch_and_process() -> Result<(), Error> {
+                if let Ok(data) = fetch_data().await {
+                    if let Ok(processed) = process_data(data).await {
+                        if let Ok(result) = save_result(processed).await {
+                            return Ok(());
+                        }
+                    }
+                }
+                Err(Error::ProcessingFailed)
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 4); // 1 + 1 + 1 + 1 (nested awaits)
+    }
+
+    #[test]
+    fn test_complex_generic_patterns() {
+        let code = r#"
+            fn process_generic<T: Display + Debug>(value: T) -> Result<String, Error> 
+            where T: Clone {
+                if value.to_string().is_empty() {
+                    return Err(Error::EmptyValue);
+                }
+                if value.to_string().len() > MAX_LENGTH {
+                    return Err(Error::TooLong);
+                }
+                Ok(value.to_string())
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 3); // 1 + 1 + 1 (conditions)
+    }
+
+    #[test]
+    fn test_complex_trait_implementation() {
+        let code = r#"
+            impl<T> Display for ComplexType<T> 
+            where T: Display + Debug {
+                fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+                    if self.value.is_none() {
+                        return write!(f, "None");
+                    }
+                    if let Some(ref value) = self.value {
+                        if value.to_string().is_empty() {
+                            return write!(f, "Empty");
+                        }
+                        return write!(f, "{}", value);
+                    }
+                    write!(f, "Unknown")
+                }
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 4); // 1 + 1 + 1 + 1 (nested conditions)
+    }
+
+    #[test]
+    fn test_complex_pattern_matching() {
+        let code = r#"
+            fn process_value(value: Value) -> Result<(), Error> {
+                match value {
+                    Value::Number(n) if n > 0 => {
+                        if n > 100 {
+                            return Err(Error::TooLarge);
+                        }
+                        Ok(())
+                    }
+                    Value::String(s) if !s.is_empty() => {
+                        if s.len() > MAX_LENGTH {
+                            return Err(Error::TooLong);
+                        }
+                        Ok(())
+                    }
+                    Value::Array(arr) if !arr.is_empty() => {
+                        if arr.len() > MAX_SIZE {
+                            return Err(Error::TooManyItems);
+                        }
+                        Ok(())
+                    }
+                    _ => Err(Error::InvalidValue)
+                }
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 7); // 1 (match) + 3 * (1 + 1) (conditions in each arm)
+    }
+
+    #[test]
+    fn test_complex_closure_patterns() {
+        let code = r#"
+            fn create_processor() -> impl Fn(&str) -> Result<(), Error> {
+                |input: &str| {
+                    if input.is_empty() {
+                        return Err(Error::EmptyInput);
+                    }
+                    if input.len() > MAX_LENGTH {
+                        return Err(Error::TooLong);
+                    }
+                    if !input.chars().all(|c| c.is_ascii()) {
+                        return Err(Error::InvalidCharacters);
+                    }
+                    Ok(())
+                }
+            }
+        "#;
+        assert_eq!(calculate_cognitive_complexity(code), 4); // 1 + 1 + 1 + 1 (conditions in closure)
+    }
 }

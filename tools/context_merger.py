@@ -19,6 +19,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
+from collections import defaultdict
 
 class ContextMerger:
     """Merges different context sources into a session continuation prompt."""
@@ -45,7 +46,12 @@ class ContextMerger:
             'decisions': []
         }
         
-        if not graph_data:
+        if not graph_data or not graph_data.get('nodes'):
+            # Generate placeholder content for empty knowledge graph
+            context['components'].append({
+                'name': active_component,
+                'description': 'Active component - no additional context available'
+            })
             return context
             
         # Find the active component node
@@ -74,40 +80,62 @@ class ContextMerger:
                     for edge in graph_data.get('edges', [])
                 ):
                     context['decisions'].append(node)
+        else:
+            # If active component not found, add placeholder
+            context['components'].append({
+                'name': active_component,
+                'description': 'Component not found in knowledge graph'
+            })
         
         return context
 
-    def extract_monetization_features(self, monetization_data: Dict[str, Any]) -> Dict[str, List[str]]:
+    def extract_monetization_features(self, monetization_data: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
         """Extract feature lists by tier from monetization analysis."""
         features = {
-            'free': [],
-            'pro': [],
-            'enterprise': []
+            'free': defaultdict(list),
+            'pro': defaultdict(list),
+            'enterprise': defaultdict(list)
         }
         
         if not monetization_data:
-            return features
+            return {
+                'free': {'basic': ['Basic features not yet analyzed']},
+                'pro': {'advanced': ['Pro features not yet analyzed']},
+                'enterprise': {'premium': ['Enterprise features not yet analyzed']}
+            }
             
         # Extract features from opportunities
         for opportunity in monetization_data.get('opportunities', []):
-            feature = opportunity.get('feature')
-            if not feature:
+            feature_dict = opportunity.get('features', {})
+            if not feature_dict:
                 continue
-                
+            
             # Determine tier based on priority and type
-            if opportunity.get('priority') == 'low':
-                features['free'].append(feature)
+            tier = 'free'
+            if opportunity.get('priority') == 'high':
+                tier = 'enterprise'
             elif opportunity.get('priority') == 'medium':
-                features['pro'].append(feature)
-            else:
-                features['enterprise'].append(feature)
+                tier = 'pro'
+            
+            # Add features with descriptions
+            for feature_name, description in feature_dict.items():
+                if feature_name != 'unknown':  # Skip unknown features
+                    features[tier][feature_name].append({
+                        'description': description,
+                        'context': opportunity.get('description', ''),
+                        'type': opportunity.get('type', '')
+                    })
         
-        return features
+        # Convert defaultdict to regular dict
+        return {
+            tier: dict(feature_dict)
+            for tier, feature_dict in features.items()
+        }
 
     def generate_prompt(self, 
                        session_context: Dict[str, Any],
                        knowledge_context: Dict[str, Any],
-                       monetization_features: Dict[str, List[str]]) -> str:
+                       monetization_features: Dict[str, Dict[str, List[Dict[str, Any]]]]) -> str:
         """Generate the session continuation prompt."""
         try:
             with open(self.template_path, 'r', encoding='utf-8') as f:
@@ -117,29 +145,44 @@ class ContextMerger:
         
         # Format the knowledge graph section
         knowledge_section = []
-        for comp in knowledge_context['components']:
-            knowledge_section.append(f"- {comp['name']}: {comp['description']}")
-        for rel in knowledge_context['relationships']:
-            knowledge_section.append(f"- {rel['source']} {rel['type']} {rel['target']}")
-        for dec in knowledge_context['decisions']:
-            knowledge_section.append(f"- Decision: {dec.get('description', 'No description')}")
+        if knowledge_context['components']:
+            knowledge_section.append("### Components")
+            for comp in knowledge_context['components']:
+                knowledge_section.append(f"- {comp['name']}: {comp.get('description', 'No description available')}")
+        if knowledge_context['relationships']:
+            knowledge_section.append("\n### Relationships")
+            for rel in knowledge_context['relationships']:
+                knowledge_section.append(f"- {rel['source']} {rel['type']} {rel['target']}")
+        if knowledge_context['decisions']:
+            knowledge_section.append("\n### Technical Decisions")
+            for dec in knowledge_context['decisions']:
+                knowledge_section.append(f"- {dec.get('description', 'No description available')}")
         
         # Format the monetization section
         monetization_section = []
         for tier, features in monetization_features.items():
             if features:
-                monetization_section.append(f"### {tier.title()} Tier Features:")
-                for feature in features:
-                    monetization_section.append(f"- {feature}")
+                monetization_section.append(f"\n### {tier.title()} Tier Features")
+                for feature_name, implementations in features.items():
+                    monetization_section.append(f"\n#### {feature_name.replace('_', ' ').title()}")
+                    for impl in implementations:
+                        desc = impl['description']
+                        context = impl['context']
+                        type_info = impl['type']
+                        monetization_section.append(f"- {desc}")
+                        if context and context != desc:
+                            monetization_section.append(f"  - Context: {context}")
+                        if type_info:
+                            monetization_section.append(f"  - Type: {type_info}")
         
         # Replace placeholders in template
         prompt = template.format(
             last_session_date=session_context['session_metadata']['last_session_date'],
             project_phase=session_context['session_metadata']['project_phase'],
             current_focus=session_context['session_metadata']['current_focus'],
-            active_component=session_context['technical_context']['active_components'][0]['name'],
-            component_status=session_context['technical_context']['active_components'][0]['status'],
-            completion_percentage=session_context['technical_context']['active_components'][0]['completion_percentage'],
+            active_component=session_context['technical_context']['active_component']['name'],
+            component_status=session_context['technical_context']['active_component']['status'],
+            completion_percentage=session_context['technical_context']['active_component']['completion_percentage'],
             knowledge_graph_context='\n'.join(knowledge_section),
             monetization_status='\n'.join(monetization_section)
         )
@@ -163,10 +206,10 @@ Currently working on:
 - Status: {component_status}
 - Progress: {completion_percentage}%
 
-## Knowledge Graph Context
+## Technical Context
 {knowledge_graph_context}
 
-## Monetization Status
+## Monetization Strategy
 {monetization_status}
 
 Please help me continue development, taking into account the previous session's context and maintaining consistency with the established architecture and monetization strategy.
@@ -188,7 +231,7 @@ Please help me continue development, taking into account the previous session's 
             return False
         
         # Extract relevant context
-        active_component = session_data['technical_context']['active_components'][0]['name']
+        active_component = session_data['technical_context']['active_component']['name']
         knowledge_context = self.extract_knowledge_graph_context(graph_data, active_component)
         monetization_features = self.extract_monetization_features(monetization_data)
         
@@ -200,7 +243,7 @@ Please help me continue development, taking into account the previous session's 
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(prompt)
             if self.verbose:
-                print(f"Successfully generated prompt at {output_path}")
+                print(f"Prompt saved to {output_path}")
             return True
         except Exception as e:
             print(f"Error saving prompt to {output_path}: {e}", file=sys.stderr)
@@ -226,5 +269,5 @@ def main():
     
     sys.exit(0 if success else 1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main() 

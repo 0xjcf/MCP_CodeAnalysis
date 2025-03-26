@@ -1,0 +1,2476 @@
+{
+  "nodes": [
+    {
+      "id": "file:server.ts",
+      "type": "file",
+      "name": "server.ts",
+      "path": "server.ts",
+      "component": ""
+    },
+    {
+      "id": "file:server-main.ts",
+      "type": "file",
+      "name": "server-main.ts",
+      "path": "server-main.ts",
+      "component": ""
+    },
+    {
+      "id": "file:registry/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "registry/index.ts",
+      "component": "registry"
+    },
+    {
+      "id": "component:registry",
+      "type": "component",
+      "name": "registry",
+      "path": "registry"
+    },
+    {
+      "id": "file:registry/tool-registry.ts",
+      "type": "file",
+      "name": "tool-registry.ts",
+      "path": "registry/tool-registry.ts",
+      "component": "registry"
+    },
+    {
+      "id": "file:tests/toolService.test.ts",
+      "type": "file",
+      "name": "toolService.test.ts",
+      "path": "tests/toolService.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/test-session-store.ts",
+      "type": "file",
+      "name": "test-session-store.ts",
+      "path": "tests/test-session-store.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/redisSessionStore.test.ts",
+      "type": "file",
+      "name": "redisSessionStore.test.ts",
+      "path": "tests/redisSessionStore.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/redisToolExecutionService.test.ts",
+      "type": "file",
+      "name": "redisToolExecutionService.test.ts",
+      "path": "tests/redisToolExecutionService.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/test-session-store.js",
+      "type": "file",
+      "name": "test-session-store.js",
+      "path": "tests/test-session-store.js",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/toolMachine.test.ts",
+      "type": "file",
+      "name": "toolMachine.test.ts",
+      "path": "tests/toolMachine.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/toolServiceNoTool.test.ts",
+      "type": "file",
+      "name": "toolServiceNoTool.test.ts",
+      "path": "tests/toolServiceNoTool.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/statefulTool.test.ts",
+      "type": "file",
+      "name": "statefulTool.test.ts",
+      "path": "tests/statefulTool.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:tests/responses.test.ts",
+      "type": "file",
+      "name": "responses.test.ts",
+      "path": "tests/responses.test.ts",
+      "component": "tests"
+    },
+    {
+      "id": "file:client/cli/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "client/cli/index.ts",
+      "component": "cli"
+    },
+    {
+      "id": "component:cli",
+      "type": "component",
+      "name": "cli",
+      "path": "client/cli"
+    },
+    {
+      "id": "file:client/cli/commands/quality.ts",
+      "type": "file",
+      "name": "quality.ts",
+      "path": "client/cli/commands/quality.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/visualization.ts",
+      "type": "file",
+      "name": "visualization.ts",
+      "path": "client/cli/commands/visualization.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/knowledge-graph.ts",
+      "type": "file",
+      "name": "knowledge-graph.ts",
+      "path": "client/cli/commands/knowledge-graph.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/ide.ts",
+      "type": "file",
+      "name": "ide.ts",
+      "path": "client/cli/commands/ide.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/insights.ts",
+      "type": "file",
+      "name": "insights.ts",
+      "path": "client/cli/commands/insights.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/socio-technical.ts",
+      "type": "file",
+      "name": "socio-technical.ts",
+      "path": "client/cli/commands/socio-technical.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/dependencies.ts",
+      "type": "file",
+      "name": "dependencies.ts",
+      "path": "client/cli/commands/dependencies.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/metrics.ts",
+      "type": "file",
+      "name": "metrics.ts",
+      "path": "client/cli/commands/metrics.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/analyze.ts",
+      "type": "file",
+      "name": "analyze.ts",
+      "path": "client/cli/commands/analyze.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/watch.ts",
+      "type": "file",
+      "name": "watch.ts",
+      "path": "client/cli/commands/watch.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/commands/config.ts",
+      "type": "file",
+      "name": "config.ts",
+      "path": "client/cli/commands/config.ts",
+      "component": "commands"
+    },
+    {
+      "id": "file:client/cli/utils/mcp-client.ts",
+      "type": "file",
+      "name": "mcp-client.ts",
+      "path": "client/cli/utils/mcp-client.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:client/cli/utils/project-detector.ts",
+      "type": "file",
+      "name": "project-detector.ts",
+      "path": "client/cli/utils/project-detector.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:client/cli/utils/formatters.ts",
+      "type": "file",
+      "name": "formatters.ts",
+      "path": "client/cli/utils/formatters.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:client/cli/utils/config.ts",
+      "type": "file",
+      "name": "config.ts",
+      "path": "client/cli/utils/config.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:schemas/knowledge-graph-schema.ts",
+      "type": "file",
+      "name": "knowledge-graph-schema.ts",
+      "path": "schemas/knowledge-graph-schema.ts",
+      "component": "schemas"
+    },
+    {
+      "id": "file:responses/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "responses/index.ts",
+      "component": "responses"
+    },
+    {
+      "id": "component:responses",
+      "type": "component",
+      "name": "responses",
+      "path": "responses"
+    },
+    {
+      "id": "file:types/responses.ts",
+      "type": "file",
+      "name": "responses.ts",
+      "path": "types/responses.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:types/knowledge-graph.ts",
+      "type": "file",
+      "name": "knowledge-graph.ts",
+      "path": "types/knowledge-graph.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:types/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "types/index.ts",
+      "component": "types"
+    },
+    {
+      "id": "component:types",
+      "type": "component",
+      "name": "types",
+      "path": "types"
+    },
+    {
+      "id": "file:types/memory.ts",
+      "type": "file",
+      "name": "memory.ts",
+      "path": "types/memory.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:server/startServer.ts",
+      "type": "file",
+      "name": "startServer.ts",
+      "path": "server/startServer.ts",
+      "component": "server"
+    },
+    {
+      "id": "file:server/registerRedisBackedServices.ts",
+      "type": "file",
+      "name": "registerRedisBackedServices.ts",
+      "path": "server/registerRedisBackedServices.ts",
+      "component": "server"
+    },
+    {
+      "id": "file:tools/interfaces.ts",
+      "type": "file",
+      "name": "interfaces.ts",
+      "path": "tools/interfaces.ts",
+      "component": "tools"
+    },
+    {
+      "id": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "type": "file",
+      "name": "fileMetricsAnalyzer.ts",
+      "path": "tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "component": "codeAnalysis"
+    },
+    {
+      "id": "file:state/machines/toolMachine.ts",
+      "type": "file",
+      "name": "toolMachine.ts",
+      "path": "state/machines/toolMachine.ts",
+      "component": "machines"
+    },
+    {
+      "id": "file:state/services/memorySessionStore.ts",
+      "type": "file",
+      "name": "memorySessionStore.ts",
+      "path": "state/services/memorySessionStore.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/services/types.ts",
+      "type": "file",
+      "name": "types.ts",
+      "path": "state/services/types.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/services/redisToolExecutionService.ts",
+      "type": "file",
+      "name": "redisToolExecutionService.ts",
+      "path": "state/services/redisToolExecutionService.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/services/redisSessionStore.ts",
+      "type": "file",
+      "name": "redisSessionStore.ts",
+      "path": "state/services/redisSessionStore.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/services/sessionStoreFactory.ts",
+      "type": "file",
+      "name": "sessionStoreFactory.ts",
+      "path": "state/services/sessionStoreFactory.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/services/toolService.ts",
+      "type": "file",
+      "name": "toolService.ts",
+      "path": "state/services/toolService.ts",
+      "component": "services"
+    },
+    {
+      "id": "file:state/helpers/statefulTool.ts",
+      "type": "file",
+      "name": "statefulTool.ts",
+      "path": "state/helpers/statefulTool.ts",
+      "component": "helpers"
+    },
+    {
+      "id": "file:state/store/redisSessionStore.ts",
+      "type": "file",
+      "name": "redisSessionStore.ts",
+      "path": "state/store/redisSessionStore.ts",
+      "component": "store"
+    },
+    {
+      "id": "file:state/store/redisCacheStore.ts",
+      "type": "file",
+      "name": "redisCacheStore.ts",
+      "path": "state/store/redisCacheStore.ts",
+      "component": "store"
+    },
+    {
+      "id": "file:state/utils/logger.ts",
+      "type": "file",
+      "name": "logger.ts",
+      "path": "state/utils/logger.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:state/interfaces/toolExecutionService.ts",
+      "type": "file",
+      "name": "toolExecutionService.ts",
+      "path": "state/interfaces/toolExecutionService.ts",
+      "component": "interfaces"
+    },
+    {
+      "id": "file:utils/repository-analyzer.ts",
+      "type": "file",
+      "name": "repository-analyzer.ts",
+      "path": "utils/repository-analyzer.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:utils/responses.ts",
+      "type": "file",
+      "name": "responses.ts",
+      "path": "utils/responses.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:utils/tool-discovery.ts",
+      "type": "file",
+      "name": "tool-discovery.ts",
+      "path": "utils/tool-discovery.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:utils/database.ts",
+      "type": "file",
+      "name": "database.ts",
+      "path": "utils/database.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:utils/config.ts",
+      "type": "file",
+      "name": "config.ts",
+      "path": "utils/config.ts",
+      "component": "utils"
+    },
+    {
+      "id": "file:features/evolution/evolution-planner.ts",
+      "type": "file",
+      "name": "evolution-planner.ts",
+      "path": "features/evolution/evolution-planner.ts",
+      "component": "evolution"
+    },
+    {
+      "id": "file:features/evolution/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/evolution/index.ts",
+      "component": "evolution"
+    },
+    {
+      "id": "component:evolution",
+      "type": "component",
+      "name": "evolution",
+      "path": "features/evolution"
+    },
+    {
+      "id": "file:features/visualization/visualizer.ts",
+      "type": "file",
+      "name": "visualizer.ts",
+      "path": "features/visualization/visualizer.ts",
+      "component": "visualization"
+    },
+    {
+      "id": "file:features/visualization/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/visualization/index.ts",
+      "component": "visualization"
+    },
+    {
+      "id": "component:visualization",
+      "type": "component",
+      "name": "visualization",
+      "path": "features/visualization"
+    },
+    {
+      "id": "file:features/session-manager/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/session-manager/index.ts",
+      "component": "session-manager"
+    },
+    {
+      "id": "component:session-manager",
+      "type": "component",
+      "name": "session-manager",
+      "path": "features/session-manager"
+    },
+    {
+      "id": "file:features/socio-technical/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/socio-technical/index.ts",
+      "component": "socio-technical"
+    },
+    {
+      "id": "component:socio-technical",
+      "type": "component",
+      "name": "socio-technical",
+      "path": "features/socio-technical"
+    },
+    {
+      "id": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "type": "file",
+      "name": "socio-technical-analyzer.ts",
+      "path": "features/socio-technical/socio-technical-analyzer.ts",
+      "component": "socio-technical"
+    },
+    {
+      "id": "file:features/code-metrics/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/code-metrics/index.ts",
+      "component": "code-metrics"
+    },
+    {
+      "id": "component:code-metrics",
+      "type": "component",
+      "name": "code-metrics",
+      "path": "features/code-metrics"
+    },
+    {
+      "id": "file:features/code-metrics/metrics-analyzer.ts",
+      "type": "file",
+      "name": "metrics-analyzer.ts",
+      "path": "features/code-metrics/metrics-analyzer.ts",
+      "component": "code-metrics"
+    },
+    {
+      "id": "file:features/multi-repo/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/multi-repo/index.ts",
+      "component": "multi-repo"
+    },
+    {
+      "id": "component:multi-repo",
+      "type": "component",
+      "name": "multi-repo",
+      "path": "features/multi-repo"
+    },
+    {
+      "id": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "type": "file",
+      "name": "multi-repo-analyzer.ts",
+      "path": "features/multi-repo/multi-repo-analyzer.ts",
+      "component": "multi-repo"
+    },
+    {
+      "id": "file:features/dev-tools/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/dev-tools/index.ts",
+      "component": "dev-tools"
+    },
+    {
+      "id": "component:dev-tools",
+      "type": "component",
+      "name": "dev-tools",
+      "path": "features/dev-tools"
+    },
+    {
+      "id": "file:features/basic-analysis/ide-analyzer.ts",
+      "type": "file",
+      "name": "ide-analyzer.ts",
+      "path": "features/basic-analysis/ide-analyzer.ts",
+      "component": "basic-analysis"
+    },
+    {
+      "id": "file:features/basic-analysis/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/basic-analysis/index.ts",
+      "component": "basic-analysis"
+    },
+    {
+      "id": "component:basic-analysis",
+      "type": "component",
+      "name": "basic-analysis",
+      "path": "features/basic-analysis"
+    },
+    {
+      "id": "file:features/basic-analysis/analyzer.ts",
+      "type": "file",
+      "name": "analyzer.ts",
+      "path": "features/basic-analysis/analyzer.ts",
+      "component": "basic-analysis"
+    },
+    {
+      "id": "file:features/memory/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/memory/index.ts",
+      "component": "memory"
+    },
+    {
+      "id": "component:memory",
+      "type": "component",
+      "name": "memory",
+      "path": "features/memory"
+    },
+    {
+      "id": "file:features/memory/memory-manager.ts",
+      "type": "file",
+      "name": "memory-manager.ts",
+      "path": "features/memory/memory-manager.ts",
+      "component": "memory"
+    },
+    {
+      "id": "file:features/knowledge-graph/graph-manager.ts",
+      "type": "file",
+      "name": "graph-manager.ts",
+      "path": "features/knowledge-graph/graph-manager.ts",
+      "component": "knowledge-graph"
+    },
+    {
+      "id": "file:features/knowledge-graph/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/knowledge-graph/index.ts",
+      "component": "knowledge-graph"
+    },
+    {
+      "id": "component:knowledge-graph",
+      "type": "component",
+      "name": "knowledge-graph",
+      "path": "features/knowledge-graph"
+    },
+    {
+      "id": "file:features/dependency-analysis/dependency-analyzer.ts",
+      "type": "file",
+      "name": "dependency-analyzer.ts",
+      "path": "features/dependency-analysis/dependency-analyzer.ts",
+      "component": "dependency-analysis"
+    },
+    {
+      "id": "file:features/dependency-analysis/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/dependency-analysis/index.ts",
+      "component": "dependency-analysis"
+    },
+    {
+      "id": "component:dependency-analysis",
+      "type": "component",
+      "name": "dependency-analysis",
+      "path": "features/dependency-analysis"
+    },
+    {
+      "id": "file:features/code-quality/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "features/code-quality/index.ts",
+      "component": "code-quality"
+    },
+    {
+      "id": "component:code-quality",
+      "type": "component",
+      "name": "code-quality",
+      "path": "features/code-quality"
+    },
+    {
+      "id": "file:features/code-quality/quality-analyzer.ts",
+      "type": "file",
+      "name": "quality-analyzer.ts",
+      "path": "features/code-quality/quality-analyzer.ts",
+      "component": "code-quality"
+    },
+    {
+      "id": "file:validators/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "path": "validators/index.ts",
+      "component": "validators"
+    },
+    {
+      "id": "component:validators",
+      "type": "component",
+      "name": "validators",
+      "path": "validators"
+    },
+    {
+      "id": "doc:parameter-handler.md",
+      "type": "documentation",
+      "name": "parameter-handler",
+      "path": "parameter-handler.md"
+    },
+    {
+      "id": "doc:client-parameter-handling-spec.md",
+      "type": "documentation",
+      "name": "client-parameter-handling-spec",
+      "path": "client-parameter-handling-spec.md"
+    },
+    {
+      "id": "doc:error-handler.md",
+      "type": "documentation",
+      "name": "error-handler",
+      "path": "error-handler.md"
+    },
+    {
+      "id": "doc:session-store.md",
+      "type": "documentation",
+      "name": "session-store",
+      "path": "session-store.md"
+    },
+    {
+      "id": "doc:dev-tools-guide.md",
+      "type": "documentation",
+      "name": "dev-tools-guide",
+      "path": "dev-tools-guide.md"
+    },
+    {
+      "id": "doc:redis-integration.md",
+      "type": "documentation",
+      "name": "redis-integration",
+      "path": "redis-integration.md"
+    },
+    {
+      "id": "doc:MCP_MASTER_PLAN.md",
+      "type": "documentation",
+      "name": "MCP_MASTER_PLAN",
+      "path": "MCP_MASTER_PLAN.md"
+    },
+    {
+      "id": "doc:mcp-client-library-spec.md",
+      "type": "documentation",
+      "name": "mcp-client-library-spec",
+      "path": "mcp-client-library-spec.md"
+    },
+    {
+      "id": "doc:README.md",
+      "type": "documentation",
+      "name": "README",
+      "path": "README.md"
+    },
+    {
+      "id": "doc:refactoring-guidelines.md",
+      "type": "documentation",
+      "name": "refactoring-guidelines",
+      "path": "refactoring-guidelines.md"
+    },
+    {
+      "id": "doc:api-contract-verification.md",
+      "type": "documentation",
+      "name": "api-contract-verification",
+      "path": "api-contract-verification.md"
+    },
+    {
+      "id": "doc:archive/performance-baseline.md",
+      "type": "documentation",
+      "name": "performance-baseline",
+      "path": "archive/performance-baseline.md"
+    },
+    {
+      "id": "doc:archive/phase1-implementation.md",
+      "type": "documentation",
+      "name": "phase1-implementation",
+      "path": "archive/phase1-implementation.md"
+    },
+    {
+      "id": "doc:archive/mcp-client-roadmap.md",
+      "type": "documentation",
+      "name": "mcp-client-roadmap",
+      "path": "archive/mcp-client-roadmap.md"
+    },
+    {
+      "id": "doc:archive/immediate_actions.md",
+      "type": "documentation",
+      "name": "immediate_actions",
+      "path": "archive/immediate_actions.md"
+    },
+    {
+      "id": "doc:archive/development_roadmap.md",
+      "type": "documentation",
+      "name": "development_roadmap",
+      "path": "archive/development_roadmap.md"
+    },
+    {
+      "id": "doc:archive/redis-troubleshooting.md",
+      "type": "documentation",
+      "name": "redis-troubleshooting",
+      "path": "archive/redis-troubleshooting.md"
+    },
+    {
+      "id": "doc:archive/client-documentation.md",
+      "type": "documentation",
+      "name": "client-documentation",
+      "path": "archive/client-documentation.md"
+    },
+    {
+      "id": "doc:archive/phase1-foundations.md",
+      "type": "documentation",
+      "name": "phase1-foundations",
+      "path": "archive/phase1-foundations.md"
+    },
+    {
+      "id": "doc:archive/phase2-architecture.md",
+      "type": "documentation",
+      "name": "phase2-architecture",
+      "path": "archive/phase2-architecture.md"
+    },
+    {
+      "id": "doc:archive/README.md",
+      "type": "documentation",
+      "name": "README",
+      "path": "archive/README.md"
+    },
+    {
+      "id": "doc:archive/phase1-to-phase2-transition.md",
+      "type": "documentation",
+      "name": "phase1-to-phase2-transition",
+      "path": "archive/phase1-to-phase2-transition.md"
+    },
+    {
+      "id": "doc:archive/client-optimization-plan.md",
+      "type": "documentation",
+      "name": "client-optimization-plan",
+      "path": "archive/client-optimization-plan.md"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:server.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/stdio.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/sse.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:express\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/basic-analysis/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/code-metrics/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/dependency-analysis/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/basic-analysis/ide-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/code-quality/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/knowledge-graph/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/visualization/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/memory/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/socio-technical/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/multi-repo/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/evolution/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/session-manager/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server.ts",
+      "target": "file:./features/dev-tools/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server-main.ts",
+      "target": "file:./server/startServer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:registry",
+      "target": "file:registry/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:registry/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:registry/index.ts",
+      "target": "file:./tool-registry.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:registry/tool-registry.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolService.test.ts",
+      "target": "file:vitest';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolService.test.ts",
+      "target": "file:../state/services/toolService';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolService.test.ts",
+      "target": "file:../utils/responses';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolService.test.ts",
+      "target": "file:../state/machines/toolMachine';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/redisSessionStore.test.ts",
+      "target": "file:vitest\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/redisSessionStore.test.ts",
+      "target": "file:ioredis\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/redisSessionStore.test.ts",
+      "target": "file:../state/store/redisSessionStore\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/test-session-store.js",
+      "target": "file:../state/services/sessionStoreFactory.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolMachine.test.ts",
+      "target": "file:vitest';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolMachine.test.ts",
+      "target": "file:xstate';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolServiceNoTool.test.ts",
+      "target": "file:vitest';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolServiceNoTool.test.ts",
+      "target": "file:../state/services/toolService';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/toolServiceNoTool.test.ts",
+      "target": "file:../state/machines/toolMachine';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/statefulTool.test.ts",
+      "target": "file:vitest';",
+      "type": "imports"
+    },
+    {
+      "source": "file:tests/responses.test.ts",
+      "target": "file:vitest';",
+      "type": "imports"
+    },
+    {
+      "source": "component:cli",
+      "target": "file:client/cli/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:url';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/analyze.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/metrics.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/dependencies.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/insights.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/visualization.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/knowledge-graph.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/socio-technical.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/config.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/watch.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/ide.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./commands/quality.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/index.ts",
+      "target": "file:./utils/config.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/quality.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/visualization.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/knowledge-graph.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/ide.ts",
+      "target": "file:../utils/project-detector.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:inquirer';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/insights.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/socio-technical.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/dependencies.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/metrics.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/analyze.ts",
+      "target": "file:../utils/project-detector.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:../utils/mcp-client.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:../utils/formatters.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:../utils/project-detector.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/watch.ts",
+      "target": "file:../utils/config.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/config.ts",
+      "target": "file:commander';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/config.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/config.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/commands/config.ts",
+      "target": "file:../utils/config.js';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/mcp-client.ts",
+      "target": "file:@modelcontextprotocol/sdk/client/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/mcp-client.ts",
+      "target": "file:@modelcontextprotocol/sdk/client/stdio.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/mcp-client.ts",
+      "target": "file:ora';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/mcp-client.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/mcp-client.ts",
+      "target": "file:child_process';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/project-detector.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/project-detector.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/project-detector.ts",
+      "target": "file:child_process';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/formatters.ts",
+      "target": "file:chalk';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/formatters.ts",
+      "target": "file:figures';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/config.ts",
+      "target": "file:fs';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/config.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:client/cli/utils/config.ts",
+      "target": "file:os';",
+      "type": "imports"
+    },
+    {
+      "source": "file:schemas/knowledge-graph-schema.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:responses",
+      "target": "file:responses/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:types/responses.ts",
+      "target": "file:zod';",
+      "type": "imports"
+    },
+    {
+      "source": "component:types",
+      "target": "file:types/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/stdio.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/sse.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:express\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/basic-analysis/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/code-metrics/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/dependency-analysis/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/basic-analysis/ide-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/code-quality/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/knowledge-graph/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/visualization/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/memory/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/socio-technical/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/multi-repo/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/evolution/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/session-manager/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../features/dev-tools/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:./registerRedisBackedServices.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/startServer.ts",
+      "target": "file:../utils/tool-discovery.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/registerRedisBackedServices.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/registerRedisBackedServices.ts",
+      "target": "file:../state/services/redisToolExecutionService.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/registerRedisBackedServices.ts",
+      "target": "file:../state/store/redisCacheStore.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/registerRedisBackedServices.ts",
+      "target": "file:../state/services/sessionStoreFactory.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:server/registerRedisBackedServices.ts",
+      "target": "file:../state/services/types.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tools/interfaces.ts",
+      "target": "file:../state/interfaces/toolExecutionService\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "target": "file:../interfaces\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
+      "target": "file:../../state/interfaces/toolExecutionService\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/machines/toolMachine.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/machines/toolMachine.ts",
+      "target": "file:xstate\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/machines/toolMachine.ts",
+      "target": "file:../services/toolService.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/memorySessionStore.ts",
+      "target": "file:./types.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/memorySessionStore.ts",
+      "target": "file:uuid\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/redisSessionStore.ts",
+      "target": "file:./types.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/redisSessionStore.ts",
+      "target": "file:uuid\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/redisSessionStore.ts",
+      "target": "file:../utils/logger.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/sessionStoreFactory.ts",
+      "target": "file:./types.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/sessionStoreFactory.ts",
+      "target": "file:./redisSessionStore.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/sessionStoreFactory.ts",
+      "target": "file:./memorySessionStore.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/services/toolService.ts",
+      "target": "file:xstate\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/helpers/statefulTool.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/helpers/statefulTool.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/helpers/statefulTool.ts",
+      "target": "file:../services/toolService.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/store/redisSessionStore.ts",
+      "target": "file:ioredis\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/store/redisSessionStore.ts",
+      "target": "file:uuid\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/store/redisCacheStore.ts",
+      "target": "file:ioredis\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/store/redisCacheStore.ts",
+      "target": "file:crypto\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:state/interfaces/toolExecutionService.ts",
+      "target": "file:../../tools/interfaces\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:child_process\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:crypto\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:os\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:./database.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/repository-analyzer.ts",
+      "target": "file:sqlite\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/responses.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/tool-discovery.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/tool-discovery.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/database.ts",
+      "target": "file:sqlite3';",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/database.ts",
+      "target": "file:sqlite';",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/database.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/database.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/database.ts",
+      "target": "file:./config.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/config.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:utils/config.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/evolution/evolution-planner.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/evolution/evolution-planner.ts",
+      "target": "file:../basic-analysis/analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:evolution",
+      "target": "file:features/evolution/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/evolution/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/evolution/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/evolution/index.ts",
+      "target": "file:./evolution-planner.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/visualizer.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/visualizer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/visualizer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/visualizer.ts",
+      "target": "file:../basic-analysis/analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/visualizer.ts",
+      "target": "file:../../types/knowledge-graph.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:visualization",
+      "target": "file:features/visualization/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/visualization/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/visualization/index.ts",
+      "target": "file:./visualizer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:session-manager",
+      "target": "file:features/session-manager/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/session-manager/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/session-manager/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:socio-technical",
+      "target": "file:features/socio-technical/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/socio-technical/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/index.ts",
+      "target": "file:./socio-technical-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "target": "file:child_process\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "target": "file:../knowledge-graph/graph-manager.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/socio-technical/socio-technical-analyzer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:code-metrics",
+      "target": "file:features/code-metrics/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/code-metrics/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-metrics/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-metrics/index.ts",
+      "target": "file:./metrics-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-metrics/metrics-analyzer.ts",
+      "target": "file:fs/promises';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-metrics/metrics-analyzer.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "component:multi-repo",
+      "target": "file:features/multi-repo/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/multi-repo/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/index.ts",
+      "target": "file:./multi-repo-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:../../features/basic-analysis/analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:../knowledge-graph/graph-manager.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:../../types/knowledge-graph.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/multi-repo/multi-repo-analyzer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:dev-tools",
+      "target": "file:features/dev-tools/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/dev-tools/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dev-tools/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dev-tools/index.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dev-tools/index.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dev-tools/index.ts",
+      "target": "file:child_process\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/ide-analyzer.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/ide-analyzer.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/ide-analyzer.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "component:basic-analysis",
+      "target": "file:features/basic-analysis/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:./analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/index.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:uuid\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/basic-analysis/analyzer.ts",
+      "target": "file:../../types/responses.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:memory",
+      "target": "file:features/memory/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/memory/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/memory/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/memory/memory-manager.ts",
+      "target": "file:../../utils/database.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/memory/memory-manager.ts",
+      "target": "file:../../types/memory.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/memory/memory-manager.ts",
+      "target": "file:sqlite\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:../../utils/database.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:../../utils/repository-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:fs\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:path\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:uuid\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:../basic-analysis/analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:../../types/knowledge-graph.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/graph-manager.ts",
+      "target": "file:sqlite\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:knowledge-graph",
+      "target": "file:features/knowledge-graph/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/knowledge-graph/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/knowledge-graph/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/dependency-analyzer.ts",
+      "target": "file:fs/promises';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/dependency-analyzer.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/dependency-analyzer.ts",
+      "target": "file:child_process';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/dependency-analyzer.ts",
+      "target": "file:util';",
+      "type": "imports"
+    },
+    {
+      "source": "component:dependency-analysis",
+      "target": "file:features/dependency-analysis/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/dependency-analysis/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/index.ts",
+      "target": "file:./dependency-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/dependency-analysis/index.ts",
+      "target": "file:../../registry/index.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "component:code-quality",
+      "target": "file:features/code-quality/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:features/code-quality/index.ts",
+      "target": "file:@modelcontextprotocol/sdk/server/mcp.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/index.ts",
+      "target": "file:zod\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/index.ts",
+      "target": "file:./quality-analyzer.js\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/quality-analyzer.ts",
+      "target": "file:fs/promises';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/quality-analyzer.ts",
+      "target": "file:path';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/quality-analyzer.ts",
+      "target": "file:glob';",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/code-quality/quality-analyzer.ts",
+      "target": "file:../code-metrics/metrics-analyzer.js';",
+      "type": "imports"
+    },
+    {
+      "source": "component:validators",
+      "target": "file:validators/index.ts",
+      "type": "contains"
+    },
+    {
+      "source": "file:validators/index.ts",
+      "target": "file:zod';",
+      "type": "imports"
+    },
+    {
+      "source": "doc:redis-integration.md",
+      "target": "doc:./session-store.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:phase1-foundations.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:phase1-implementation.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:api-contract-verification.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:phase1-to-phase2-transition.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:phase2-architecture.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:performance-baseline.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:README.md",
+      "target": "doc:redis-troubleshooting.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:refactoring-guidelines.md",
+      "target": "doc:tools/complexity_analyzer/README.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:archive/README.md",
+      "target": "doc:../MCP_MASTER_PLAN.md",
+      "type": "references"
+    },
+    {
+      "source": "doc:archive/README.md",
+      "target": "doc:../MCP_MASTER_PLAN.md",
+      "type": "references"
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "generated_at": "2025-03-26T13:29:33.962047",
+    "base_directory": "/home/jose/Dev/MCP_CodeAnalysis"
+  }
+}

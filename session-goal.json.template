@@ -2,45 +2,25 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Add edge case test coverage for complexity analyzer",
+      "description": "Complete the complexity analyzer implementation",
       "priority": "high",
       "status": "in_progress",
       "dependencies": [],
-      "completion_percentage": 0,
-      "details": {
-        "target_functions": [
-          "analyze_directory",
-          "calculate_cyclomatic_complexity",
-          "calculate_cognitive_complexity",
-          "calculate_halstead_metrics"
-        ],
-        "current_metrics": {
-          "total_cyclomatic_complexity": 110,
-          "total_cognitive_complexity": 127,
-          "high_complexity_functions": 4
-        }
-      }
+      "completion_percentage": 0
     },
     {
       "id": "goal-2",
-      "description": "Start implementing property-based tests",
+      "description": "Add comprehensive test coverage",
       "priority": "high",
       "status": "pending",
       "dependencies": ["goal-1"],
-      "completion_percentage": 0,
-      "details": {
-        "target_functions": [
-          "analyze_content",
-          "process_file",
-          "accumulate_metrics"
-        ]
-      }
+      "completion_percentage": 0
     }
   ],
   "session_metadata": {
     "start_date": "2024-03-25",
     "expected_duration": "2-3 hours",
-    "focus_area": "Complexity Analyzer Testing and Quality"
+    "focus_area": "Complexity Analyzer Implementation"
   },
   "goals": [
     {
@@ -48,61 +28,28 @@
       "description": "Add edge case test coverage for complexity analyzer",
       "priority": "high",
       "estimated_time": "45 minutes",
-      "status": "not-started",
-      "details": {
-        "test_cases": [
-          "Empty file analysis",
-          "File with only comments",
-          "File with complex nested structures",
-          "File with Unicode characters",
-          "File with maximum allowed complexity"
-        ]
-      }
+      "status": "not-started"
     },
     {
       "id": "goal-2",
       "description": "Start implementing property-based tests",
       "priority": "high",
       "estimated_time": "60 minutes",
-      "status": "not-started",
-      "details": {
-        "test_properties": [
-          "Complexity metrics should be non-negative",
-          "Cognitive complexity should be >= cyclomatic complexity",
-          "Halstead metrics should be consistent with code length",
-          "Analysis should be idempotent"
-        ]
-      }
+      "status": "not-started"
     },
     {
       "id": "goal-3",
       "description": "Update main project documentation to reference complexity analyzer",
       "priority": "medium",
       "estimated_time": "30 minutes",
-      "status": "not-started",
-      "details": {
-        "sections_to_update": [
-          "Installation guide",
-          "Usage examples",
-          "Configuration options",
-          "Output format documentation"
-        ]
-      }
+      "status": "not-started"
     },
     {
-      "id": "goal-4",
+      "id": "goal-4", 
       "description": "Add refactoring guidelines for high-complexity functions",
       "priority": "medium",
       "estimated_time": "45 minutes",
-      "status": "not-started",
-      "details": {
-        "target_functions": [
-          "analyze_directory (CC: 18)",
-          "calculate_cyclomatic_complexity (CC: 15)",
-          "calculate_cognitive_complexity (CC: 17)",
-          "calculate_halstead_metrics (CC: 17)"
-        ]
-      }
+      "status": "not-started"
     }
   ],
   "context": {

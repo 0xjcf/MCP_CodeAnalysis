@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 println!("Metrics:");
                 print_metrics(&func.total_metrics);
                 if func.exceeds_threshold {
-                    println!("⚠️ Exceeds complexity threshold!");
+                    println!("[WARNING] Exceeds complexity threshold!");
                 }
             }
         }

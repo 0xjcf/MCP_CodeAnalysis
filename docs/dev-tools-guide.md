@@ -6,6 +6,86 @@ This guide explains how to leverage the MCP server's developer tools to enhance 
 
 The Developer Tools feature provides specialized tools for developers working with this codebase. These tools are designed to enhance developer productivity by providing quick access to common tasks, code insights, and documentation.
 
+## AI Context Generation
+
+The AI Context Client (`tools/ai-context-client.js`) provides a unified interface for generating rich context for AI interactions. It supports both HTTP and MCP protocols, and includes code analysis and metrics.
+
+### Usage
+
+```bash
+node tools/ai-context-client.js --task="Your task description" [options]
+```
+
+### Options
+
+- `--task, -t`: Task description (required)
+- `--files, -f`: File patterns to analyze (e.g., "src/\*_/_.ts")
+- `--search, -s`: Search term to find in code
+- `--output, -o`: Output file path (default: ai-context.json)
+- `--session-id, -i`: Session ID for context tracking
+- `--protocol, -p`: Protocol to use (mcp or http, default: mcp)
+- `--server, -S`: Server URL for HTTP protocol
+- `--metrics, -m`: Metrics to calculate (default: complexity,maintainability)
+- `--verbose, -v`: Enable verbose output
+
+### Example
+
+```bash
+# Generate context for implementing a new feature
+node tools/ai-context-client.js \
+  --task="Implement user authentication" \
+  --files="src/auth/**/*.ts" \
+  --search="login" \
+  --metrics="complexity,maintainability,readability"
+```
+
+### Output Format
+
+The generated context includes:
+
+```json
+{
+  "task": "Task description",
+  "timestamp": "ISO timestamp",
+  "sessionId": "unique-session-id",
+  "projectInfo": {
+    "name": "Project name",
+    "version": "Project version",
+    "dependencies": {}
+  },
+  "codeSearchResults": {
+    "resultsCount": 10,
+    "matches": []
+  },
+  "relevantFiles": [
+    {
+      "path": "file path",
+      "totalLines": 100,
+      "content": "file content"
+    }
+  ],
+  "folderStructure": {
+    "count": 50,
+    "directories": []
+  },
+  "metrics": {
+    "file-path": {
+      "complexity": {
+        "cyclomatic": 5,
+        "cognitive": 10,
+        "maintainability": 85
+      },
+      "quality": {
+        "readability": 90,
+        "maintainability": 85,
+        "complexity": 5,
+        "issues": []
+      }
+    }
+  }
+}
+```
+
 ## Available Tools
 
 ### `search-code`
@@ -60,6 +140,24 @@ const fileContent = await client.executeTool("get-file", {
 });
 ```
 
+### `calculate-metrics`
+
+Calculate code metrics for a file.
+
+**Parameters:**
+
+- `filePath` (string): Path to the file
+- `metrics` (array): Metrics to calculate (complexity, maintainability, readability)
+
+**Example:**
+
+```javascript
+const metrics = await client.executeTool("calculate-metrics", {
+  filePath: "src/features/auth.ts",
+  metrics: ["complexity", "maintainability"],
+});
+```
+
 ### `folder-structure`
 
 Get the directory structure of a specified folder.
@@ -103,28 +201,57 @@ Example session creation:
 
 ```javascript
 const session = await client.executeTool("create-session", {
-  sessionId: "feature-login-dev",
+  sessionId: "dev-" + Date.now(),
   metadata: {
-    purpose: "Login feature development",
+    purpose: "Development assistance",
     features: ["dev-tools"],
   },
 });
 ```
 
-## Integration Example
+### Code Quality Analysis
 
-See the complete example in `examples/dev-tools-client.js` which demonstrates how to:
+The AI Context Client includes code quality metrics that help AI assistants understand:
 
-1. Connect to the MCP server
-2. Execute various developer tools
-3. Create and maintain development sessions
+- Code complexity (cyclomatic and cognitive)
+- Maintainability scores
+- Readability metrics
+- Potential issues and improvements
+
+Use these metrics to guide AI suggestions and improvements:
+
+```bash
+# Generate context with detailed metrics
+node tools/ai-context-client.js \
+  --task="Review and improve code quality" \
+  --files="src/**/*.ts" \
+  --metrics="complexity,maintainability,readability"
+```
 
 ## Best Practices
 
-1. **Targeted Searches**: When using `search-code`, be specific with your queries to avoid overwhelming results
-2. **Session Naming**: Use descriptive session IDs that relate to specific features or tasks
-3. **File Access**: Use line ranges when accessing large files to focus on relevant sections
-4. **Context Management**: Create separate sessions for different development tasks
+1. **Session Management**
+
+   - Create new sessions for distinct tasks
+   - Use meaningful session IDs
+   - Include relevant metadata
+
+2. **File Selection**
+
+   - Use specific file patterns to focus analysis
+   - Include related files for better context
+   - Consider excluding generated files
+
+3. **Metrics Usage**
+
+   - Start with basic metrics for quick analysis
+   - Add detailed metrics for deeper insights
+   - Use metrics to guide improvements
+
+4. **Context Generation**
+   - Keep context focused and relevant
+   - Include necessary project information
+   - Use search terms to find related code
 
 ## Extending the Tools
 
