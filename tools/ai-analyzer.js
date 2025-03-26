@@ -1,20 +1,20 @@
 #!/usr/bin/env node
 
 /**
- * AI Analyzer Client
+ * AI Context Generator
  * 
- * Start MCP server and run analysis for AI context generation
+ * Generates ai-context.json by analyzing the codebase
  */
 
-import http from 'http';
+import fs from 'fs';
+import path from 'path';
 import { execSync } from 'child_process';
-import { spawn } from 'child_process';
 import MCPParameterHandler from './lib/parameter-handler.js';
 
 // Define command parameters
 const aiAnalyzerCommand = {
   name: 'ai-analyzer',
-  description: 'Start MCP server and run analysis for AI context generation',
+  description: 'Generate AI context by analyzing the codebase',
   parameters: [
     {
       name: 'task',
@@ -27,13 +27,8 @@ const aiAnalyzerCommand = {
       name: 'files',
       alias: 'f',
       description: 'Files pattern to analyze (e.g., "**/*.js")',
-      type: 'string'
-    },
-    {
-      name: 'search',
-      alias: 's',
-      description: 'Search term to find in files',
-      type: 'string'
+      type: 'string',
+      default: 'src/**/*.ts'
     },
     {
       name: 'output',
@@ -41,27 +36,6 @@ const aiAnalyzerCommand = {
       description: 'Output file path',
       type: 'string',
       default: 'ai-context.json'
-    },
-    {
-      name: 'server',
-      alias: 'S',
-      description: 'MCP server URL',
-      type: 'string',
-      default: 'http://localhost:3000'
-    },
-    {
-      name: 'port',
-      alias: 'p',
-      description: 'Override port in server URL',
-      type: 'number',
-      default: 3000
-    },
-    {
-      name: 'keep-server',
-      alias: 'k',
-      description: 'Keep the server running after analysis',
-      type: 'boolean',
-      default: false
     },
     {
       name: 'verbose',
@@ -86,90 +60,67 @@ if (hasHelpFlag) {
 // Parse actual parameters
 const params = paramHandler.parse(process.argv.slice(2));
 
-// Server process reference
-let serverProcess = null;
-
 /**
- * Check if MCP server is running
- * @returns {Promise<boolean>} True if server is running
+ * Analyze codebase and generate AI context
+ * @returns {Promise<Object>} AI context object
  */
-async function checkServer() {
-  return new Promise((resolve) => {
-    const serverUrl = new URL(params.server);
-    
-    // Override port if specified
-    if (params.port) {
-      serverUrl.port = params.port.toString();
+async function generateAIContext() {
+  const context = {
+    metadata: {
+      generated_at: new Date().toISOString(),
+      task: params.task,
+      files_analyzed: params.files
+    },
+    codebase_analysis: {
+      structure: {},
+      dependencies: {},
+      patterns: {}
+    },
+    project_context: {
+      goals: {},
+      constraints: {},
+      requirements: {}
     }
-    
-    if (params.verbose) {
-      console.log(`Checking if server is running at ${serverUrl.toString()}`);
-    }
-    
-    const req = http.get(serverUrl.toString(), (res) => {
-      if (res.statusCode === 200) {
-        if (params.verbose) {
-          console.log('Server is already running');
-        }
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-      res.resume();
-    });
-    
-    req.on('error', () => {
-      if (params.verbose) {
-        console.log('Server is not running');
-      }
-      resolve(false);
-    });
-    
-    req.setTimeout(1000, () => {
-      req.destroy();
-      resolve(false);
-    });
-  });
-}
+  };
 
-/**
- * Start MCP server
- * @returns {Promise<boolean>} True if server started successfully
- */
-async function startServer() {
-  return new Promise((resolve) => {
-    console.log('Starting MCP server...');
-    
-    const startArgs = ['start'];
-    if (params.verbose) {
-      startArgs.push('--verbose');
+  try {
+    // Read session goals if available
+    if (fs.existsSync('session-goal.json')) {
+      const sessionGoals = JSON.parse(fs.readFileSync('session-goal.json', 'utf8'));
+      context.project_context.goals = sessionGoals;
     }
-    
-    serverProcess = spawn('npm', startArgs, {
-      stdio: params.verbose ? 'inherit' : 'ignore',
-      detached: false
-    });
-    
-    // Give the server some time to start
-    setTimeout(() => {
-      checkServer().then(resolve);
-    }, 2000);
-  });
-}
 
-/**
- * Stop MCP server if it was started by this script
- */
-function stopServer() {
-  if (serverProcess && !params['keep-server']) {
-    console.log('Stopping MCP server...');
-    // Kill process and all child processes
-    if (process.platform === 'win32') {
-      execSync(`taskkill /pid ${serverProcess.pid} /T /F`);
-    } else {
-      process.kill(-serverProcess.pid);
+    // Read complexity analysis if available
+    if (fs.existsSync('complexity_analysis.json')) {
+      const complexityAnalysis = JSON.parse(fs.readFileSync('complexity_analysis.json', 'utf8'));
+      context.codebase_analysis.structure.complexity = complexityAnalysis;
     }
-    serverProcess = null;
+
+    // Read knowledge graph if available
+    if (fs.existsSync('knowledge_graph.json')) {
+      const knowledgeGraph = JSON.parse(fs.readFileSync('knowledge_graph.json', 'utf8'));
+      context.codebase_analysis.patterns.knowledge_graph = knowledgeGraph;
+    }
+
+    // Read monetization analysis if available
+    if (fs.existsSync('monetization_analysis.json')) {
+      const monetizationAnalysis = JSON.parse(fs.readFileSync('monetization_analysis.json', 'utf8'));
+      context.project_context.requirements.monetization = monetizationAnalysis;
+    }
+
+    // Analyze dependencies
+    if (fs.existsSync('package.json')) {
+      const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+      context.codebase_analysis.dependencies = {
+        dependencies: packageJson.dependencies || {},
+        devDependencies: packageJson.devDependencies || {}
+      };
+    }
+
+    return context;
+  } catch (error) {
+    console.error('Error generating AI context:', error);
+    throw error;
   }
 }
 
@@ -184,81 +135,24 @@ async function main() {
       console.log(paramHandler.getHelpText());
       return 1;
     }
-    
-    // Check if server is running
-    const serverRunning = await checkServer();
-    
-    // Start server if needed
-    let serverStartedByUs = false;
-    if (!serverRunning) {
-      serverStartedByUs = await startServer();
-      if (!serverStartedByUs) {
-        console.error('Error: Failed to start MCP server');
-        return 1;
-      }
-    }
-    
-    // Construct command to run the analysis
-    let analysisCommand = `node tools/http-client.js --task "${params.task}" --server "${params.server}"`;
-    
-    if (params.port) {
-      analysisCommand += ` --port ${params.port}`;
-    }
-    
-    if (params.files) {
-      analysisCommand += ` --files "${params.files}"`;
-    }
-    
-    if (params.search) {
-      analysisCommand += ` --search "${params.search}"`;
-    }
-    
-    if (params.output) {
-      analysisCommand += ` --output "${params.output}"`;
-    }
-    
-    if (params.verbose) {
-      analysisCommand += ' --verbose';
-      console.log(`Running analysis command: ${analysisCommand}`);
-    }
-    
-    // Run the analysis
-    console.log(`Running analysis for task: ${params.task}`);
-    try {
-      execSync(analysisCommand, { stdio: 'inherit' });
-      console.log(`✅ Analysis complete. Results saved to ${params.output}`);
-    } catch (error) {
-      console.error(`❌ Analysis failed: ${error.message}`);
-      if (params.verbose) {
-        console.error(error);
-      }
-      return 1;
-    }
-    
+
+    // Generate AI context
+    console.log(`Generating AI context for task: ${params.task}`);
+    const context = await generateAIContext();
+
+    // Write to output file
+    fs.writeFileSync(params.output, JSON.stringify(context, null, 2));
+    console.log(`✅ AI context generated and saved to ${params.output}`);
+
     return 0;
   } catch (error) {
-    console.error(`Unhandled error: ${error.message}`);
+    console.error(`❌ Failed to generate AI context: ${error.message}`);
     if (params.verbose) {
       console.error(error.stack);
     }
     return 1;
-  } finally {
-    // Stop server if we started it and keep-server is not set
-    stopServer();
   }
 }
 
-// Handle process exit
-process.on('exit', stopServer);
-process.on('SIGINT', () => {
-  stopServer();
-  process.exit(0);
-});
-
-// Run the main function
-main().then((code) => {
-  process.exit(code);
-}).catch((error) => {
-  console.error(`Fatal error: ${error.message}`);
-  process.exit(1);
-}); 
+// Run main function
+main().then(process.exit); 

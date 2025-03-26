@@ -109,13 +109,13 @@ cd tools/complexity_analyzer
 cargo build --release
 
 # Basic usage
-cargo run --release -- -p <directory> -f <format> -t <number>
+cargo run -- -p <directory> -f <format> -t <number>
 
 # Example: Analyze entire src directory
-cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
 
 # Example: Analyze specific directory with text output
-cargo run --release -- -p ../../src/state -f text -o ../../state_complexity.txt -t 15
+cargo run -- -p ../../src/state -f text -o ../../state_complexity.txt -t 15
 
 # Get help
 cargo run -- --help
@@ -150,7 +150,7 @@ To effectively manage your development session:
 
    # Run incremental complexity analysis
    cd tools/complexity_analyzer
-   cargo run --release -- -p ../../src/component-name -f json \
+   cargo run -- -p ../../src/component-name -f json \
        -o ../../complexity_component.json -t 10
    cd ../..
    ```
@@ -160,7 +160,7 @@ To effectively manage your development session:
    ```bash
    # Run final complexity analysis
    cd tools/complexity_analyzer
-   cargo run --release -- -p ../../src -f json \
+   cargo run -- -p ../../src -f json \
        -o ../../complexity_analysis_final.json -t 10
    cd ../..
 

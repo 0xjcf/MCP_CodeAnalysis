@@ -712,6 +712,12 @@
       "path": "MCP_MASTER_PLAN.md"
     },
     {
+      "id": "doc:complexity-analyzer.md",
+      "type": "documentation",
+      "name": "complexity-analyzer",
+      "path": "complexity-analyzer.md"
+    },
+    {
       "id": "doc:mcp-client-library-spec.md",
       "type": "documentation",
       "name": "mcp-client-library-spec",
@@ -2420,6 +2426,11 @@
       "type": "references"
     },
     {
+      "source": "doc:complexity-analyzer.md",
+      "target": "doc:../CONTRIBUTING.md",
+      "type": "references"
+    },
+    {
       "source": "doc:README.md",
       "target": "doc:phase1-foundations.md",
       "type": "references"
@@ -2472,7 +2483,7 @@
   ],
   "metadata": {
     "version": "1.0",
-    "generated_at": "2025-03-26T14:37:49.585300",
+    "generated_at": "2025-03-26T16:09:09.877717",
     "base_directory": "/home/jose/Dev/MCP_CodeAnalysis"
   }
 }

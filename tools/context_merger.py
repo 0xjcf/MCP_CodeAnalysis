@@ -3,13 +3,14 @@
 """Context Merger
 
 This script merges multiple context sources (session context, knowledge graph,
-monetization analysis) into a comprehensive session continuation prompt.
+monetization analysis, AI context) into a comprehensive session continuation prompt.
 
 Usage:
     python context_merger.py \
         --session-context end-of-session.json \
         --knowledge-graph knowledge_graph.json \
         --monetization-status monetization_analysis.json \
+        --ai-context ai-context.json \
         --output session_prompt.md
 """
 
@@ -88,6 +89,36 @@ class ContextMerger:
                         features[tier][feature_name].append(feature)
         
         return features
+
+    def extract_ai_context(self, ai_context: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract relevant information from AI context."""
+        context = {
+            'codebase_analysis': {},
+            'project_context': {}
+        }
+        
+        if not ai_context or not isinstance(ai_context, dict):
+            return context
+            
+        # Extract codebase analysis
+        codebase = ai_context.get('codebase_analysis', {})
+        if codebase:
+            context['codebase_analysis'] = {
+                'structure': codebase.get('structure', {}),
+                'dependencies': codebase.get('dependencies', {}),
+                'patterns': codebase.get('patterns', {})
+            }
+            
+        # Extract project context
+        project = ai_context.get('project_context', {})
+        if project:
+            context['project_context'] = {
+                'goals': project.get('goals', {}),
+                'constraints': project.get('constraints', {}),
+                'requirements': project.get('requirements', {})
+            }
+            
+        return context
     
     def format_development_status(self, session_data: Dict[str, Any]) -> str:
         """Format development status section."""
@@ -125,10 +156,52 @@ class ContextMerger:
         
         return '\n'.join(sections)
     
+    def format_codebase_analysis(self, analysis: Dict[str, Any]) -> str:
+        """Format codebase analysis section."""
+        sections = []
+        
+        # Format structure analysis
+        structure = analysis.get('structure', {})
+        if structure:
+            sections.append("### Structure Analysis")
+            if 'complexity' in structure:
+                sections.append("\n#### Complexity Metrics")
+                complexity = structure['complexity']
+                if isinstance(complexity, dict):
+                    for metric, value in complexity.items():
+                        sections.append(f"- {metric}: {value}")
+            
+        # Format dependencies
+        deps = analysis.get('dependencies', {})
+        if deps:
+            sections.append("\n### Dependencies")
+            if 'dependencies' in deps:
+                sections.append("\n#### Runtime Dependencies")
+                for dep, version in deps['dependencies'].items():
+                    sections.append(f"- {dep}: {version}")
+            if 'devDependencies' in deps:
+                sections.append("\n#### Development Dependencies")
+                for dep, version in deps['devDependencies'].items():
+                    sections.append(f"- {dep}: {version}")
+            
+        # Format patterns
+        patterns = analysis.get('patterns', {})
+        if patterns:
+            sections.append("\n### Code Patterns")
+            if 'knowledge_graph' in patterns:
+                sections.append("\n#### Knowledge Graph")
+                kg = patterns['knowledge_graph']
+                if isinstance(kg, dict):
+                    for key, value in kg.items():
+                        sections.append(f"- {key}: {value}")
+        
+        return '\n'.join(sections)
+    
     def generate_prompt(self, 
                        session_context: Dict[str, Any],
                        knowledge_context: Dict[str, Any],
-                       monetization_features: Dict[str, Dict[str, List[Dict[str, Any]]]]) -> str:
+                       monetization_features: Dict[str, Dict[str, List[Dict[str, Any]]]],
+                       ai_context: Dict[str, Any]) -> str:
         """Generate the session continuation prompt."""
         try:
             with open(self.template_path, 'r', encoding='utf-8') as f:
@@ -172,6 +245,9 @@ class ContextMerger:
         development_status = self.format_development_status(session_context)
         documentation_status = self.format_documentation_status(session_context)
         
+        # Format codebase analysis
+        codebase_analysis = self.format_codebase_analysis(ai_context.get('codebase_analysis', {}))
+        
         # Get active component info, handling both singular and plural formats
         technical_context = session_context.get('technical_context', {})
         active_component = None
@@ -202,7 +278,8 @@ class ContextMerger:
             knowledge_graph_context='\n'.join(knowledge_section),
             monetization_status='\n'.join(monetization_section),
             development_status=development_status,
-            documentation_status=documentation_status
+            documentation_status=documentation_status,
+            codebase_analysis=codebase_analysis
         )
         
         return prompt
@@ -227,6 +304,9 @@ Currently working on:
 ## Technical Context
 {knowledge_graph_context}
 
+## Codebase Analysis
+{codebase_analysis}
+
 ## Development Status
 {development_status}
 
@@ -243,65 +323,46 @@ Please help me continue development, taking into account the previous session's 
                           session_context_path: str,
                           knowledge_graph_path: str,
                           monetization_status_path: str,
+                          ai_context_path: str,
                           output_path: str) -> bool:
         """Merge contexts and generate the prompt file."""
         # Load data
         session_data = self.load_json_file(session_context_path)
         graph_data = self.load_json_file(knowledge_graph_path)
         monetization_data = self.load_json_file(monetization_status_path)
+        ai_context_data = self.load_json_file(ai_context_path)
         
-        if not session_data:
-            print("Error: Session context is required", file=sys.stderr)
-            return False
-        
-        # Get active component info, handling both singular and plural formats
-        technical_context = session_data.get('technical_context', {})
-        active_component = None
-        
-        # Try plural format first
-        if 'active_components' in technical_context and technical_context['active_components']:
-            active_component = technical_context['active_components'][0]
-        # Fall back to singular format
-        elif 'active_component' in technical_context:
-            active_component = technical_context['active_component']
-        
-        if not active_component:
-            print("Warning: No active component found in technical context", file=sys.stderr)
-            active_component = {
-                'name': 'Unknown',
-                'status': 'Unknown',
-                'completion_percentage': 0
-            }
-        
-        # Extract relevant context
-        knowledge_context = self.extract_knowledge_graph_context(graph_data, active_component['name'])
+        # Extract contexts
+        knowledge_context = self.extract_knowledge_graph_context(graph_data, session_data.get('technical_context', {}).get('active_component', ''))
         monetization_features = self.extract_monetization_features(monetization_data)
+        ai_context = self.extract_ai_context(ai_context_data)
         
         # Generate prompt
         prompt = self.generate_prompt(
             session_data,
             knowledge_context,
-            monetization_features
+            monetization_features,
+            ai_context
         )
         
-        # Save prompt
+        # Write to output file
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(prompt)
-            if self.verbose:
-                print(f"Prompt saved to {output_path}")
             return True
         except Exception as e:
-            print(f"Error saving prompt to {output_path}: {e}", file=sys.stderr)
+            print(f"Error writing prompt to {output_path}: {e}", file=sys.stderr)
             return False
 
 def main():
-    parser = argparse.ArgumentParser(description="Merge context sources into a session continuation prompt")
-    parser.add_argument('--session-context', required=True, help="Path to end-of-session.json")
-    parser.add_argument('--knowledge-graph', required=True, help="Path to knowledge_graph.json")
-    parser.add_argument('--monetization-status', required=True, help="Path to monetization_analysis.json")
-    parser.add_argument('--output', required=True, help="Output path for session prompt")
-    parser.add_argument('--verbose', action='store_true', help="Enable verbose output")
+    """Main entry point."""
+    parser = argparse.ArgumentParser(description='Merge multiple context sources into a session continuation prompt.')
+    parser.add_argument('--session-context', required=True, help='Path to session context JSON file')
+    parser.add_argument('--knowledge-graph', required=True, help='Path to knowledge graph JSON file')
+    parser.add_argument('--monetization-status', required=True, help='Path to monetization status JSON file')
+    parser.add_argument('--ai-context', required=True, help='Path to AI context JSON file')
+    parser.add_argument('--output', required=True, help='Path to output prompt file')
+    parser.add_argument('--verbose', action='store_true', help='Enable verbose output')
     
     args = parser.parse_args()
     
@@ -310,10 +371,15 @@ def main():
         args.session_context,
         args.knowledge_graph,
         args.monetization_status,
+        args.ai_context,
         args.output
     )
     
-    sys.exit(0 if success else 1)
+    if success:
+        print(f"Successfully generated prompt at {args.output}")
+    else:
+        print("Failed to generate prompt", file=sys.stderr)
+        sys.exit(1)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main() 

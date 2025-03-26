@@ -112,7 +112,7 @@ cd tools/complexity_analyzer
 cargo build --release
 
 # Run analysis
-cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
 ```
 
 ## Development

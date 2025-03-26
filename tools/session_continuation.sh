@@ -51,6 +51,11 @@ check_dependencies() {
         handle_error "Cargo is not installed. Please install Rust and Cargo first."
     fi
     
+    # Check for Node.js
+    if ! command -v node &> /dev/null; then
+        handle_error "Node.js is not installed. Please install Node.js first."
+    fi
+    
     # Check for required Python packages
     if ! python3 -c "import json" 2>/dev/null; then
         handle_error "Python json module is not available."
@@ -128,13 +133,22 @@ else
     log "Monetization analysis tool not found, skipping..."
 fi
 
-# 5. Merge contexts
+# 5. Run AI analyzer to update ai-context.json
+log "Running AI analyzer..."
+node tools/ai-analyzer.js \
+    --task "Update AI context" \
+    --files "src/**/*.ts" \
+    --output ai-context.json \
+    --verbose || handle_error "Failed to run AI analyzer"
+
+# 6. Merge contexts
 if [ -f tools/context_merger.py ]; then
     log "Merging contexts..."
     python3 tools/context_merger.py \
         --session-context end-of-session.json \
         --knowledge-graph knowledge_graph.json \
         --monetization-status monetization_analysis.json \
+        --ai-context ai-context.json \
         --output session_prompt.md || handle_error "Failed to merge contexts"
 else
     log "Context merger not found, skipping..."
