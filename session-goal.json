@@ -22,6 +22,51 @@
           "Configure Vitest for each package",
           "Update build and test scripts"
         ],
+        "guard_rails": {
+          "package_naming": {
+            "scope": "@mcp",
+            "naming_pattern": "kebab-case",
+            "examples": ["@mcp/web-components", "@mcp/xstate"]
+          },
+          "dependency_management": {
+            "shared_deps": "in root package.json",
+            "package_deps": "in individual package.json",
+            "peer_deps": "explicitly declared",
+            "dev_deps": "in root for shared tools"
+          },
+          "workspace_structure": {
+            "packages_dir": "packages/",
+            "test_dir": "test/",
+            "docs_dir": "docs/",
+            "config_dir": "config/"
+          }
+        },
+        "verification_steps": [
+          {
+            "step": "Workspace Configuration",
+            "checks": [
+              "pnpm-workspace.yaml exists and is valid",
+              "Root package.json has correct workspace settings",
+              "All packages are properly linked"
+            ]
+          },
+          {
+            "step": "Package Structure",
+            "checks": [
+              "Each package has required files (package.json, tsconfig.json, README.md)",
+              "Package names follow naming convention",
+              "Dependencies are correctly declared"
+            ]
+          },
+          {
+            "step": "Build System",
+            "checks": [
+              "Root build script works",
+              "Individual package builds work",
+              "Build artifacts are in correct locations"
+            ]
+          }
+        ],
         "success_criteria": [
           "All packages build successfully",
           "Tests run in each package",
@@ -53,6 +98,51 @@
           "Add integration tests with example projects",
           "Update package documentation"
         ],
+        "guard_rails": {
+          "package_structure": {
+            "src_dir": "src/",
+            "test_dir": "tests/",
+            "types_dir": "types/",
+            "config_files": ["package.json", "tsconfig.json", "vitest.config.ts"]
+          },
+          "testing_requirements": {
+            "unit_tests": "in tests/unit/",
+            "integration_tests": "in tests/integration/",
+            "fixtures": "in test/fixtures/web-components/",
+            "coverage_threshold": "80%"
+          },
+          "dependencies": {
+            "peer_deps": ["lit-html", "ignite-element", "xstate"],
+            "dev_deps": ["vitest", "typescript", "@types/node"],
+            "internal_deps": ["@mcp/core", "@mcp/test-utils"]
+          }
+        },
+        "verification_steps": [
+          {
+            "step": "Package Setup",
+            "checks": [
+              "Package.json has correct dependencies",
+              "TypeScript configuration is valid",
+              "Test configuration works"
+            ]
+          },
+          {
+            "step": "Code Migration",
+            "checks": [
+              "All source files moved correctly",
+              "Imports updated to new structure",
+              "No broken dependencies"
+            ]
+          },
+          {
+            "step": "Testing",
+            "checks": [
+              "Unit tests pass",
+              "Integration tests pass",
+              "Coverage meets threshold"
+            ]
+          }
+        ],
         "success_criteria": [
           "Package builds and tests successfully",
           "Integration tests pass",
@@ -83,6 +173,54 @@
           "Set up @mcp/test-utils package",
           "Add development scripts to root",
           "Configure GitHub Actions"
+        ],
+        "guard_rails": {
+          "config_packages": {
+            "eslint_config": {
+              "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+              "rules": "in separate files"
+            },
+            "tsconfig": {
+              "base": "config/tsconfig.base.json",
+              "packages": "config/tsconfig.packages.json"
+            },
+            "test_utils": {
+              "fixtures": "shared test fixtures",
+              "helpers": "common test utilities",
+              "mocks": "shared mock implementations"
+            }
+          },
+          "ci_cd": {
+            "workflows": ["build.yml", "test.yml", "release.yml"],
+            "checks": ["lint", "test", "build", "type-check"],
+            "environments": ["development", "staging", "production"]
+          }
+        },
+        "verification_steps": [
+          {
+            "step": "Config Packages",
+            "checks": [
+              "ESLint config works in all packages",
+              "TypeScript config is valid",
+              "Test utilities are accessible"
+            ]
+          },
+          {
+            "step": "Development Scripts",
+            "checks": [
+              "All scripts run without errors",
+              "Scripts work in all packages",
+              "Error handling is robust"
+            ]
+          },
+          {
+            "step": "CI/CD",
+            "checks": [
+              "GitHub Actions run successfully",
+              "All checks pass",
+              "Release process works"
+            ]
+          }
         ],
         "success_criteria": [
           "All shared configs work correctly",
