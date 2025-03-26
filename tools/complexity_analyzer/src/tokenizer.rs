@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::error::Error;
 use syn::{parse_str, File};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug)]
 pub enum Token {
     Keyword(String),
     Identifier(String),
@@ -35,54 +35,45 @@ pub enum Token {
 /// ```
 pub struct Tokenizer {
     content: String,
-    position: usize,
+    pos: usize,
     pub current_line: usize,
-    current_column: usize,
     keywords: HashMap<String, ()>,
     operators: HashMap<String, ()>,
-    punctuation: HashMap<String, ()>,
 }
 
 impl Tokenizer {
     pub fn new(content: &str) -> Self {
         let mut keywords = HashMap::new();
-        for kw in [
-            "fn", "if", "else", "while", "for", "loop", "match", "return", "pub", "let", "mut",
-        ]
-        .iter()
-        {
+        for kw in &[
+            "fn", "let", "const", "mut", "pub", "async", "unsafe", "if", "else", "while", "for",
+            "in", "match", "return", "struct", "enum", "impl", "trait", "type", "mod", "use",
+            "where", "as", "break", "continue", "loop",
+        ] {
             keywords.insert(kw.to_string(), ());
         }
 
         let mut operators = HashMap::new();
-        for op in [
-            "=", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "&&", "||", "=>",
-        ]
-        .iter()
-        {
+        for op in &[
+            "+", "-", "*", "/", "%", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "!", "&",
+            "|", "^", "<<", ">>", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=", ">>=",
+            "=>", "->", "::", ":",
+        ] {
             operators.insert(op.to_string(), ());
-        }
-
-        let mut punctuation = HashMap::new();
-        for p in ["{", "}", "(", ")", "[", "]", ";", ",", ".", ":", "->"].iter() {
-            punctuation.insert(p.to_string(), ());
         }
 
         Self {
             content: content.to_string(),
-            position: 0,
+            pos: 0,
             current_line: 1,
-            current_column: 1,
             keywords,
             operators,
-            punctuation,
         }
     }
 
     pub fn next_token(&mut self) -> Option<Token> {
         self.skip_whitespace();
 
-        if self.position >= self.content.len() {
+        if self.pos >= self.content.len() {
             return None;
         }
 
@@ -97,7 +88,7 @@ impl Tokenizer {
 
         // Handle braces
         if ['{', '}', '(', ')', '[', ']'].contains(&c) {
-            self.position += 1;
+            self.pos += 1;
             return Some(Token::Brace(c));
         }
 
@@ -117,17 +108,17 @@ impl Tokenizer {
         }
 
         // Skip any other character
-        self.position += 1;
+        self.pos += 1;
         Some(Token::Other(c.to_string()))
     }
 
     // Get the current character safely
     fn current_char(&self) -> Option<char> {
-        if self.position >= self.content.len() {
+        if self.pos >= self.content.len() {
             None
         } else {
             // Use chars() to properly handle Unicode
-            self.content[self.position..].chars().next()
+            self.content[self.pos..].chars().next()
         }
     }
 
@@ -137,7 +128,7 @@ impl Tokenizer {
 
         // Skip to current position
         let mut i = 0;
-        while i < self.position && chars.next().is_some() {
+        while i < self.pos && chars.next().is_some() {
             i += 1;
         }
 
@@ -155,23 +146,23 @@ impl Tokenizer {
             if !c.is_whitespace() {
                 break;
             }
-            self.position += 1;
+            self.pos += 1;
         }
     }
 
     fn read_line_comment(&mut self) -> Token {
-        let start = self.position;
+        let start = self.pos;
         while let Some(c) = self.current_char() {
             if c == '\n' {
                 break;
             }
-            self.position += 1;
+            self.pos += 1;
         }
-        Token::Comment(self.content[start..self.position].to_string())
+        Token::Comment(self.content[start..self.pos].to_string())
     }
 
     fn read_operator(&mut self) -> Token {
-        let start = self.position;
+        let start = self.pos;
         let mut len = 1;
 
         // Check for two-character operators like ->
@@ -183,20 +174,20 @@ impl Tokenizer {
             }
         }
 
-        self.position += len;
+        self.pos += len;
         Token::Operator(self.content[start..start + len].to_string())
     }
 
     fn read_identifier(&mut self) -> Token {
-        let start = self.position;
+        let start = self.pos;
         while let Some(c) = self.current_char() {
             if !c.is_alphanumeric() && c != '_' {
                 break;
             }
-            self.position += 1;
+            self.pos += 1;
         }
 
-        let word = self.content[start..self.position].to_string();
+        let word = self.content[start..self.pos].to_string();
         if self.keywords.contains_key(&word) {
             Token::Keyword(word)
         } else {
@@ -205,14 +196,14 @@ impl Tokenizer {
     }
 
     fn read_number(&mut self) -> Token {
-        let start = self.position;
+        let start = self.pos;
         while let Some(c) = self.current_char() {
             if !c.is_numeric() && c != '.' {
                 break;
             }
-            self.position += 1;
+            self.pos += 1;
         }
-        Token::Other(self.content[start..self.position].to_string())
+        Token::Other(self.content[start..self.pos].to_string())
     }
 
     pub fn parse_ast(&self) -> Result<File, Box<dyn Error>> {

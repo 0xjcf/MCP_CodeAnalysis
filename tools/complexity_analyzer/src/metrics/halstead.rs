@@ -23,28 +23,39 @@ impl HalsteadCounter {
     }
 
     fn calculate_metrics(&self) -> HalsteadMetrics {
-        let n1 = self.operators.len() as u32; // Unique operators
-        let n2 = self.operands.len() as u32; // Unique operands
-        let n1 = if n1 == 0 { 1 } else { n1 }; // Avoid division by zero
-        let n2 = if n2 == 0 { 1 } else { n2 }; // Avoid division by zero
-
-        let N1 = self.operators.values().sum::<i32>() as u32; // Total operators
-        let N2 = self.operands.values().sum::<i32>() as u32; // Total operands
-        let N = N1 + N2; // Program length
-
-        let n = n1 + n2; // Vocabulary size
-        let volume = (N as f64) * f64::log2(n as f64);
-
-        let difficulty = (n1 as f64 / 2.0) * (N2 as f64 / n2 as f64);
+        let n1 = if self.operators.is_empty() {
+            1
+        } else {
+            self.operators.len() as u32
+        }; // Unique operators
+        let n2 = if self.operands.is_empty() {
+            1
+        } else {
+            self.operands.len() as u32
+        }; // Unique operands
+        let n1_count = self.operators.values().sum::<i32>() as u32; // Total operators
+        let n2_count = self.operands.values().sum::<i32>() as u32; // Total operands
+        let vocabulary = n1 + n2; // Program vocabulary
+        let length = n1_count + n2_count; // Program length
+        let volume = if length == 0 {
+            0.0
+        } else {
+            (length as f64) * f64::log2(vocabulary as f64)
+        };
+        let difficulty = if n2 > 0 {
+            (n1 as f64 / 2.0) * (n2_count as f64 / n2 as f64)
+        } else {
+            0.0
+        };
         let effort = difficulty * volume;
 
         HalsteadMetrics {
             n1,
             n2,
-            N1,
-            N2,
-            vocabulary: n,
-            length: N,
+            n1_count,
+            n2_count,
+            vocabulary,
+            length,
             volume,
             difficulty,
             effort,
@@ -156,8 +167,14 @@ mod tests {
         // Make basic assertions about the metrics
         assert!(metrics.n1 > 0, "Should have at least one unique operator");
         assert!(metrics.n2 > 0, "Should have at least one unique operand");
-        assert!(metrics.N1 > 0, "Should have at least one total operator");
-        assert!(metrics.N2 > 0, "Should have at least one total operand");
+        assert!(
+            metrics.n1_count > 0,
+            "Should have at least one total operator"
+        );
+        assert!(
+            metrics.n2_count > 0,
+            "Should have at least one total operand"
+        );
         assert!(metrics.volume > 0.0, "Volume should be positive");
         assert!(metrics.difficulty > 0.0, "Difficulty should be positive");
         assert!(metrics.effort > 0.0, "Effort should be positive");
@@ -236,11 +253,11 @@ mod tests {
 
         // Few unique operators and operands but many occurrences
         assert!(
-            metrics.n1 < metrics.N1,
+            metrics.n1 < metrics.n1_count,
             "Should have fewer unique operators than total"
         );
         assert!(
-            metrics.n2 < metrics.N2,
+            metrics.n2 < metrics.n2_count,
             "Should have fewer unique operands than total"
         );
 

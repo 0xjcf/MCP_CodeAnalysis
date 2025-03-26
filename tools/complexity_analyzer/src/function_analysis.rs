@@ -54,10 +54,7 @@ impl FunctionAnalysis {
 pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
     let mut file_analysis = FileAnalysis::new(file_path);
     let mut functions = Vec::new();
-
-    // Extract function definitions
     let mut tokenizer = Tokenizer::new(content);
-    let mut current_line: u32 = 1;
     let mut is_public = false;
     let mut is_async = false;
     let mut is_unsafe = false;
@@ -76,7 +73,7 @@ pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
             Token::Keyword(ref k) if k == "fn" => {
                 // Extract function name
                 if let Some(Token::Identifier(name)) = tokenizer.next_token() {
-                    current_line = tokenizer.current_line as u32;
+                    let current_line = tokenizer.current_line as u32;
 
                     // Extract parameters and return type
                     let mut return_type = None;
@@ -174,8 +171,8 @@ pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
         let mut total_loc = 0;
         let mut total_n1 = 0;
         let mut total_n2 = 0;
-        let mut total_N1 = 0;
-        let mut total_N2 = 0;
+        let mut total_n1_count = 0;
+        let mut total_n2_count = 0;
         let mut exceeds_threshold = false;
 
         for function in &file_analysis.functions {
@@ -184,8 +181,8 @@ pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
             total_loc += function.complexity.loc;
             total_n1 += function.complexity.halstead.n1;
             total_n2 += function.complexity.halstead.n2;
-            total_N1 += function.complexity.halstead.N1;
-            total_N2 += function.complexity.halstead.N2;
+            total_n1_count += function.complexity.halstead.n1_count;
+            total_n2_count += function.complexity.halstead.n2_count;
 
             if function.complexity.exceeds_threshold {
                 exceeds_threshold = true;
@@ -193,10 +190,10 @@ pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
         }
 
         let total_vocabulary = total_n1 + total_n2;
-        let total_length = total_N1 + total_N2;
+        let total_length = total_n1_count + total_n2_count;
         let total_volume = (total_length as f64) * f64::log2(total_vocabulary as f64);
         let total_difficulty = if total_n2 > 0 {
-            (total_n1 as f64 / 2.0) * (total_N2 as f64 / total_n2 as f64)
+            (total_n1 as f64 / 2.0) * (total_n2_count as f64 / total_n2 as f64)
         } else {
             0.0
         };
@@ -208,8 +205,8 @@ pub fn analyze_file(file_path: &str, content: &str) -> FileAnalysis {
             halstead: HalsteadMetrics {
                 n1: total_n1,
                 n2: total_n2,
-                N1: total_N1,
-                N2: total_N2,
+                n1_count: total_n1_count,
+                n2_count: total_n2_count,
                 vocabulary: total_vocabulary,
                 length: total_length,
                 volume: total_volume,
