@@ -2,16 +2,29 @@
 
 This repository contains a modular code analysis framework designed to provide extensible tools for code quality measurement, architecture analysis, and developer guidance.
 
-## Recent Improvements
+## Project Structure
 
-- **Error Handling System**: Comprehensive error handling with standardized types and retry mechanisms
-- **Parameter Handling**: Unified parameter handling utility across all client tools
-- **Tool Discovery**: Enhanced discovery process with better reliability and fallback mechanisms
-- **Documentation**: Consolidated planning and documentation into a single master plan
+```
+packages/
+├── @mcp/core/                 # Core analysis framework
+├── @mcp/web-components/       # Web Components analyzer
+├── @mcp/xstate/              # XState analyzer
+├── @mcp/eslint-config/       # Shared ESLint configuration
+├── @mcp/tsconfig/            # Shared TypeScript configuration
+└── @mcp/test-utils/          # Shared testing utilities
 
-For detailed information about our current status and roadmap, see the [Master Plan](docs/MCP_MASTER_PLAN.md).
+test/
+└── fixtures/                 # Test fixtures and example projects
+    └── web-components/       # Web Components example projects
+```
 
 ## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 8+
+- TypeScript 5.0+
 
 ### Installation
 
@@ -21,136 +34,96 @@ git clone https://github.com/yourusername/MCP_CodeAnalysis.git
 cd MCP_CodeAnalysis
 
 # Install dependencies
-npm install
+pnpm install
 
-# Build the project
-npm run build
+# Build all packages
+pnpm build
+
+# Run tests
+pnpm test
 ```
 
-### Starting the Server
+### Development
 
 ```bash
-# Start the server
-npm start
+# Start development server
+pnpm dev
 
-# Start with verbose logging
-VERBOSE=true npm start
-```
+# Run tests in watch mode
+pnpm test:watch
 
-### Using Client Tools
+# Build specific package
+pnpm --filter @mcp/web-components build
 
-The project includes several client tools for interacting with the MCP server:
-
-```bash
-# Discover available tools
-node tools/tool-discovery-client.js
-
-# Use HTTP tool discovery
-node tools/http-tool-discovery.js
-
-# Test parameter handling
-node tools/test-parameter-handler.js -p ./src -v
+# Test specific package
+pnpm --filter @mcp/web-components test
 ```
 
 ## Features
 
-### Client Parameter Handling
+### Web Components Analysis
 
-All clients now support standardized parameter handling with features including:
+The Web Components analyzer provides:
 
-- Command-line arguments (`--param value` or `-p value`)
-- Environment variables (`MCP_PARAM_NAME=value`)
-- Type validation and conversion
-- Required parameter enforcement
-- Help text generation (`--help`)
+- Component lifecycle analysis
+- Shadow DOM usage analysis
+- Custom element analysis
+- Property and event analysis
+- Performance optimization suggestions
 
-For details, see [Client Parameter Handling Specification](docs/client-parameter-handling-spec.md).
+### XState Analysis
 
-### Tool Discovery
+The XState analyzer provides:
 
-The framework provides multiple methods to discover available tools:
+- State machine analysis
+- Transition analysis
+- Guard and action analysis
+- Service integration analysis
+- Performance optimization suggestions
 
-- `tool-discovery-client.js` - Uses direct stdio connection
-- `http-tool-discovery.js` - Uses HTTP/SSE connection
+## Development Guidelines
 
-### Code Analysis
+### Package Structure
 
-Various analysis tools are available:
+Each analyzer package should follow this structure:
 
-- Repository structure analysis
-- Code metrics calculation
-- Dependency analysis
-- Code quality assessment
-
-### Complexity Analysis
-
-The project includes a Rust-based complexity analyzer that provides detailed code complexity metrics:
-
-- **Cyclomatic Complexity**: Measures the number of linearly independent paths through code
-- **Cognitive Complexity**: Measures how difficult code is to understand
-- **Halstead Metrics**: Measures vocabulary, volume, difficulty, and effort
-- File and directory analysis with recursive scanning
-- JSON/Text output formats with threshold filtering
-- Comprehensive test suite including property-based tests
-
-For detailed information about installation, usage, configuration, and best practices, see the [Complexity Analyzer Documentation](docs/complexity-analyzer.md).
-
-### Features
-
-- Command-line interface with flexible options
-- Multiple output formats (JSON/Text)
-- Configurable complexity thresholds
-- Integration with session management
-- CI/CD pipeline support
-- Comprehensive test coverage (92%)
-
-### Quick Start
-
-```bash
-# Build the analyzer
-cd tools/complexity_analyzer
-cargo build --release
-
-# Run analysis
-cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+```
+packages/@mcp/[analyzer-name]/
+├── src/                    # Source code
+├── tests/                  # Test files
+├── package.json           # Package configuration
+├── tsconfig.json          # TypeScript configuration
+└── README.md              # Package documentation
 ```
 
-## Development
+### Testing
 
-### Building the Project
+- Use Vitest for testing
+- Write unit tests for core functionality
+- Include integration tests with example projects
+- Maintain test coverage above 80%
 
-```bash
-npm run build
-```
+### Documentation
 
-### Running Tests
+- Document public APIs thoroughly
+- Include usage examples
+- Keep README files up to date
+- Document breaking changes
 
-```bash
-npm test
-```
+### Code Quality
 
-### Project Structure
-
-- `/src` - Source code
-- `/dist` - Compiled output
-- `/tools` - Client tools and utilities
-- `/docs` - Documentation
-
-## Documentation
-
-- [Master Plan](docs/MCP_MASTER_PLAN.md) - Current status, roadmap, and implementation plans
-- [Getting Started Guide](docs/getting-started.md)
-- [MCP Protocol Specification](docs/mcp-protocol.md)
-- [Tool Development Guide](docs/tool-development.md)
-- [Transport Layers](docs/transports.md)
-- [Parameter Handler](docs/parameter-handler.md)
-- [Client Parameter Handling Specification](docs/client-parameter-handling-spec.md)
-- [Client Tools](tools/README.md)
-- [Refactoring Guidelines](docs/refactoring-guidelines.md) - Guidelines for refactoring high-complexity code
+- Follow TypeScript best practices
+- Use shared ESLint and TypeScript configs
+- Maintain consistent code style
+- Write meaningful commit messages
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+1. Create a feature branch
+2. Make your changes
+3. Write/update tests
+4. Update documentation
+5. Submit a pull request
 
 ## License
 
