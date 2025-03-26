@@ -1,0 +1,95 @@
+{
+  "session_goals": [
+    {
+      "id": "goal-1",
+      "description": "Brief description of the goal",
+      "priority": "high|medium|low",
+      "priority_level": 1,
+      "estimated_time": "XX minutes",
+      "status": "pending|in_progress|completed|blocked",
+      "details": {
+        "implementation_requirements": [
+          "List of specific requirements",
+          "Each requirement should be actionable",
+          "Include technical and non-technical requirements"
+        ],
+        "implementation_approach": [
+          "Step-by-step approach to implementation",
+          "Include technical steps and considerations",
+          "Consider dependencies and order of operations"
+        ],
+        "guard_rails": {
+          "naming_conventions": {
+            "scope": "project_scope",
+            "naming_pattern": "convention_to_follow",
+            "examples": ["example1", "example2"]
+          },
+          "code_standards": {
+            "style_guide": "reference_to_style_guide",
+            "best_practices": ["practice1", "practice2"],
+            "constraints": ["constraint1", "constraint2"]
+          },
+          "technical_requirements": {
+            "dependencies": ["dep1", "dep2"],
+            "versions": "version_requirements",
+            "compatibility": "compatibility_requirements"
+          }
+        },
+        "verification_steps": [
+          {
+            "step": "Step Name",
+            "checks": [
+              "Specific check to perform",
+              "Another specific check",
+              "Validation criteria"
+            ]
+          }
+        ],
+        "success_criteria": [
+          "Measurable success criteria",
+          "Include both technical and functional criteria",
+          "Consider edge cases and error conditions"
+        ]
+      }
+    }
+  ],
+  "session_metadata": {
+    "start_date": "YYYY-MM-DD",
+    "expected_duration": "X-Y hours",
+    "focus_area": "Main focus area for this session",
+    "status": "pending|in_progress|completed"
+  },
+  "context": {
+    "prior_work": "Description of previous work relevant to this session",
+    "dependencies": [
+      "External dependencies",
+      "Internal dependencies",
+      "Tooling requirements"
+    ],
+    "resources": [
+      "Relevant files",
+      "Documentation",
+      "Tools"
+    ]
+  },
+  "metrics": {
+    "baseline": {
+      "metric1": "current_value",
+      "metric2": "current_value"
+    },
+    "target": {
+      "metric1": "target_value",
+      "metric2": "target_value"
+    }
+  },
+  "completion_criteria": [
+    "High-level completion criteria",
+    "Should align with success criteria",
+    "Include documentation requirements"
+  ],
+  "notes": [
+    "Important considerations",
+    "Potential risks or challenges",
+    "Additional context or reminders"
+  ]
+} 
