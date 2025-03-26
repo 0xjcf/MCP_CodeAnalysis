@@ -57,11 +57,38 @@ check_dependencies() {
     fi
 }
 
+# Load end-of-session context
+load_session_context() {
+    log "Loading session context from end-of-session.json..."
+    
+    if [ ! -f end-of-session.json ]; then
+        log "No end-of-session.json found. Creating initial context..."
+        python3 tools/session_manager.py save-context --non-interactive
+    fi
+    
+    # Validate end-of-session.json
+    if ! python3 -c "import json; json.load(open('end-of-session.json'))" 2>/dev/null; then
+        handle_error "Invalid end-of-session.json format"
+    fi
+    
+    # Extract key information for logging
+    LAST_SESSION=$(python3 -c "import json; print(json.load(open('end-of-session.json'))['session_metadata']['last_session_date'])")
+    CURRENT_PHASE=$(python3 -c "import json; print(json.load(open('end-of-session.json'))['session_metadata']['project_phase'])")
+    CURRENT_FOCUS=$(python3 -c "import json; print(json.load(open('end-of-session.json'))['session_metadata']['current_focus'])")
+    
+    log "Last session: $LAST_SESSION"
+    log "Current phase: $CURRENT_PHASE"
+    log "Current focus: $CURRENT_FOCUS"
+}
+
 # Main script
 log "Starting session continuation setup..."
 
 # Check dependencies first
 check_dependencies
+
+# Load session context
+load_session_context
 
 # 1. Update session goals
 if [ ! -f session-goal.json ]; then

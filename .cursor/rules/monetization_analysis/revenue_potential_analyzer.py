@@ -131,7 +131,7 @@ class RevenuePotentialAnalyzer:
         # Create a string that captures the essential aspects of the opportunity
         key_parts = [
             opportunity['type'],
-            opportunity['feature'],
+            next(iter(opportunity['features'].keys()), 'unknown'),  # Get first feature or 'unknown'
             opportunity.get('description', ''),
             # Exclude line numbers and exact matches to group similar opportunities
         ]
@@ -183,6 +183,66 @@ class RevenuePotentialAnalyzer:
         relevant_words = words[start:end]
         
         return ' '.join(relevant_words)
+    
+    def _determine_priority(self, context: str, monetization_type: str) -> str:
+        """Determine the priority of a monetization opportunity based on context and type."""
+        # High priority indicators
+        high_priority_indicators = [
+            r'(critical|essential|core|primary|main)',
+            r'(revenue|profit|income|earnings)',
+            r'(subscription|recurring|monthly|annual)',
+            r'(premium|enterprise|business)',
+            r'(payment|billing|checkout)',
+            r'(marketplace|store|shop)',
+            r'(api\s+key|api\s+token|api\s+limit)'
+        ]
+        
+        # Medium priority indicators
+        medium_priority_indicators = [
+            r'(feature|functionality|capability)',
+            r'(upgrade|enhancement|improvement)',
+            r'(integration|connection|sync)',
+            r'(data|analytics|reporting)',
+            r'(notification|alert|message)',
+            r'(search|filter|sort)',
+            r'(upload|file|document)'
+        ]
+        
+        # Low priority indicators
+        low_priority_indicators = [
+            r'(nice\s+to\s+have|optional|additional)',
+            r'(cosmetic|visual|appearance)',
+            r'(experimental|beta|alpha)',
+            r'(deprecated|legacy|old)',
+            r'(debug|test|development)'
+        ]
+        
+        # Check for high priority indicators
+        for pattern in high_priority_indicators:
+            if re.search(pattern, context, re.IGNORECASE):
+                return 'high'
+        
+        # Check for medium priority indicators
+        for pattern in medium_priority_indicators:
+            if re.search(pattern, context, re.IGNORECASE):
+                return 'medium'
+        
+        # Check for low priority indicators
+        for pattern in low_priority_indicators:
+            if re.search(pattern, context, re.IGNORECASE):
+                return 'low'
+        
+        # Default priority based on monetization type
+        type_priorities = {
+            'subscription': 'high',
+            'marketplace': 'high',
+            'api': 'high',
+            'freemium': 'medium',
+            'ads': 'medium',
+            'data': 'medium'
+        }
+        
+        return type_priorities.get(monetization_type, 'low')
     
     def _analyze_file(self, file_path: Path) -> None:
         """Analyze a file for monetization opportunities."""

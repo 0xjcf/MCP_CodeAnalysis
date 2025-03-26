@@ -93,7 +93,27 @@ The project includes a Rust-based complexity analyzer that provides detailed cod
 - JSON/Text output formats with threshold filtering
 - Comprehensive test suite including property-based tests
 
-For detailed information about the complexity analyzer, see the [Complexity Analyzer Documentation](tools/complexity_analyzer/README.md).
+For detailed information about installation, usage, configuration, and best practices, see the [Complexity Analyzer Documentation](docs/complexity-analyzer.md).
+
+### Features
+
+- Command-line interface with flexible options
+- Multiple output formats (JSON/Text)
+- Configurable complexity thresholds
+- Integration with session management
+- CI/CD pipeline support
+- Comprehensive test coverage (92%)
+
+### Quick Start
+
+```bash
+# Build the analyzer
+cd tools/complexity_analyzer
+cargo build --release
+
+# Run analysis
+cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
+```
 
 ## Development
 

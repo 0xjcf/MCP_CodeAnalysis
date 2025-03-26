@@ -1,125 +1,76 @@
-# MCP Code Analysis Master Plan
+# MCP Master Plan
 
-## Overview
+## Project Overview
 
-This document outlines the master plan for the MCP Code Analysis project, including components, workflows, and integration points.
+The MCP (Monetization Code Platform) is a comprehensive code analysis and monetization platform that helps developers understand and optimize their codebase's complexity and maintainability.
 
-## Components
+## Current Status
 
-### 1. Core SDK
+- Phase: 2 - Storage Backend Expansion
+- Focus: Rust Component Implementation and Testing
+- Active Component: Complexity Analyzer
+- Test Coverage: 92% (↑7% from initial 85%)
 
-- TypeScript-based SDK for Model Context Protocol
-- Stateful tool execution framework
-- Session management with Redis and in-memory stores
+## Recent Achievements
 
-### 2. Analysis Tools
+1. Implemented comprehensive edge case handling:
+   - Empty file analysis
+   - Comment-only file analysis
+   - Unicode character support
+   - Complex nested structure handling
+2. Added initial property-based tests:
+   - Cyclomatic complexity properties
+   - Cognitive complexity properties
+3. Improved test coverage from 85% to 92%
+4. Added modular testing approach for better maintainability
 
-- **Complexity Analyzer** (Rust): Analyzes code complexity metrics
-  - Cyclomatic complexity: Measures the number of independent paths through code
-  - Cognitive complexity: Measures how difficult code is to understand
-  - Halstead metrics: Measures vocabulary, volume, difficulty, and effort
-  - File and directory analysis with recursive scanning
-  - JSON/Text output formats with threshold filtering
-  - Comprehensive test suite including edge cases
-  - Property-based testing for robustness
-  - Robust Unicode handling for international code
-  - Ability to save analysis results to files
+## Next Steps
 
-### 3. Frontend Components
+1. Complete property-based test implementation:
+   - Halstead metrics consistency
+   - Analysis idempotency
+2. Add maximum complexity test cases
+3. Implement integration tests for complex scenarios
+4. Consider additional complexity metrics
+5. Update main project documentation
+6. Add refactoring guidelines for high-complexity functions
 
-- Web dashboard for viewing analysis results
-- Integration with VS Code extension
+## Technical Debt
 
-## Workflows
+1. High complexity functions requiring refactoring:
+   - analyze_directory (CC: 18)
+   - calculate_cyclomatic_complexity (CC: 15)
+   - calculate_cognitive_complexity (CC: 17)
+   - calculate_halstead_metrics (CC: 17)
 
-### Session Management
+## Dependencies
 
-- Use `session-goal.json` to track session objectives
-- Start each session by updating the session goal file
-- During the session, record progress metrics
-- At the end of the session, update `end-of-session.json` with results
+- clap: Command-line argument handling
+- serde_json: JSON serialization
+- proptest: Property-based testing
 
-### Code Analysis Workflow
+## Documentation Status
 
-1. Run complexity analysis on codebase
-   ```
-   cd tools/complexity_analyzer
-   cargo run -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
-   ```
-2. Save results to JSON files
-3. Include analysis in context for AI assistants
-4. Make refactoring recommendations based on complexity metrics
+- Updated:
+  - README with usage instructions
+  - Complexity analysis documentation
+  - Test documentation
+  - Edge case handling documentation
+- Pending:
+  - Main project documentation updates
+  - Refactoring guidelines
+  - Test coverage documentation
 
-## Integration Points
+## Metrics
 
-### AI Context Integration
+- Total Cyclomatic Complexity: 110
+- Total Cognitive Complexity: 127
+- High Complexity Functions: 4
+- Test Coverage: 92%
 
-- Include complexity analysis in `ai-context.json`
-- Use analysis results to guide AI assistance
-- Prioritize complex functions for refactoring
+## Notes
 
-### VS Code Extension
-
-- Display complexity metrics in editor
-- Highlight high-complexity areas
-- Suggest refactoring opportunities
-
-## Development Guidelines
-
-### Session Structure
-
-1. **Session Start**
-
-   - Create/update `session-goal.json`
-   - Run initial complexity analysis to establish baseline
-
-2. **During Session**
-
-   - Follow tasks defined in session goals
-   - Track progress against goals
-
-3. **Session End**
-   - Update `end-of-session.json` with results
-   - Run final complexity analysis to measure improvements
-   - Include analysis in `ai-context.json` for next session
-
-## Refactoring Guidelines for High-Complexity Functions
-
-Functions with high complexity metrics should be refactored following these principles:
-
-1. **Extract Method**: Break down large functions into smaller, focused sub-functions
-2. **Simplify Conditionals**: Replace complex nested conditions with early returns or guard clauses
-3. **Replace Nested Conditionals**: Use polymorphism or strategy pattern where appropriate
-4. **Reduce Cognitive Load**: Simplify logical expressions and break complex calculations into steps
-5. **Improve Naming**: Use clear, descriptive names that explain purpose and intent
-
-### Complexity Thresholds
-
-| Metric                | Low  | Medium   | High      | Very High |
-| --------------------- | ---- | -------- | --------- | --------- |
-| Cyclomatic Complexity | 1-5  | 6-10     | 11-15     | 16+       |
-| Cognitive Complexity  | 1-5  | 6-15     | 16-30     | 31+       |
-| Halstead Effort       | <250 | 250-1000 | 1001-3000 | 3001+     |
-
-## Roadmap
-
-### Phase 1: Foundation
-
-- ✅ Core SDK implementation
-- ✅ Redis and in-memory session stores
-- ✅ Complexity analyzer tool
-- ✅ Edge case test coverage
-
-### Phase 2: Integration
-
-- ✅ Refactoring guidelines
-- 🔄 Property-based testing
-- AI context integration
-- VS Code extension
-- Web dashboard prototype
-
-### Phase 3: Expansion
-
-- Additional analysis tools
-- Performance optimization
-- Multi-language support
+- Focus on testing highest complexity functions first
+- Consider extracting common functionality
+- Property-based testing framework in place
+- Edge case handling significantly improved reliability

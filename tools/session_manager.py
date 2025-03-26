@@ -37,31 +37,42 @@ class SessionManager:
     def save_context(self, interactive: bool = True) -> bool:
         """Save the current session context."""
         try:
-            # Load existing context if it exists
+            # Load existing context if available
             existing_context = {}
             if self.context_file.exists():
                 with open(self.context_file, 'r', encoding='utf-8') as f:
                     existing_context = json.load(f)
             
-            # Update session metadata
+            # Get active component info, handling both formats
+            technical_context = existing_context.get('technical_context', {})
+            active_component = None
+            
+            # Try plural format first
+            if 'active_components' in technical_context and technical_context['active_components']:
+                active_component = technical_context['active_components'][0]
+            # Fall back to singular format
+            elif 'active_component' in technical_context:
+                active_component = technical_context['active_component']
+            
+            # Create new context with plural format
             context = {
                 "session_metadata": {
                     "last_session_date": datetime.now().strftime("%Y-%m-%d"),
-                    "last_session_duration": "Unknown",  # Could be calculated if we track session start
-                    "project_phase": self._get_input("Current project phase", 
-                                                   existing_context.get("session_metadata", {}).get("project_phase")) if interactive else existing_context.get("session_metadata", {}).get("project_phase"),
-                    "current_focus": self._get_input("Current focus area",
-                                                   existing_context.get("session_metadata", {}).get("current_focus")) if interactive else existing_context.get("session_metadata", {}).get("current_focus")
+                    "project_phase": self._get_input("Project phase",
+                                                   existing_context.get("session_metadata", {}).get("project_phase")) if interactive else existing_context.get("session_metadata", {}).get("project_phase", "Unknown"),
+                    "current_focus": self._get_input("Current focus",
+                                                   existing_context.get("session_metadata", {}).get("current_focus")) if interactive else existing_context.get("session_metadata", {}).get("current_focus", "Unknown")
                 },
                 "technical_context": {
                     "active_components": [
                         {
                             "name": self._get_input("Active component name",
-                                                  existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("name")) if interactive else existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("name"),
+                                                  active_component.get("name")) if interactive else active_component.get("name", "Unknown"),
                             "status": self._get_input("Component status",
-                                                    existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("status")) if interactive else existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("status"),
+                                                    active_component.get("status")) if interactive else active_component.get("status", "Unknown"),
                             "completion_percentage": int(self._get_input("Completion percentage",
-                                                                      existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("completion_percentage", 0))) if interactive else existing_context.get("technical_context", {}).get("active_components", [{}])[0].get("completion_percentage", 0)
+                                                                      active_component.get("completion_percentage", 0))) if interactive else active_component.get("completion_percentage", 0),
+                            "details": active_component.get("details", {})
                         }
                     ]
                 }

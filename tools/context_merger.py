@@ -36,102 +36,95 @@ class ContextMerger:
         except Exception as e:
             print(f"Error loading {file_path}: {e}", file=sys.stderr)
             return {}
-
-    def extract_knowledge_graph_context(self, graph_data: Dict[str, Any], 
-                                      active_component: str) -> Dict[str, Any]:
-        """Extract relevant context from knowledge graph based on active component."""
+    
+    def extract_knowledge_graph_context(self, graph_data: Dict[str, Any], active_component: str) -> Dict[str, Any]:
+        """Extract relevant context from knowledge graph."""
         context = {
             'components': [],
             'relationships': [],
             'decisions': []
         }
         
-        if not graph_data or not graph_data.get('nodes'):
-            # Generate placeholder content for empty knowledge graph
-            context['components'].append({
-                'name': active_component,
-                'description': 'Active component - no additional context available'
-            })
+        if not graph_data:
             return context
-            
-        # Find the active component node
-        active_node = None
-        for node in graph_data.get('nodes', []):
-            if node.get('name') == active_component:
-                active_node = node
-                break
         
-        if active_node:
-            # Get directly related components
-            context['components'].append(active_node)
-            for edge in graph_data.get('edges', []):
-                if edge['source'] == active_node['id'] or edge['target'] == active_node['id']:
-                    # Find the related component
-                    related_id = edge['target'] if edge['source'] == active_node['id'] else edge['source']
-                    for node in graph_data.get('nodes', []):
-                        if node['id'] == related_id:
-                            context['components'].append(node)
-                            context['relationships'].append(edge)
-                            
-            # Get technical decisions
-            for node in graph_data.get('nodes', []):
-                if node.get('type') == 'decision' and any(
-                    edge['source'] == active_node['id'] and edge['target'] == node['id']
-                    for edge in graph_data.get('edges', [])
-                ):
-                    context['decisions'].append(node)
-        else:
-            # If active component not found, add placeholder
-            context['components'].append({
-                'name': active_component,
-                'description': 'Component not found in knowledge graph'
-            })
+        # Extract components related to active component
+        for comp in graph_data.get('components', []):
+            if comp.get('name') == active_component or any(rel.get('target') == active_component for rel in graph_data.get('relationships', [])):
+                context['components'].append(comp)
+        
+        # Extract relationships involving active component
+        for rel in graph_data.get('relationships', []):
+            if rel.get('source') == active_component or rel.get('target') == active_component:
+                context['relationships'].append(rel)
+        
+        # Extract relevant technical decisions
+        for dec in graph_data.get('decisions', []):
+            if any(comp.get('name') == active_component for comp in dec.get('components', [])):
+                context['decisions'].append(dec)
         
         return context
-
-    def extract_monetization_features(self, monetization_data: Dict[str, Any]) -> Dict[str, List[Dict[str, Any]]]:
-        """Extract feature lists by tier from monetization analysis."""
-        features = {
-            'free': defaultdict(list),
-            'pro': defaultdict(list),
-            'enterprise': defaultdict(list)
-        }
+    
+    def extract_monetization_features(self, monetization_data: Dict[str, Any]) -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
+        """Extract monetization features from analysis data."""
+        features = defaultdict(lambda: defaultdict(list))
         
-        if not monetization_data:
-            return {
-                'free': {'basic': ['Basic features not yet analyzed']},
-                'pro': {'advanced': ['Pro features not yet analyzed']},
-                'enterprise': {'premium': ['Enterprise features not yet analyzed']}
-            }
-            
-        # Extract features from opportunities
-        for opportunity in monetization_data.get('opportunities', []):
-            feature_dict = opportunity.get('features', {})
-            if not feature_dict:
+        if not monetization_data or not isinstance(monetization_data, dict):
+            return features
+        
+        for tier, tier_data in monetization_data.items():
+            if not tier_data or not isinstance(tier_data, (dict, list)):
                 continue
-            
-            # Determine tier based on priority and type
-            tier = 'free'
-            if opportunity.get('priority') == 'high':
-                tier = 'enterprise'
-            elif opportunity.get('priority') == 'medium':
-                tier = 'pro'
-            
-            # Add features with descriptions
-            for feature_name, description in feature_dict.items():
-                if feature_name != 'unknown':  # Skip unknown features
-                    features[tier][feature_name].append({
-                        'description': description,
-                        'context': opportunity.get('description', ''),
-                        'type': opportunity.get('type', '')
-                    })
+                
+            # Handle both dictionary and list formats
+            if isinstance(tier_data, dict):
+                for feature_name, feature_data in tier_data.items():
+                    if isinstance(feature_data, (list, dict)):
+                        features[tier][feature_name].extend(feature_data if isinstance(feature_data, list) else [feature_data])
+            elif isinstance(tier_data, list):
+                for feature in tier_data:
+                    if isinstance(feature, dict):
+                        feature_name = feature.get('name', 'unnamed_feature')
+                        features[tier][feature_name].append(feature)
         
-        # Convert defaultdict to regular dict
-        return {
-            tier: dict(feature_dict)
-            for tier, feature_dict in features.items()
-        }
-
+        return features
+    
+    def format_development_status(self, session_data: Dict[str, Any]) -> str:
+        """Format development status section."""
+        status = session_data.get('development_status', {})
+        
+        sections = []
+        
+        if status.get('completed'):
+            sections.append("Completed:")
+            sections.extend(f"- {item}" for item in status['completed'])
+        
+        if status.get('in_progress'):
+            sections.append("\nIn Progress:")
+            sections.extend(f"- {item}" for item in status['in_progress'])
+        
+        if status.get('next_priorities'):
+            sections.append("\nNext Priorities:")
+            sections.extend(f"- {item}" for item in status['next_priorities'])
+        
+        return '\n'.join(sections)
+    
+    def format_documentation_status(self, session_data: Dict[str, Any]) -> str:
+        """Format documentation status section."""
+        docs = session_data.get('knowledge_context', {}).get('documentation', {})
+        
+        sections = []
+        
+        if docs.get('updated'):
+            sections.append("Recently Updated:")
+            sections.extend(f"- {item}" for item in docs['updated'])
+        
+        if docs.get('needs_update'):
+            sections.append("\nNeeds Attention:")
+            sections.extend(f"- {item}" for item in docs['needs_update'])
+        
+        return '\n'.join(sections)
+    
     def generate_prompt(self, 
                        session_context: Dict[str, Any],
                        knowledge_context: Dict[str, Any],
@@ -166,25 +159,50 @@ class ContextMerger:
                 for feature_name, implementations in features.items():
                     monetization_section.append(f"\n#### {feature_name.replace('_', ' ').title()}")
                     for impl in implementations:
-                        desc = impl['description']
-                        context = impl['context']
-                        type_info = impl['type']
+                        desc = impl.get('description', 'No description available')
+                        context = impl.get('context', '')
+                        type_info = impl.get('type', '')
                         monetization_section.append(f"- {desc}")
                         if context and context != desc:
                             monetization_section.append(f"  - Context: {context}")
                         if type_info:
                             monetization_section.append(f"  - Type: {type_info}")
         
+        # Format development and documentation status
+        development_status = self.format_development_status(session_context)
+        documentation_status = self.format_documentation_status(session_context)
+        
+        # Get active component info, handling both singular and plural formats
+        technical_context = session_context.get('technical_context', {})
+        active_component = None
+        
+        # Try plural format first
+        if 'active_components' in technical_context and technical_context['active_components']:
+            active_component = technical_context['active_components'][0]
+        # Fall back to singular format
+        elif 'active_component' in technical_context:
+            active_component = technical_context['active_component']
+        
+        if not active_component:
+            print("Warning: No active component found in technical context", file=sys.stderr)
+            active_component = {
+                'name': 'Unknown',
+                'status': 'Unknown',
+                'completion_percentage': 0
+            }
+        
         # Replace placeholders in template
         prompt = template.format(
             last_session_date=session_context['session_metadata']['last_session_date'],
             project_phase=session_context['session_metadata']['project_phase'],
             current_focus=session_context['session_metadata']['current_focus'],
-            active_component=session_context['technical_context']['active_component']['name'],
-            component_status=session_context['technical_context']['active_component']['status'],
-            completion_percentage=session_context['technical_context']['active_component']['completion_percentage'],
+            active_component=active_component['name'],
+            component_status=active_component['status'],
+            completion_percentage=active_component['completion_percentage'],
             knowledge_graph_context='\n'.join(knowledge_section),
-            monetization_status='\n'.join(monetization_section)
+            monetization_status='\n'.join(monetization_section),
+            development_status=development_status,
+            documentation_status=documentation_status
         )
         
         return prompt
@@ -209,6 +227,12 @@ Currently working on:
 ## Technical Context
 {knowledge_graph_context}
 
+## Development Status
+{development_status}
+
+## Documentation Status
+{documentation_status}
+
 ## Monetization Strategy
 {monetization_status}
 
@@ -230,13 +254,35 @@ Please help me continue development, taking into account the previous session's 
             print("Error: Session context is required", file=sys.stderr)
             return False
         
+        # Get active component info, handling both singular and plural formats
+        technical_context = session_data.get('technical_context', {})
+        active_component = None
+        
+        # Try plural format first
+        if 'active_components' in technical_context and technical_context['active_components']:
+            active_component = technical_context['active_components'][0]
+        # Fall back to singular format
+        elif 'active_component' in technical_context:
+            active_component = technical_context['active_component']
+        
+        if not active_component:
+            print("Warning: No active component found in technical context", file=sys.stderr)
+            active_component = {
+                'name': 'Unknown',
+                'status': 'Unknown',
+                'completion_percentage': 0
+            }
+        
         # Extract relevant context
-        active_component = session_data['technical_context']['active_component']['name']
-        knowledge_context = self.extract_knowledge_graph_context(graph_data, active_component)
+        knowledge_context = self.extract_knowledge_graph_context(graph_data, active_component['name'])
         monetization_features = self.extract_monetization_features(monetization_data)
         
         # Generate prompt
-        prompt = self.generate_prompt(session_data, knowledge_context, monetization_features)
+        prompt = self.generate_prompt(
+            session_data,
+            knowledge_context,
+            monetization_features
+        )
         
         # Save prompt
         try:

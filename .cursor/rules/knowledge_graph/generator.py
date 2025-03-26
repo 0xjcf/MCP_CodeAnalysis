@@ -88,19 +88,57 @@ def scan_source_files(src_dir: Path) -> Tuple[List[Dict], List[Dict]]:
         
         # Add basic import relationships
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
                 for line in content.split('\n'):
-                    if line.strip().startswith('import '):
-                        # Very basic import detection - could be improved
-                        import_path = line.split('from')[1].strip().strip('\'"')
-                        edges.append({
-                            "source": file_id,
-                            "target": f"file:{import_path}",
-                            "type": "imports"
-                        })
+                    line = line.strip()
+                    if not line or line.startswith('//'):
+                        continue
+                        
+                    # Handle different import styles
+                    if line.startswith('import '):
+                        try:
+                            # Handle "import { x } from 'y'" style
+                            if 'from' in line:
+                                import_path = line.split('from')[1].strip().strip('\'"')
+                            # Handle "import 'x'" style
+                            else:
+                                import_path = line.split('import')[1].strip().strip('\'"')
+                            
+                            # Skip if no valid import path
+                            if not import_path:
+                                continue
+                                
+                            # Handle relative paths
+                            if import_path.startswith('.'):
+                                import_dir = file_path.parent
+                                import_file = import_dir / import_path
+                                if import_file.suffix not in ['.ts', '.js']:
+                                    import_file = import_file.with_suffix('.ts')
+                                if import_file.exists():
+                                    relative_import = import_file.relative_to(src_dir)
+                                    edges.append({
+                                        "source": file_id,
+                                        "target": f"file:{relative_import}",
+                                        "type": "imports"
+                                    })
+                            # Handle package imports
+                            elif not import_path.startswith('@'):
+                                # Skip node built-in modules
+                                if import_path in ['fs', 'path', 'child_process', 'zod', 'commander', 'chalk', 'ora', 'figures']:
+                                    continue
+                                edges.append({
+                                    "source": file_id,
+                                    "target": f"file:{import_path}",
+                                    "type": "imports"
+                                })
+                        except Exception as e:
+                            print(f"Warning: Error processing import in {file_path}: {e}")
+                            continue
+                            
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
+            continue
 
     return nodes, edges
 

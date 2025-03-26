@@ -1,19 +1,28 @@
 # Session Continuation Prompt
 
-To continue a session, simply run:
+To continue a session, you have two options:
+
+1. **Recommended Default**: Non-interactive mode (displays without vim):
 
 ```bash
-./tools/session-continuation.sh
+EDITOR=cat ./tools/session_continuation.sh
+```
+
+2. Interactive mode (opens vim for editing):
+
+```bash
+./tools/session_continuation.sh
 ```
 
 This script will:
 
-1. Back up and update session goals
-2. Run complexity analysis
-3. Update session goals with latest metrics
-4. Generate knowledge graph (if available)
-5. Update monetization analysis (if available)
-6. Merge all contexts into a session prompt
+1. Load context from `end-of-session.json`
+2. Back up and update session goals
+3. Run complexity analysis
+4. Update session goals with latest metrics
+5. Generate knowledge graph (if available)
+6. Update monetization analysis (if available)
+7. Merge all contexts into a session prompt
 
 Important: After running the script, review and update your `session-goal.json` based on:
 
@@ -33,23 +42,6 @@ After updating the goals, you can start your session by saying "use the prompt i
 - Current Phase: [project_phase]
 - Focus Area: [current_focus]
 
-## Code Complexity Analysis
-
-{Load complexity_analysis.json and insert key metrics}
-
-- Total Functions: [total_functions]
-- High Complexity Functions: [high_complexity_functions_count]
-- Average Cyclomatic Complexity: [avg_cyclomatic_complexity]
-- Average Cognitive Complexity: [avg_cognitive_complexity]
-
-### Top 5 Complex Functions:
-
-1. [function1_name] (CC: [cyclomatic], Cog: [cognitive])
-2. [function2_name] (CC: [cyclomatic], Cog: [cognitive])
-3. [function3_name] (CC: [cyclomatic], Cog: [cognitive])
-4. [function4_name] (CC: [cyclomatic], Cog: [cognitive])
-5. [function5_name] (CC: [cyclomatic], Cog: [cognitive])
-
 ## Active Development
 
 Currently working on:
@@ -57,49 +49,28 @@ Currently working on:
 - Component: [active_components[0].name]
 - Status: [active_components[0].status]
 - Progress: [active_components[0].completion_percentage]%
+- Features Implemented: [active_components[0].details.features_implemented]
+- Current Metrics: [active_components[0].details.current_metrics]
+- Next Steps: [active_components[0].details.next_steps]
 
-## Recent Changes
+## Development Status
 
-Last completed:
+Completed:
+[development_status.completed]
 
-- Component: [recent_changes[0].component]
-- Status: [recent_changes[0].status]
-- Details: [recent_changes[0].details]
+In Progress:
+[development_status.in_progress]
 
-## Pending Tasks
-
-Next priority:
-
-- Task: [pending_tasks[0].task]
-- Priority: [pending_tasks[0].priority]
-- Dependencies: [pending_tasks[0].dependencies]
+Next Priorities:
+[development_status.next_priorities]
 
 ## Documentation Status
 
-- Recently Updated: [updated_docs]
-- Needs Attention: [needs_update]
+Recently Updated:
+[documentation.updated]
 
-## Development Environment
-
-- Branch: [current_branch]
-- Node Version: [environment.node_version]
-- Workspace: [environment.workspace]
-
-## Knowledge Graph Context
-
-The following components and relationships are relevant to our current work:
-
-1. [List relevant components from knowledge graph]
-2. [List key relationships and dependencies]
-3. [List any technical decisions or rationales]
-
-## Monetization Status
-
-Current tier implementation:
-
-- Free Tier Features: [List active free features]
-- Pro Tier Features: [List active pro features]
-- Enterprise Features: [List active enterprise features]
+Needs Attention:
+[documentation.needs_update]
 
 ## Goals for This Session
 
@@ -110,7 +81,23 @@ I'd like to:
 1. [goal1_description] (Priority: [goal1_priority])
 2. [goal2_description] (Priority: [goal2_priority])
 
-Please help me continue development, taking into account the previous session's context and maintaining consistency with the established architecture and monetization strategy.
+Please help me continue development, taking into account:
+
+1. The previous session's context from end-of-session.json
+2. Current development status and metrics
+3. Established architecture patterns
+4. Current monetization strategy
+5. Project phase requirements
+6. Documentation needs
+
+Focus areas:
+
+1. Maintaining code quality and test coverage
+2. Following established patterns
+3. Updating relevant documentation
+4. Considering monetization implications
+5. Addressing technical debt
+6. Improving test coverage
 
 ## Using the Complexity Analyzer
 
@@ -141,53 +128,34 @@ Available options:
 - `-o`: Output file path
 - `-t`: Complexity threshold for highlighting functions
 
-To use this prompt effectively:
+## Session Management
 
-1. **Before Starting a New Session**:
+To effectively manage your development session:
+
+1. **Before Starting**:
 
    ```bash
-   # Create or update session goals
-   if [ ! -f session-goal.json ]; then
-       cp session-goal.json.template session-goal.json
-   else
-       cp session-goal.json session-goal.json.bak
-   fi
+   # Run the session continuation script
+   ./tools/session-continuation.sh
+
+   # Review and update session goals
    $EDITOR session-goal.json
-
-   # Run complexity analysis
-   cd tools/complexity_analyzer
-   cargo run --release -- -p ../../src -f json -o ../../complexity_analysis.json -t 10
-   cd ../..
-
-   # Optional: Generate additional context if tools are available
-   [ -f tools/knowledge_graph_generator.py ] && \
-       python tools/knowledge_graph_generator.py --output knowledge_graph.json
-   [ -d .cursor/rules/monetization_analysis ] && \
-       python .cursor/rules/monetization_analysis/revenue_potential_analyzer.py --update
-   [ -f tools/context_merger.py ] && \
-       python tools/context_merger.py \
-           --session-context end-of-session.json \
-           --complexity-analysis complexity_analysis.json \
-           --session-goals session-goal.json \
-           $([ -f knowledge_graph.json ] && echo "--knowledge-graph knowledge_graph.json") \
-           $([ -f monetization_analysis.json ] && echo "--monetization-status monetization_analysis.json") \
-           --output session_prompt.md
    ```
 
-2. **During the Session**:
+2. **During Development**:
 
    ```bash
    # Update session goals as tasks are completed
    $EDITOR session-goal.json
 
-   # Run incremental complexity analysis on modified components
+   # Run incremental complexity analysis
    cd tools/complexity_analyzer
    cargo run --release -- -p ../../src/component-name -f json \
        -o ../../complexity_component.json -t 10
    cd ../..
    ```
 
-3. **At the End of the Session**:
+3. **At Session End**:
 
    ```bash
    # Run final complexity analysis
@@ -196,55 +164,18 @@ To use this prompt effectively:
        -o ../../complexity_analysis_final.json -t 10
    cd ../..
 
-   # Update end-of-session document
-   if [ -f tools/session_context_generator.py ]; then
-       python tools/session_context_generator.py --save end-of-session.json \
-           --complexity-analysis complexity_analysis_final.json \
-           --session-goals session-goal.json
-   else
-       echo "Session context generator not found, please update end-of-session.json manually"
-       cp complexity_analysis_final.json end-of-session.json
-   fi
-
-   # Update AI context with latest information
-   if [ -f tools/context_merger.py ]; then
-       python tools/context_merger.py \
-           --session-context end-of-session.json \
-           --complexity-analysis complexity_analysis_final.json \
-           --output ai-context.json
-   fi
+   # Update session context
+   python tools/session_manager.py save-context
    ```
 
-4. **Key Elements to Always Include**:
+## Notes
 
-   - Current phase and focus from `session-goal.json`
-   - Complexity analysis results from latest run
-   - Active development status
-   - Pending tasks and dependencies
-   - Documentation needs
-   - Environment details
-   - Monetization context (if applicable)
-
-5. **Optional Elements Based on Context**:
-   - Performance metrics from complexity analysis
-   - Test coverage statistics (if available)
-   - User feedback or bug reports
-   - External API status
-   - Infrastructure changes
-
-Example Usage:
-
-```bash
-# Quick session start
-./tools/start-session.sh  # If available
-
-# Manual session start
-cp session-goal.json.template session-goal.json
-$EDITOR session-goal.json
-cd tools/complexity_analyzer && cargo run --release -- -p ../../src -f json \
-    -o ../../complexity_analysis.json -t 10
-```
-
-This will set up your development environment with all necessary context from your previous session, making it easier to continue work effectively.
-
-Note: Some tools mentioned in this prompt may not be available in your installation. The script handles these cases gracefully by skipping unavailable tools while still providing core functionality through the complexity analyzer.
+- The session continuation script creates backups of existing files
+- All analysis results are stored in JSON format for easy parsing
+- The context merger preserves previous session information
+- AI context is automatically updated during session continuation
+- End-of-session data is preserved between sessions
+- Focus on testing highest complexity functions first
+- Consider extracting common functionality
+- Property-based testing framework in place
+- Edge case handling significantly improved reliability
