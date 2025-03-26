@@ -1,10 +1,7 @@
 ---
-Description: Guidelines for creating and maintaining code indices for better navigation and understanding of the codebase.
-Globs: **/*.js, **/*.ts, **/*.jsx, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.go, **/*.rb, **/*.php, **/*.swift, **/*.kt, **/*.rs, **/*.md
-Model: fusion
-Context_window: large
-Completion_style: analytical
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.ts, **/*.jsx, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.go, **/*.rb, **/*.php, **/*.swift, **/*.kt, **/*.rs, **/*.md
+alwaysApply: false
 ---
 # Code Index Guidelines
 

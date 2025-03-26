@@ -1,26 +1,24 @@
 # MCP Code Analysis
 
-A powerful codebase analysis toolkit that leverages the Model Context Protocol (MCP) for AI-assisted code understanding and transformation.
+This repository contains a modular code analysis framework designed to provide extensible tools for code quality measurement, architecture analysis, and developer guidance.
 
-## Features
+## Recent Improvements
 
-- **Code Analysis**: Parse and analyze codebases with abstract syntax trees
-- **Context Generation**: Create rich contextual information for AI models
-- **Tool Integration**: Built on the MCP SDK for seamless AI tool integration
-- **Extensible Architecture**: Plugin-based system for custom analyzers
+- **Error Handling System**: Comprehensive error handling with standardized types and retry mechanisms
+- **Parameter Handling**: Unified parameter handling utility across all client tools
+- **Tool Discovery**: Enhanced discovery process with better reliability and fallback mechanisms
+- **Documentation**: Consolidated planning and documentation into a single master plan
 
-## Requirements
+For detailed information about our current status and roadmap, see the [Master Plan](docs/MCP_MASTER_PLAN.md).
 
-- Node.js 18+
-- NPM 9+
-- Redis (optional, only required for production environments)
+## Getting Started
 
-## Installation
+### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/mcp-codeanalysis.git
-cd mcp-codeanalysis
+git clone https://github.com/yourusername/MCP_CodeAnalysis.git
+cd MCP_CodeAnalysis
 
 # Install dependencies
 npm install
@@ -29,258 +27,114 @@ npm install
 npm run build
 ```
 
-## Redis Configuration (Optional)
-
-Redis is used for session storage in production environments. For development and testing, the system will automatically fall back to an in-memory session store if Redis is not available.
-
-> **Note**: There is a known issue with Redis connectivity where operations may fail even when Redis is running. See the "Tech Debt" section in `plan.md` for details. For now, you can use the `./use-memory-session.sh` script to run the server with the memory session store. For more information, see [Redis Troubleshooting Guide](./docs/redis-troubleshooting.md).
-
-To install Redis:
+### Starting the Server
 
 ```bash
-# Ubuntu/Debian
-sudo apt-get install redis-server
+# Start the server
+npm start
 
-# macOS
-brew install redis
-
-# Windows (using WSL is recommended)
-# For native Windows, download from https://redis.io/download
+# Start with verbose logging
+VERBOSE=true npm start
 ```
 
-By default, the application tries to connect to Redis at `redis://localhost:6379`. You can configure the Redis connection using environment variables:
+### Using Client Tools
+
+The project includes several client tools for interacting with the MCP server:
 
 ```bash
-# Set custom Redis URL
-export REDIS_URL=redis://custom-host:6379
+# Discover available tools
+node tools/tool-discovery-client.js
 
-# Force memory session store even if Redis is available
-export FORCE_MEMORY_SESSION=true
+# Use HTTP tool discovery
+node tools/http-tool-discovery.js
+
+# Test parameter handling
+node tools/test-parameter-handler.js -p ./src -v
 ```
+
+## Features
+
+### Client Parameter Handling
+
+All clients now support standardized parameter handling with features including:
+
+- Command-line arguments (`--param value` or `-p value`)
+- Environment variables (`MCP_PARAM_NAME=value`)
+- Type validation and conversion
+- Required parameter enforcement
+- Help text generation (`--help`)
+
+For details, see [Client Parameter Handling Specification](docs/client-parameter-handling-spec.md).
+
+### Tool Discovery
+
+The framework provides multiple methods to discover available tools:
+
+- `tool-discovery-client.js` - Uses direct stdio connection
+- `http-tool-discovery.js` - Uses HTTP/SSE connection
+
+### Code Analysis
+
+Various analysis tools are available:
+
+- Repository structure analysis
+- Code metrics calculation
+- Dependency analysis
+- Code quality assessment
+
+### Complexity Analysis
+
+The project includes a Rust-based complexity analyzer that provides detailed code complexity metrics:
+
+- **Cyclomatic Complexity**: Measures the number of linearly independent paths through code
+- **Cognitive Complexity**: Measures how difficult code is to understand
+- **Halstead Metrics**: Measures vocabulary, volume, difficulty, and effort
+- File and directory analysis with recursive scanning
+- JSON/Text output formats with threshold filtering
+- Comprehensive test suite including property-based tests
+
+For detailed information about the complexity analyzer, see the [Complexity Analyzer Documentation](tools/complexity_analyzer/README.md).
 
 ## Development
 
-```bash
-# Run in development mode
-npm run dev
+### Building the Project
 
-# Run tests
+```bash
+npm run build
+```
+
+### Running Tests
+
+```bash
 npm test
-
-# Run linting
-npm run lint
 ```
 
-## Usage
+### Project Structure
 
-```bash
-# Start the MCP server
-npm start
-
-# Run CLI tool
-node ./tools/mcp-stdio-client.js --task "Analyze dependencies" --files "src/*.ts"
-```
+- `/src` - Source code
+- `/dist` - Compiled output
+- `/tools` - Client tools and utilities
+- `/docs` - Documentation
 
 ## Documentation
 
-- [Session Store Architecture](./docs/session-store.md)
-- [Redis Integration](./docs/redis-integration.md)
-- [MCP Protocol](./docs/mcp-protocol.md)
+- [Master Plan](docs/MCP_MASTER_PLAN.md) - Current status, roadmap, and implementation plans
+- [Getting Started Guide](docs/getting-started.md)
+- [MCP Protocol Specification](docs/mcp-protocol.md)
+- [Tool Development Guide](docs/tool-development.md)
+- [Transport Layers](docs/transports.md)
+- [Parameter Handler](docs/parameter-handler.md)
+- [Client Parameter Handling Specification](docs/client-parameter-handling-spec.md)
+- [Client Tools](tools/README.md)
+- [Refactoring Guidelines](docs/refactoring-guidelines.md) - Guidelines for refactoring high-complexity code
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
-MIT
-
-# CodeAnalysis MCP Server
-
-A comprehensive Model Context Protocol (MCP) server for advanced code analysis, providing tools and insights through an extensible architecture.
-
-## 🚀 Features
-
-- **Basic Code Analysis**: Syntax and structure analysis
-- **Code Metrics**: Complexity, line counts, and code quality metrics
-- **Dependency Analysis**: Package and import relationship visualization
-- **Knowledge Graph**: Code relationships visualization and querying
-- **Memory System**: Store and retrieve insights about codebases
-- **Visualizations**: Generate diagrams in multiple formats (Mermaid, DOT, ASCII)
-- **Socio-Technical Analysis**: Understand team and code relationships
-- **Multi-Repository Analysis**: Cross-repository relationship analysis
-- **Evolution Planning**: Code improvement recommendations
-- **Live Watching**: Monitor code changes in real-time
-- **IDE Integration**: Tools for editor integration
-- **Developer Tools**: Enhanced AI-assisted development workflow support
-
-## 📋 Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Redis (optional for development, recommended for production)
-
-## 🛠️ Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/your-username/codeanalysis-mcp.git
-cd codeanalysis-mcp
-
-# Install dependencies
-pnpm install
-
-# Build the project
-pnpm build
-```
-
-## 🖥️ Usage
-
-The CodeAnalysis MCP server can be used in two ways:
-
-### 1. As an MCP Server
-
-```bash
-# Start the MCP server
-pnpm start
-```
-
-This starts the MCP server that can be connected to by any MCP client like Claude Desktop, Cursor, or others.
-
-### 2. Using the CLI
-
-The project includes a comprehensive CLI for direct interaction:
-
-```bash
-# Get help
-pnpm run cli --help
-
-# Analyze a repository or directory
-pnpm run cli analyze repo ./src
-
-# Check code quality
-pnpm run cli quality analyze ./src
-```
-
-### 3. Using Developer Tools for AI-Assisted Development
-
-The project includes special tools designed to enhance AI-assisted development:
-
-```bash
-# Generate code context for AI assistants
-node tools/ai-dev-helper.js --task="Implement new feature" --search="related functionality"
-
-# Run example client
-node examples/dev-tools-client.js
-```
-
-See the [Developer Tools Guide](docs/dev-tools-guide.md) for detailed information.
-
-## 📊 Example Commands
-
-### Basic Analysis
-
-```bash
-# Analyze a local directory
-pnpm run cli analyze repo ./src
-
-# Analyze a specific file
-pnpm run cli analyze file ./src/server.ts
-```
-
-### Code Metrics
-
-```bash
-# Get code metrics with function details
-pnpm run cli metrics analyze ./src --functions
-
-# Save metrics to a file
-pnpm run cli metrics analyze ./src -o metrics-report.json
-```
-
-### Dependency Analysis
-
-```bash
-# Analyze dependencies in Mermaid format
-pnpm run cli dependencies analyze ./src -f mermaid -o deps.mmd
-
-# Visualize dependencies
-pnpm run cli visualize dependencies -p ./src --format mermaid
-```
-
-### Code Quality
-
-```bash
-# Run quality analysis
-pnpm run cli quality analyze ./src
-
-# Generate HTML report
-pnpm run cli quality analyze ./src --html -o quality-report.html
-```
-
-### Knowledge Graph
-
-```bash
-# Build knowledge graph
-pnpm run cli knowledge build ./src
-
-# Query the knowledge graph
-pnpm run cli knowledge query ./src "type:function AND complexity>5"
-
-# Export as diagram
-pnpm run cli knowledge export ./src -f mermaid
-```
-
-### Insights & Memory
-
-```bash
-# Store an insight
-pnpm run cli insights store -r ./src -t code-pattern -c "Refactoring opportunity"
-
-# Retrieve insights
-pnpm run cli insights retrieve -r ./src
-```
-
-### Developer Tools
-
-```bash
-# Prepare context for AI interactions
-node tools/ai-dev-helper.js --task="Fix authentication bug" --files="src/auth/*.ts" --search="login"
-
-# Use with AI prompts
-# Copy content from the generated ai-context.json file into your AI assistant prompt
-# or use the template in templates/ai-prompt-template.md
-```
-
-## 🏗️ Architecture
-
-The project follows the MCP architecture with these components:
-
-1. **MCP Server**: Core server implementation using the MCP protocol
-2. **Analysis Features**: Modular code analysis capabilities
-3. **CLI**: Command-line interface for direct interaction
-4. **Transport Layer**: Communication mechanism (stdio by default)
-
-## 🔌 Integration with MCP Clients
-
-This server is compatible with any MCP-compliant client, including:
-
-- Claude Desktop App
-- Cursor Editor
-- Continue
-- Other MCP-compatible tools
-
-## 📝 Path Specification
-
-Commands accept paths in various formats:
-
-- Local directory: `./src` or `/absolute/path/to/dir`
-- Local file: `./src/file.ts` or `/path/to/file.ts`
-- Repository URL: `https://github.com/username/repo`
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 # MCP SDK State Management Architecture
 
@@ -412,32 +266,25 @@ The components include comprehensive test suites to verify:
 
 The CodeAnalysis MCP Server provides specialized tools for AI-assisted development. These tools help collect code context that can be fed to AI systems for more effective assistance.
 
-### Client Scripts
+### Client Scripts Reference
 
-The repository includes several client scripts in the `tools/` directory:
+For detailed usage instructions on client tools, see the [Using the MCP Server and Clients](#using-the-mcp-server-and-clients) section above.
 
-- **HTTP Client** (`tools/http-client.js`): Connects to the MCP server via HTTP transport (default).
-
-  ```bash
-  node tools/http-client.js --task "Your task description" --files "src/features/*.ts" --search "session"
-  ```
-
-- **Raw Client** (`tools/mcp-raw-client.js`): A simpler client that only captures server information.
-
-  ```bash
-  node tools/mcp-raw-client.js --task "Your task description"
-  ```
-
-- **Simple Client** (`tools/simple-client.js`): Communicates with the server via stdio.
-  ```bash
-  node tools/simple-client.js --task "Your task description" --files "src/features/*.ts"
-  ```
-
-All client scripts generate an `ai-context.json` file in the project root. This file contains valuable context about your codebase that can be shared with AI assistants to provide better-informed responses.
+The generated `ai-context.json` file contains valuable context about your codebase that can be shared with AI assistants to provide better-informed responses.
 
 ### Prompt Template
 
 A prompt template for AI assistants is available at `templates/ai-prompt-template.md`. This template helps structure your requests to AI assistants with proper context from the MCP tools.
+
+Example usage:
+
+```
+I've analyzed my codebase with the MCP Code Analysis tool and have the following context:
+
+[Paste contents of ai-context.json here]
+
+Based on this context, please help me [your specific question/request].
+```
 
 ### Server Transport Modes
 
@@ -445,6 +292,8 @@ The MCP server supports two transport modes:
 
 1. **HTTP Transport** (default): Runs on port 3000 by default. Best for client-server architecture.
 2. **Stdio Transport**: For direct process communication. Set the `STDIO_TRANSPORT=true` environment variable to enable.
+
+For advanced usage and configuration options, see the [MCP Protocol documentation](./docs/mcp-protocol.md).
 
 ## Session Storage Architecture
 
@@ -462,3 +311,40 @@ For more details, see the [Session Store Architecture](docs/session-store.md) do
 - Node.js 18+
 - npm or yarn
 - Redis (optional for development, recommended for production)
+
+## Best Practices for AI-Assisted Development
+
+To get the most out of the MCP Code Analysis tools for AI-assisted development:
+
+1. **Use the all-in-one script for simplicity**:
+
+   ```bash
+   node tools/ai-analyzer.js --task="Your specific task" --files="relevant/files/**/*.ts" --search="key terms"
+   ```
+
+2. **Scope your analysis appropriately**:
+
+   - Use specific file patterns to focus on relevant code
+   - Include search terms to narrow down the context
+   - Use descriptive task names that explain what you're trying to accomplish
+
+3. **Keep the MCP server running between analyses**:
+
+   - Use `KEEP_SERVER=true node tools/ai-analyzer.js ...` to prevent automatic shutdown
+   - This improves performance for multiple consecutive analyses
+
+4. **Use context effectively with AI assistants**:
+
+   - Share the generated `ai-context.json` with AI assistants
+   - Ask specific questions related to the analyzed code
+   - Refer to specific parts of the analysis in your questions
+
+5. **Use CLI tools for deeper analysis**:
+   ```bash
+   # With the server already running
+   npm run cli -- knowledge query ./src "type:class AND implements:SessionStore"
+   ```
+
+## Troubleshooting Common Issues
+
+See the [Using the MCP Server and Clients](#using-the-mcp-server-and-clients) section for detailed troubleshooting steps.

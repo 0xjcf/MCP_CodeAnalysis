@@ -1,19 +1,7 @@
 ---
-Description: Rules and best practices for Pine Script development on TradingView
-Globs: **/*.pine, **/*.pinescript
-Model: fusion
-Context_window: large
-Completion_style: coding
-Rule_type: Auto Attached
-Includes:
-  - structure.mdc
-  - example.mdc
-  - refactoring.mdc
-  - headers.mdc
-  - auto_snapshot.mdc
-  - snapshot_commands.mdc
-  - snapshot_context_menu.mdc
-  - test_cleanup.mdc
+description: 
+globs: **/*.pine, **/*.pinescript
+alwaysApply: false
 ---
 # Pine Script Coding Rules
 

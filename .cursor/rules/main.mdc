@@ -1,34 +1,7 @@
 ---
-Description: Main rules for the repository, integrating all enhancements.
-Globs: **/*
-Model: fusion
-Context_window: large
-Rule_type: Always
-Includes:
-  - knowledge_graph/knowledge_graph.mdc
-  - code_health/code_health.mdc
-  - code_quality/code_quality.mdc
-  - style_guide/style_guide.mdc
-  - qa/qa.mdc
-  - patterns/patterns.mdc
-  - metadata/metadata.mdc
-  - accessibility/accessibility.mdc
-  - web3_security/web3_security.mdc
-  - component_analyzer/component_analyzer.mdc
-  - documentation/why_documentation.mdc
-  - glossary/glossary.mdc
-  - maturity_model/maturity_model.mdc
-  - onboarding/onboarding.mdc
-  - sandbox/sandbox.mdc
-  - cheatsheets/cheatsheets.mdc
-  - debug_history/debug_history.mdc
-  - feedback/feedback.mdc
-  - memory_anchors/memory_anchors.mdc
-  - cross_reference/cross_reference.mdc
-  - monetization_analysis/monetization_analysis.mdc
-  - code_index/code_index.mdc
-  - delta/delta.mdc
-  - pinescript/pinescript.mdc
+description: 
+globs: 
+alwaysApply: true
 ---
 
 # Main Repository Guidelines

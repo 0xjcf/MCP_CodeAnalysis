@@ -1,10 +1,7 @@
 ---
-Description: Rules for the component maturity model, tracking the lifecycle stage of each component from experimental to stable.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.pine, **/*.pinescript, **/*.sol
-Model: fusion
-Context_window: large
-Completion_style: documentation
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.pine, **/*.pinescript, **/*.sol
+alwaysApply: false
 ---
 # Component Maturity Model Guidelines
 

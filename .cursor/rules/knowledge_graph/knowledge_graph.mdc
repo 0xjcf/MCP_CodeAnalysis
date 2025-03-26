@@ -1,10 +1,7 @@
 ---
-Description: Rules for building the centralized knowledge graph, handling JSON/YAML files and graph database interactions.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.json, **/*.yaml, **/*.yml
-Model: fusion
-Context_window: large
-Completion_style: data_processing
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.json, **/*.yaml, **/*.yml
+alwaysApply: false
 ---
 # Knowledge Graph Guidelines
 

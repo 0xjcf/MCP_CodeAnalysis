@@ -1,10 +1,7 @@
 ---
-Description: Guidelines for documenting the reasoning behind code and architectural decisions
-Globs: **/*.md, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.pine, **/*.pinescript, **/*.sol
-Model: fusion
-Context_window: large
-Completion_style: documentation
-Rule_type: Auto Attached
+description: 
+globs: **/*.md, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.pine, **/*.pinescript, **/*.sol
+alwaysApply: false
 ---
 # "Why" Documentation Guidelines
 

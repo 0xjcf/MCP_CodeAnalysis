@@ -1,10 +1,7 @@
 ---
-Description: Guidelines for security best practices in Web3, blockchain, and decentralized application development.
-Globs: **/*.sol, **/*.js, **/*.ts, **/*.jsx, **/*.tsx, **/*.py, **/contracts/**/*.*, **/blockchain/**/*.*, **/web3/**/*.*, **/dapp/**/*.*, **/crypto/**/*.*
-Model: fusion
-Context_window: large
-Completion_style: security
-Rule_type: Auto Attached
+description: 
+globs: **/*.sol, **/*.js, **/*.ts, **/*.jsx, **/*.tsx, **/*.py, **/contracts/**/*.*, **/blockchain/**/*.*, **/web3/**/*.*, **/dapp/**/*.*, **/crypto/**/*.*
+alwaysApply: false
 ---
 # Web3 and Blockchain Security Guidelines
 

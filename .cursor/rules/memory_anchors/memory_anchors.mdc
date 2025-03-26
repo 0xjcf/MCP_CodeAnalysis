@@ -1,10 +1,7 @@
 ---
-Description: Rules for semantic memory anchors, enabling AI to remember and reference important code sections and concepts.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.pine, **/*.pinescript, **/*.sol
-Model: fusion
-Context_window: large
-Completion_style: code_modification
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.pine, **/*.pinescript, **/*.sol
+alwaysApply: false
 ---
 # Semantic Memory Anchors Guidelines
 

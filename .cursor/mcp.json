@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "servers": [
+    {
+      "name": "Code Analysis MCP",
+      "url": "http://localhost:3000/mcp",
+      "description": "AI-powered code analysis and suggestions",
+      "tools": [
+        {
+          "name": "analyze_code",
+          "description": "Analyze code for improvements and suggestions",
+          "parameters": {
+            "code": {
+              "type": "string",
+              "description": "Source code to analyze"
+            }
+          }
+        },
+        {
+          "name": "get_complexity_metrics",
+          "description": "Get code complexity metrics",
+          "parameters": {
+            "code": {
+              "type": "string",
+              "description": "Source code to analyze"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+

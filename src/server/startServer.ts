@@ -26,6 +26,7 @@ import { registerEvolutionFeatures } from "../features/evolution/index.js";
 import { registerSessionTools } from "../features/session-manager/index.js";
 import { registerDevTools } from "../features/dev-tools/index.js";
 import { registerRedisBackedServices } from "./registerRedisBackedServices.js";
+import { registerToolDiscoveryFeatures } from "../utils/tool-discovery.js";
 
 /**
  * Server configuration options
@@ -118,6 +119,7 @@ export async function startServer(options: ServerOptions = {}): Promise<{
     { name: "Evolution", fn: registerEvolutionFeatures },
     { name: "Session Manager", fn: registerSessionTools },
     { name: "Developer Tools", fn: registerDevTools },
+    { name: "Tool Discovery", fn: registerToolDiscoveryFeatures },
   ];
 
   // Track registered tools to avoid duplicates
@@ -132,8 +134,34 @@ export async function startServer(options: ServerOptions = {}): Promise<{
       if (verbose) {
         console.log(`• Registering ${name} features...`);
       }
+
+      // Save original tool method
+      const originalToolMethod = server.tool.bind(server);
+
+      // Override the tool method to prevent duplicate registrations
+      server.tool = function (this: McpServer, id: string, ...args: any[]) {
+        if (registeredTools.has(id)) {
+          if (verbose) {
+            console.log(
+              `  - Tool ${id} is already registered, skipping duplicate registration`
+            );
+          }
+          return this;
+        }
+
+        // Add to tracking set
+        registeredTools.add(id);
+
+        // Call original method with properly typed arguments
+        return (originalToolMethod as any)(id, ...(args as [any, any]));
+      };
+
       // Register the tools
       registerFn(server);
+
+      // Restore original method
+      server.tool = originalToolMethod;
+
       if (verbose) {
         console.log(`✓ ${name} features registered`);
       }
@@ -204,7 +232,7 @@ export async function startServer(options: ServerOptions = {}): Promise<{
     app.use(express.json());
 
     // Set up SSE endpoint for client connections
-    app.get("/sse", (req, res) => {
+    app.get("/mcp", (req, res) => {
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");

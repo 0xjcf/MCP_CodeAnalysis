@@ -1,10 +1,7 @@
 ---
-Description: Standards and guidelines for managing metadata in code files and projects to improve organization and discoverability.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.cs, **/*.go, **/*.rb, **/*.rs, **/*.php, **/*.html, **/*.md, **/*.mdx, **/*.json, **/*.yml, **/*.yaml, **/*.pine, **/*.sol
-Model: fusion
-Context_window: large
-Completion_style: analytical
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.cs, **/*.go, **/*.rb, **/*.rs, **/*.php, **/*.html, **/*.md, **/*.mdx, **/*.json, **/*.yml, **/*.yaml, **/*.pine, **/*.sol
+alwaysApply: false
 ---
 # Metadata Management Guidelines
 

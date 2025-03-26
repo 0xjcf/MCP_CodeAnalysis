@@ -17,112 +17,138 @@ import { registerEvolutionFeatures } from "./features/evolution/index.js";
 import { registerSessionTools } from "./features/session-manager/index.js";
 import { registerDevTools } from "./features/dev-tools/index.js";
 
+// Import the centralized tool registry
+import {
+  initializeToolRegistry,
+  registerToolsWithRegistry,
+  getToolRegistry,
+} from "./registry/index.js";
+
 // Create a new server instance with a name and version
 const server = new McpServer({
   name: "codeanalysis-mcp",
   version: "1.0.0",
 });
 
-// Track registered tools to avoid duplicates
-const registeredTools = new Set<string>();
+// Enable verbose logging if requested
+const verbose = process.env.VERBOSE === "true";
 
-// Helper function to register tools only once
-function registerToolsOnce(registerFn: (server: McpServer) => void) {
-  try {
-    // Register the tools
-    registerFn(server);
-  } catch (error) {
-    console.error(`Error registering tools: ${error}`);
-  }
-}
+// Initialize the tool registry with verbosity setting
+initializeToolRegistry(verbose);
 
-// Register all features
-console.log("• Registering analysis features...");
-registerToolsOnce(registerAnalysisTools);
-console.log("✓");
+// Register all feature modules with their source names
+registerToolsWithRegistry(
+  server,
+  registerAnalysisTools,
+  "basic-analysis",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerCodeMetricsTools,
+  "code-metrics",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerDependencyAnalysisTools,
+  "dependency-analysis",
+  verbose
+);
+registerToolsWithRegistry(server, registerIdeTools, "ide-tools", verbose);
+registerToolsWithRegistry(
+  server,
+  registerCodeQualityTools,
+  "code-quality",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerKnowledgeGraphFeatures,
+  "knowledge-graph",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerVisualizationFeatures,
+  "visualization",
+  verbose
+);
+registerToolsWithRegistry(server, registerMemoryFeatures, "memory", verbose);
+registerToolsWithRegistry(
+  server,
+  registerSocioTechnicalFeatures,
+  "socio-technical",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerMultiRepoFeatures,
+  "multi-repo",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerEvolutionFeatures,
+  "evolution",
+  verbose
+);
+registerToolsWithRegistry(
+  server,
+  registerSessionTools,
+  "session-manager",
+  verbose
+);
+registerToolsWithRegistry(server, registerDevTools, "dev-tools", verbose);
 
-console.log("• Registering code metrics features...");
-registerToolsOnce(registerCodeMetricsTools);
-console.log("✓");
-
-console.log("• Registering dependency analysis features...");
-registerToolsOnce(registerDependencyAnalysisTools);
-console.log("✓");
-
-console.log("• Registering IDE tools features...");
-registerToolsOnce(registerIdeTools);
-console.log("✓");
-
-console.log("• Registering code quality features...");
-registerToolsOnce(registerCodeQualityTools);
-console.log("✓");
-
-console.log("• Registering knowledge graph features...");
-registerToolsOnce(registerKnowledgeGraphFeatures);
-console.log("✓");
-
-console.log("• Registering visualization features...");
-registerToolsOnce(registerVisualizationFeatures);
-console.log("✓");
-
-console.log("• Registering memory features...");
-registerToolsOnce(registerMemoryFeatures);
-console.log("✓");
-
-console.log("• Registering socio-technical features...");
-registerToolsOnce(registerSocioTechnicalFeatures);
-console.log("✓");
-
-console.log("• Registering multi-repo features...");
-registerToolsOnce(registerMultiRepoFeatures);
-console.log("✓");
-
-console.log("• Registering evolution features...");
-registerToolsOnce(registerEvolutionFeatures);
-console.log("✓");
-
-console.log("• Registering session manager features...");
-registerToolsOnce(registerSessionTools);
-console.log("✓");
-
-console.log("• Registering developer tools features...");
-registerToolsOnce(registerDevTools);
-console.log("✓");
-
+// Display the tool registration summary
+const registry = getToolRegistry();
 console.log("✓ Tool registration complete");
+console.log(registry.getRegistrationSummary());
 
-// Use HTTP transport with SSE by default, with fallback to stdio if STDIO_TRANSPORT is set
-const useStdio = process.env.STDIO_TRANSPORT === "true";
-const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-
-if (useStdio) {
-  // For stdio transport
+// Check if we should use stdio transport
+if (process.env.STDIO_TRANSPORT === "true") {
   console.log("Server configured for stdio transport");
-  const transport = new StdioServerTransport();
-
-  // Connect using stdio transport
+  const stdioTransport = new StdioServerTransport();
   server
-    .connect(transport)
+    .connect(stdioTransport)
     .then(() => {
       console.log("✓ Server connected and ready to handle stdio requests");
     })
     .catch((err) => {
-      console.error("Failed to start server with stdio transport:", err);
+      console.error("Failed to connect to stdio transport:", err);
     });
 } else {
-  // For HTTP transport with SSE
-  console.log(`Server configured for HTTP transport on port ${port}`);
-
-  // Create Express app
+  // Setup HTTP transport
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
   const app = express();
-  app.use(express.json());
+
+  // Add headers to fix CORS issues
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+  });
+
+  // Define route for GET /
+  app.get("/", (req, res) => {
+    res.json({
+      status: "ok",
+      server: "MCP Code Analysis Server",
+      version: "1.0.0",
+    });
+  });
 
   // Set up SSE endpoint for client connections
-  app.get("/sse", (req, res) => {
+  app.get("/mcp", (req, res) => {
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
+    // Create SSE transport for this connection
     const transport = new SSEServerTransport("/messages", res);
 
     // Connect the MCP server to this transport
@@ -144,18 +170,12 @@ if (useStdio) {
     }
   });
 
-  // Simple health check endpoint
-  app.get("/", (req, res) => {
-    res.status(200).json({
-      status: "ok",
-      server: "MCP Code Analysis Server",
-      version: "1.0.0",
-    });
-  });
-
   // Start the HTTP server
   app.listen(port, () => {
     console.log(`✓ Server listening on port ${port}`);
     console.log("✓ MCP server ready to handle HTTP requests");
   });
+
+  // Output the transport info
+  console.log(`Server configured for HTTP transport on port ${port}`);
 }

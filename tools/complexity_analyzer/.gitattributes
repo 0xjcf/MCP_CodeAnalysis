@@ -1,0 +1,35 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Rust source files
+*.rs text rust
+
+# Documentation
+*.md text diff=markdown
+*.txt text
+
+# Scripts
+*.sh text eol=lf
+*.bat text eol=crlf
+
+# Config files
+*.toml text
+*.json text
+*.yaml text
+*.yml text
+
+# Generated files
+/target/ -text
+*.o -text
+*.obj -text
+*.exe -text
+*.dll -text
+*.so -text
+*.dylib -text
+
+# IDE files
+.idea/ -text
+.vscode/ -text
+*.swp -text
+*.swo -text
+.DS_Store -text 

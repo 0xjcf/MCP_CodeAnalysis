@@ -1,10 +1,7 @@
 ---
-Description: Guidelines for maintaining consistent coding styles and standards across the project.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.cs, **/*.go, **/*.rb, **/*.php, **/*.swift, **/*.kt, **/*.html, **/*.css, **/*.scss, **/*.sass, **/*.less, **/*.pine, **/*.sol
-Model: fusion
-Context_window: large
-Completion_style: stylistic
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.java, **/*.c, **/*.cpp, **/*.cs, **/*.go, **/*.rb, **/*.php, **/*.swift, **/*.kt, **/*.html, **/*.css, **/*.scss, **/*.sass, **/*.less, **/*.pine, **/*.sol
+alwaysApply: false
 ---
 # Living Style Guide Guidelines
 

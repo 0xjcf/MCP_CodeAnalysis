@@ -1,10 +1,7 @@
 ---
-Description: Rules for the feedback loop system, including user feedback collection, analysis, and integration into the development process.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.json
-Model: fusion
-Context_window: large
-Completion_style: scripting
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.json
+alwaysApply: false
 ---
 # Feedback Loop Guidelines
 

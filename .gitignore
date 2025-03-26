@@ -9,6 +9,12 @@ out/
 *.tsbuildinfo
 target/
 
+# Rust specific
+**/target/
+**/*.rs.bk
+Cargo.lock
+!tools/complexity_analyzer/Cargo.lock
+
 # Logs
 logs/
 *.log
@@ -60,6 +66,8 @@ temp/
 .DS_Store
 Thumbs.db
 *.bak
+*.swp
+*.swo
 
 # Redis dump files
 dump.rdb
@@ -76,3 +84,19 @@ llms-*.txt
 
 # Database files
 data/ 
+/target
+
+/target/debug/
+
+# MCP specific
+.mcp-history
+.mcp-session
+complexity_analysis*.json
+
+# MCP specific
+tools/complexity_analyzer/test-output.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3

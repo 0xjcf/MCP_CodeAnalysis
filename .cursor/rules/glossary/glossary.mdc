@@ -1,10 +1,7 @@
 ---
-Description: Rules for the glossary of terms, providing definitions for domain-specific terminology used in the codebase.
-Globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.json, **/*.css, **/*.scss, **/*.less, **/*.vue, **/*.svelte
-Model: fusion
-Context_window: large
-Completion_style: documentation
-Rule_type: Auto Attached
+description: 
+globs: **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.py, **/*.html, **/*.md, **/*.json, **/*.css, **/*.scss, **/*.less, **/*.vue, **/*.svelte
+alwaysApply: false
 ---
 # Glossary of Terms Guidelines
 

@@ -1,0 +1,29 @@
+[package]
+name = "complexity_analyzer"
+version = "0.1.0"
+edition = "2021"
+authors = ["Your Name <your.email@example.com>"]
+description = "A tool for analyzing code complexity in Rust projects"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+walkdir = "2.4"
+regex = "1.10"
+syn = { version = "2.0", features = ["full", "visit"] }
+quote = "1.0"
+proc-macro2 = "1.0"
+
+[dev-dependencies]
+tempfile = "3.8"
+proptest = "1.4"
+
+[lib]
+name = "complexity_analyzer"
+path = "src/lib.rs"
+
+[[bin]]
+name = "complexity-analyzer"
+path = "src/main.rs"

@@ -1,68 +1,103 @@
 #!/usr/bin/env node
 
+/**
+ * HTTP Client for AI Context Generation
+ * 
+ * Connects to MCP server and generates AI context data
+ */
+
 import fetch from 'node-fetch';
 import fs from 'fs/promises';
+import { existsSync } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
+import { glob } from 'glob';
+import MCPParameterHandler from './lib/parameter-handler.js';
 
-// Default values
-const DEFAULT_SERVER = 'http://localhost:3000';
-const DEFAULT_OUTPUT_FILE = 'ai-context.json';
+// Define command parameters
+const httpClientCommand = {
+  name: 'http-client',
+  description: 'Connect to MCP server and generate AI context data',
+  parameters: [
+    {
+      name: 'task',
+      alias: 't',
+      description: 'Task to analyze (required)',
+      type: 'string',
+      required: true
+    },
+    {
+      name: 'files',
+      alias: 'f',
+      description: 'Files pattern to analyze (e.g., "**/*.js")',
+      type: 'string',
+      default: '*'
+    },
+    {
+      name: 'search',
+      alias: 's',
+      description: 'Search term to find in files',
+      type: 'string'
+    },
+    {
+      name: 'output',
+      alias: 'o',
+      description: 'Output file path',
+      type: 'string',
+      default: 'ai-context.json'
+    },
+    {
+      name: 'server',
+      alias: 'S',
+      description: 'MCP server URL',
+      type: 'string',
+      default: 'http://localhost:3000'
+    },
+    {
+      name: 'port',
+      alias: 'p',
+      description: 'Override port in server URL',
+      type: 'number'
+    },
+    {
+      name: 'verbose',
+      alias: 'v',
+      description: 'Enable verbose output',
+      type: 'boolean',
+      default: false
+    }
+  ]
+};
 
-// Parse command line args
-const args = process.argv.slice(2);
-const taskIndex = args.indexOf('--task');
-const filesIndex = args.indexOf('--files');
-const serverIndex = args.indexOf('--server');
+// Parse parameters
+const paramHandler = new MCPParameterHandler(httpClientCommand);
 
-const task = taskIndex !== -1 && taskIndex + 1 < args.length ? args[taskIndex + 1] : null;
-const filesPattern = filesIndex !== -1 && filesIndex + 1 < args.length ? args[filesIndex + 1] : '*';
-const serverUrl = serverIndex !== -1 && serverIndex + 1 < args.length ? args[serverIndex + 1] : DEFAULT_SERVER;
-
-// Validate required args
-if (!task) {
-  console.error('Error: --task parameter is required');
-  console.log('Usage: node http-client.js --task "Your task description" [--files "glob/pattern/*.js"] [--server "http://localhost:3000"]');
-  process.exit(1);
+// Check for help flag first
+const hasHelpFlag = process.argv.includes('--help') || process.argv.includes('-h');
+if (hasHelpFlag) {
+  console.log(paramHandler.getHelpText());
+  process.exit(0);
 }
 
-// Helper function to make JSON-RPC requests
-async function jsonRpcRequest(method, params = {}) {
-  try {
-    // Use the /messages endpoint for all JSON-RPC requests
-    const response = await fetch(`${serverUrl}/messages`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: Date.now(),
-        method,
-        params,
-      }),
-    });
+// Parse actual parameters
+const params = paramHandler.parse(process.argv.slice(2));
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    if (data.error) {
-      throw new Error(`JSON-RPC error: ${data.error.message}`);
-    }
-    
-    return data.result;
-  } catch (error) {
-    throw new Error(`Failed to connect to MCP server: ${error.message}`);
+// Apply port override if specified
+let serverUrl = params.server;
+if (params.port) {
+  const urlObj = new URL(serverUrl);
+  urlObj.port = params.port.toString();
+  serverUrl = urlObj.toString();
+  
+  if (params.verbose) {
+    console.log(`Using server URL with overridden port: ${serverUrl}`);
   }
 }
 
 // Main function
 async function main() {
   try {
-    console.log(`Task: ${task}`);
+    console.log(`Task: ${params.task}`);
     console.log(`Connecting to MCP server at ${serverUrl}...`);
     
     // First check if server is running with a basic health check
@@ -71,47 +106,141 @@ async function main() {
       if (!response.ok) {
         throw new Error(`Server returned status ${response.status}`);
       }
-      const data = await response.json();
-      console.log(`Connected to server: ${data.server} v${data.version}`);
+      const text = await response.text();
+      
+      // Try to parse as JSON if possible
+      let serverInfo = { server: "MCP Server", version: "Unknown" };
+      try {
+        serverInfo = JSON.parse(text);
+      } catch (e) {
+        // Extract from HTML if JSON parsing fails
+        const nameMatch = text.match(/<title>(.*?)<\/title>/);
+        if (nameMatch && nameMatch[1]) {
+          serverInfo.server = nameMatch[1];
+        }
+      }
+      
+      console.log(`Connected to server: ${serverInfo.server} ${serverInfo.version ? `v${serverInfo.version}` : ''}`);
     } catch (error) {
       throw new Error(`Server not reachable: ${error.message}`);
     }
     
     // Collect available data for the context
     try {
-      const serverInfo = {
-        name: "MCP Code Analysis Server",
-        version: "1.0.0"
-      };
-      
-      // For a future improvement, we could implement proper JSON-RPC over HTTP
-      // Currently just creating a simple context with the task and files pattern
       console.log('Preparing context data...');
       
-      // Prepare context object with available data
+      // Find matching files directly
+      const matchingFiles = await glob(params.files);
+      const fileContents = {};
+      const searchResults = { matches: [] };
+      
+      if (params.verbose) {
+        console.log(`Found ${matchingFiles.length} files matching pattern: ${params.files}`);
+      }
+      
+      // If search term is provided, use grep
+      if (params.search) {
+        console.log(`Searching for "${params.search}" in ${params.files}...`);
+        try {
+          // Use grep to search for the term
+          const grepCmd = `grep -n -r "${params.search}" ${params.files} --include="*.ts" --include="*.js" --color=never | head -n 50`;
+          
+          if (params.verbose) {
+            console.log(`Running search command: ${grepCmd}`);
+          }
+          
+          const grepOutput = execSync(grepCmd, { encoding: 'utf-8' }).trim();
+          
+          // Parse grep output
+          if (grepOutput) {
+            const matches = grepOutput.split('\n').map(line => {
+              const [filePath, lineNum, ...contentParts] = line.split(':');
+              return {
+                file: filePath,
+                lineNum: parseInt(lineNum, 10),
+                content: contentParts.join(':').trim()
+              };
+            });
+            
+            searchResults.matches = matches;
+            
+            if (params.verbose) {
+              console.log(`Found ${matches.length} matches for search term`);
+            }
+            
+            // Get file contents for top matches
+            for (const match of matches.slice(0, 10)) {
+              if (!fileContents[match.file] && existsSync(match.file)) {
+                fileContents[match.file] = await fs.readFile(match.file, 'utf-8');
+              }
+            }
+          }
+        } catch (error) {
+          console.log(`Note: Search failed: ${error.message}`);
+        }
+      } else {
+        // Just load first 10 matching files
+        for (const file of matchingFiles.slice(0, 10)) {
+          if (existsSync(file)) {
+            fileContents[file] = await fs.readFile(file, 'utf-8');
+          }
+        }
+      }
+      
+      // Get basic project info
+      let projectInfo = {};
+      try {
+        const packageJsonPath = path.join(process.cwd(), 'package.json');
+        if (existsSync(packageJsonPath)) {
+          const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
+          const packageJson = JSON.parse(packageJsonContent);
+          projectInfo = {
+            name: packageJson.name,
+            version: packageJson.version,
+            description: packageJson.description,
+            dependencies: Object.keys(packageJson.dependencies || {}),
+            devDependencies: Object.keys(packageJson.devDependencies || {})
+          };
+        }
+      } catch (error) {
+        console.log(`Note: Package info not available: ${error.message}`);
+      }
+      
+      // Create context object with combined results
       const context = {
-        server: serverInfo,
-        task: task,
-        files: filesPattern,
-        timestamp: new Date().toISOString()
+        server: {
+          name: "MCP Code Analysis Server",
+          version: "1.0.0"
+        },
+        task: params.task,
+        files: params.files,
+        matchingFileCount: matchingFiles.length,
+        searchTerm: params.search || undefined,
+        timestamp: new Date().toISOString(),
+        projectInfo,
+        searchResults,
+        fileContents
       };
       
       // Write context to file
       await fs.writeFile(
-        DEFAULT_OUTPUT_FILE,
+        params.output,
         JSON.stringify(context, null, 2),
         'utf-8'
       );
       
-      console.log(`✓ Context saved to ${DEFAULT_OUTPUT_FILE}`);
+      console.log(`✅ Context saved to ${params.output}`);
       
     } catch (error) {
       throw new Error(`Failed to prepare context data: ${error.message}`);
     }
     
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    console.error('Make sure the server is running with HTTP transport enabled on port 3000');
+    console.error(`❌ Error: ${error.message}`);
+    if (params.verbose) {
+      console.error(error.stack);
+    }
+    console.error('Make sure the server is running with HTTP transport enabled');
     process.exit(1);
   }
 }
