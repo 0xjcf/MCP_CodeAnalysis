@@ -2,72 +2,80 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Optimize session continuation workflow and context management for server architecture",
+      "description": "Implement Web Components analyzer with ignite-element and lit-html support",
       "priority": "high",
       "priority_level": 1,
-      "estimated_time": "90 minutes",
+      "estimated_time": "120 minutes",
       "status": "pending",
       "details": {
-        "workflow_improvements": [
-          "Reorder context generation sequence for server endpoints",
-          "Enhance AI context integration with API endpoints",
-          "Add context validation for server requests",
-          "Improve error handling for distributed operations"
+        "implementation_requirements": [
+          "Create Web Components parser for ignite-element and lit-html",
+          "Implement component lifecycle analysis",
+          "Add shadow DOM usage analysis",
+          "Support custom element analysis",
+          "Add property and event analysis"
         ],
         "implementation_approach": [
-          "Update session_continuation.sh for server compatibility",
-          "Add validation for ai-context.json API responses",
-          "Modify context merger for distributed context handling",
-          "Implement comprehensive error handling for API failures"
+          "Create web-components-analyzer.ts module",
+          "Implement AST parsing for web components",
+          "Add component relationship analysis",
+          "Create component visualization tools",
+          "Add performance analysis capabilities"
         ],
         "success_criteria": [
-          "All context files properly validated for server use",
-          "AI context used as primary context source in API responses",
-          "Improved error messages and handling for distributed operations",
-          "Faster and more reliable context generation in server environment"
+          "Successfully parses ignite-element components",
+          "Accurately analyzes lit-html templates",
+          "Identifies component relationships and dependencies",
+          "Generates useful component visualizations",
+          "Provides actionable performance insights"
         ]
       }
     },
     {
       "id": "goal-2",
-      "description": "Enhance context validation and error handling for server architecture",
+      "description": "Enhance AI developer experience for Web Components analysis",
       "priority": "high",
       "priority_level": 2,
       "estimated_time": "60 minutes",
       "status": "pending",
       "details": {
-        "validation_requirements": [
-          "JSON schema validation for API requests/responses",
-          "Required field checking for server endpoints",
-          "Data type validation for distributed operations",
-          "Relationship validation between server components"
+        "ai_experience_improvements": [
+          "Add memory anchors for key component patterns",
+          "Implement component pattern recognition",
+          "Create component best practices guide",
+          "Add component refactoring suggestions",
+          "Implement component optimization recommendations"
         ],
-        "error_handling": [
-          "Graceful fallbacks for network failures",
-          "Clear error messages for API consumers",
-          "Recovery procedures for distributed operations",
-          "Logging improvements for server monitoring"
+        "documentation_requirements": [
+          "Document component analysis patterns",
+          "Create component analysis examples",
+          "Add component optimization guides",
+          "Document AI interaction patterns",
+          "Create troubleshooting guide"
         ]
       }
     },
     {
       "id": "goal-3",
-      "description": "Document server architecture workflow improvements and API guidelines",
+      "description": "Integrate Web Components analyzer with existing analysis pipeline",
       "priority": "medium",
       "priority_level": 3,
       "estimated_time": "45 minutes",
       "status": "pending",
       "details": {
-        "documentation_areas": [
-          "Updated server workflow documentation",
-          "API endpoint relationships",
-          "Error handling procedures",
-          "Troubleshooting guide for distributed operations"
+        "integration_requirements": [
+          "Connect with complexity analyzer",
+          "Integrate with security analysis",
+          "Add performance analysis hooks",
+          "Connect with dependency analyzer",
+          "Integrate with state management analysis"
         ],
-        "target_audience": [
-          "API consumers",
-          "Server administrators",
-          "Project maintainers"
+        "testing_requirements": [
+          "Add unit tests for component analysis",
+          "Create integration tests",
+          "Add performance benchmarks",
+          "Test with real-world components",
+          "Validate analysis accuracy"
         ]
       }
     }
@@ -75,59 +83,57 @@
   "session_metadata": {
     "start_date": "2024-03-26",
     "expected_duration": "3-4 hours",
-    "focus_area": "Server Architecture Workflow Optimization",
+    "focus_area": "Web Components Analysis Implementation",
     "status": "pending"
   },
   "context": {
-    "prior_work": "Completed initial implementation of session continuation workflow and context management",
+    "prior_work": "Completed basic framework detection and initial analysis infrastructure",
     "dependencies": [
-      "Python3 for script execution",
-      "Node.js for AI analyzer",
-      "Rust/Cargo for complexity analysis",
-      "JSON validation tools",
-      "actix-web for server framework",
-      "redis for session storage",
-      "jwt for authentication"
+      "TypeScript for analyzer implementation",
+      "AST parsing libraries",
+      "Component analysis tools",
+      "Visualization libraries",
+      "Testing framework"
     ],
     "resources": [
-      "session_continuation.sh",
-      "ai-analyzer.js",
-      "context_merger.py",
-      "JSON schema definitions",
-      "API endpoint specifications"
+      "web-components-analyzer.ts",
+      "component-analysis-patterns.md",
+      "component-visualization.ts",
+      "analysis-pipeline.ts",
+      "test-components/"
     ]
   },
   "metrics": {
     "baseline": {
-      "context_generation_time": "~2 minutes",
-      "error_handling_coverage": "basic",
-      "validation_coverage": "minimal",
-      "documentation_completeness": "partial",
-      "server_endpoints": "0"
+      "component_analysis_time": "N/A",
+      "pattern_recognition_accuracy": "N/A",
+      "visualization_quality": "N/A",
+      "ai_interaction_success": "N/A",
+      "analysis_coverage": "0%"
     },
     "target": {
-      "context_generation_time": "< 1 minute",
-      "error_handling_coverage": "comprehensive",
-      "validation_coverage": "complete",
-      "documentation_completeness": "full",
-      "server_endpoints": "3"
+      "component_analysis_time": "< 5s per component",
+      "pattern_recognition_accuracy": "> 90%",
+      "visualization_quality": "Clear and useful",
+      "ai_interaction_success": "> 95%",
+      "analysis_coverage": "> 80%"
     }
   },
   "completion_criteria": [
-    "Optimized workflow implemented and tested for server environment",
-    "All context files properly validated for API use",
-    "Comprehensive error handling in place for distributed operations",
-    "Documentation updated and reviewed for server architecture",
-    "Performance metrics meet targets for distributed operations"
+    "Web Components analyzer successfully implemented",
+    "AI developer experience enhanced with memory anchors and patterns",
+    "Analyzer integrated with existing analysis pipeline",
+    "All tests passing with good coverage",
+    "Documentation complete and reviewed"
   ],
   "notes": [
-    "Start with session_continuation.sh updates for server compatibility",
-    "Add validation before context generation for API requests",
-    "Test with various network failure scenarios",
-    "Document all changes thoroughly for API consumers",
-    "Consider backward compatibility for existing clients",
-    "Focus on developer experience for API consumers",
-    "Ensure AI context is primary source in API responses",
-    "Add logging for server monitoring and debugging"
+    "Start with basic component parsing",
+    "Add memory anchors for common patterns",
+    "Focus on ignite-element and lit-html specifics",
+    "Consider PWA implications",
+    "Document all analysis patterns",
+    "Create example components for testing",
+    "Ensure backward compatibility",
+    "Add comprehensive logging"
   ]
 } 

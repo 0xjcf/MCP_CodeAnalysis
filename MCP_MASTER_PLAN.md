@@ -1,90 +1,131 @@
 # MCP Master Plan
 
-## Project Overview
+## Vision
 
-The MCP (Monetization Code Platform) is a comprehensive code analysis and monetization platform that helps developers understand and optimize their codebase's complexity and maintainability. It provides a server-based architecture that allows other projects to connect and run code analysis through API endpoints.
+The MCP (Monetization Code Platform) is a comprehensive code analysis and monetization platform that helps developers understand and optimize their codebase's complexity and maintainability. It provides a server-based architecture that allows any project to connect and run code analysis through API endpoints, regardless of programming language, framework, or architecture.
 
-## Current Status
+## Core Capabilities
 
-- Phase: 2 - Storage Backend Expansion
-- Focus: Rust Component Implementation and Testing
-- Active Component: Complexity Analyzer
-- Test Coverage: 92% (↑7% from initial 85%)
-- Server Architecture: In Development
+### 1. Code Analysis
 
-## Recent Achievements
+- Complexity analysis (cyclomatic, cognitive, halstead metrics)
+- Static code analysis
+- Dynamic code analysis
+- Dependency analysis
+- Architecture analysis
+- Test coverage analysis
 
-1. Implemented comprehensive edge case handling:
-   - Empty file analysis
-   - Comment-only file analysis
-   - Unicode character support
-   - Complex nested structure handling
-2. Added initial property-based tests:
-   - Cyclomatic complexity properties
-   - Cognitive complexity properties
-3. Improved test coverage from 85% to 92%
-4. Added modular testing approach for better maintainability
-5. Developed initial server architecture components:
-   - AI context generation endpoint
-   - Context merging service
-   - Session management API
+### 2. Language Support
 
-## Next Steps
+- JavaScript/TypeScript
+- Python
+- Rust
+- Pine Script
+- Go
+- Vanilla JavaScript
 
-1. Complete property-based test implementation:
-   - Halstead metrics consistency
-   - Analysis idempotency
-2. Add maximum complexity test cases
-3. Implement integration tests for complex scenarios
-4. Consider additional complexity metrics
-5. Update main project documentation
-6. Add refactoring guidelines for high-complexity functions
-7. Develop server architecture:
-   - Implement RESTful API endpoints
-   - Add WebSocket support for real-time analysis
-   - Create client SDK for easy integration
-   - Add authentication and rate limiting
-   - Implement session management
-   - Add API documentation
+### 3. Framework Analysis
 
-## API Endpoints
+- React/Next.js
+- Vue.js
+- Angular
+- Web Components (lit-html, Stencil, Ionic)
+- XState
+- PWA
 
-1. Analysis Endpoints:
+### 4. Security Analysis
 
-   - POST /api/v1/analyze/complexity
-   - POST /api/v1/analyze/knowledge-graph
-   - POST /api/v1/analyze/monetization
-   - POST /api/v1/analyze/ai-context
+- Authentication flow validation
+- Data privacy compliance
+- Security best practices
+- OWASP compliance
+- Vulnerability scanning
 
-2. Session Management:
+### 5. Performance Analysis
 
-   - POST /api/v1/sessions
-   - GET /api/v1/sessions/{id}
-   - PUT /api/v1/sessions/{id}
-   - DELETE /api/v1/sessions/{id}
+- Load time optimization
+- Resource optimization
+- Caching strategy
+- Memory usage
+- State management analysis
 
-3. Context Management:
-   - POST /api/v1/context/merge
-   - GET /api/v1/context/{id}
-   - PUT /api/v1/context/{id}
+### 6. Development Tools
 
-## Technical Debt
+- Real-time analysis
+- Batch analysis
+- Incremental analysis
+- Custom rule support
+- Analysis reporting
+- Analysis visualization
 
-1. High complexity functions requiring refactoring:
+## API Structure
 
-   - analyze_directory (CC: 18)
-   - calculate_cyclomatic_complexity (CC: 15)
-   - calculate_cognitive_complexity (CC: 17)
-   - calculate_halstead_metrics (CC: 17)
+### Core Analysis Endpoints
 
-2. Server Architecture Debt:
-   - Convert local tools to server endpoints
-   - Implement proper error handling
-   - Add request validation
-   - Set up monitoring and logging
-   - Implement caching strategy
+- POST /api/v1/analyze/complexity
+- POST /api/v1/analyze/security
+- POST /api/v1/analyze/performance
+- POST /api/v1/analyze/state
+- POST /api/v1/analyze/architecture
+- POST /api/v1/analyze/dependencies
+
+### Language-Specific Endpoints
+
+- POST /api/v1/analyze/javascript
+- POST /api/v1/analyze/python
+- POST /api/v1/analyze/rust
+- POST /api/v1/analyze/pinescript
+- POST /api/v1/analyze/vanilla-js
+- POST /api/v1/analyze/go
+
+### Framework-Specific Endpoints
+
+- POST /api/v1/analyze/react
+- POST /api/v1/analyze/vue
+- POST /api/v1/analyze/angular
+- POST /api/v1/analyze/nextjs
+- POST /api/v1/analyze/web-components
+- POST /api/v1/analyze/lit-html
+- POST /api/v1/analyze/stencil
+- POST /api/v1/analyze/ionic
+- POST /api/v1/analyze/xstate
+
+### PWA-Specific Endpoints
+
+- POST /api/v1/analyze/pwa/manifest
+- POST /api/v1/analyze/pwa/service-worker
+- POST /api/v1/analyze/pwa/offline-capability
+- POST /api/v1/analyze/pwa/performance
+- POST /api/v1/analyze/pwa/security
+
+### Management Endpoints
+
+- Session Management
+  - POST /api/v1/sessions
+  - GET /api/v1/sessions/{id}
+  - PUT /api/v1/sessions/{id}
+  - DELETE /api/v1/sessions/{id}
+- Context Management
+  - POST /api/v1/context/merge
+  - GET /api/v1/context/{id}
+  - PUT /api/v1/context/{id}
+
+## Client SDKs
+
+### Language Support
+
+- JavaScript/TypeScript SDK
+- Go SDK
+- CLI tool for all languages
+
+### Framework Support
+
+- Web Component SDK
+- PWA analysis SDK
 
 ## Dependencies
+
+### Core Dependencies
 
 - clap: Command-line argument handling
 - serde_json: JSON serialization
@@ -95,40 +136,86 @@ The MCP (Monetization Code Platform) is a comprehensive code analysis and moneti
 - jwt: Authentication
 - prometheus: Metrics and monitoring
 
-## Documentation Status
+### Analysis Dependencies
 
-- Updated:
-  - README with usage instructions
-  - Complexity analysis documentation
-  - Test documentation
-  - Edge case handling documentation
-- Pending:
-  - Main project documentation updates
-  - Refactoring guidelines
-  - Test coverage documentation
-  - API documentation
-  - Client SDK documentation
-  - Server deployment guide
+- tree-sitter: Language parsing
+- eslint: JavaScript analysis
+- pylint: Python analysis
+- rust-analyzer: Rust analysis
+- pine-script-parser: Pine Script analysis
+- lighthouse: PWA analysis
+- web-component-analyzer: Web component analysis
+- lit-html-analyzer: Lit HTML analysis
+- workbox-analyzer: Service worker analysis
+- xstate-analyzer: XState analysis
+- go-analyzer: Go analysis
+- security-analyzer: Security analysis
+- performance-analyzer: Performance analysis
+
+## Documentation
+
+### Core Documentation
+
+- README with usage instructions
+- API documentation
+- Client SDK documentation
+- Server deployment guide
+
+### Analysis Guides
+
+- Complexity analysis documentation
+- Security analysis guide
+- Performance analysis guide
+- State management guide
+- Framework-specific guides
+- Language-specific guides
+
+### Best Practices
+
+- Security best practices guide
+- PWA best practices guide
+- Web Component best practices guide
+- State management best practices guide
+
+## Implementation Status
+
+For detailed implementation status and roadmap, see [Development Roadmap](docs/archive/development_roadmap.md).
 
 ## Metrics
+
+### Code Quality
 
 - Total Cyclomatic Complexity: 110
 - Total Cognitive Complexity: 127
 - High Complexity Functions: 4
 - Test Coverage: 92%
-- API Endpoints: 10 (planned)
-- Client SDKs: 1 (planned)
 
-## Notes
+### Platform Capabilities
 
-- Focus on testing highest complexity functions first
-- Consider extracting common functionality
-- Property-based testing framework in place
-- Edge case handling significantly improved reliability
-- Server architecture needs to support:
-  - Horizontal scaling
-  - Load balancing
-  - Rate limiting
-  - Authentication
-  - Session management
-  - Real-time updates
+- API Endpoints: 25 (planned)
+- Client SDKs: 5 (planned)
+- Supported Languages: 6
+- Supported Frameworks: 9
+- PWA Compliance Checks: 5
+- Web Component Analysis: 4
+- Security Analysis Checks: 4
+- Performance Analysis Checks: 4
+- State Management Analysis: 4
+
+## Architecture Requirements
+
+The server architecture must support:
+
+- Horizontal scaling
+- Load balancing
+- Rate limiting
+- Authentication
+- Session management
+- Real-time updates
+- Language-specific analysis
+- Framework-specific analysis
+- Security analysis
+- Performance analysis
+- PWA compliance checking
+- Web component analysis
+- State management analysis
