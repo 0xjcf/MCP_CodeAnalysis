@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { createWebComponentsAnalyzer } from "../src/analyzer";
+import { createWebComponentsAnalyzer } from "../analyzer";
 
 describe("@mcp/web-components", () => {
   it("should create a WebComponentsAnalyzer instance", () => {

@@ -4,12 +4,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    'eslint:recommended',
-    './typescript.js',
-    './react.js',
-    './prettier.js',
-  ],
+  extends: ['eslint:recommended', './typescript.js', './prettier.js', './react.js'],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
@@ -21,14 +16,14 @@ module.exports = {
     'no-unused-vars': 'off', // Using TypeScript's no-unused-vars instead
     'no-var': 'error',
     'prefer-const': 'error',
-    
+
     // Best practices
-    'eqeqeq': ['error', 'always'],
+    eqeqeq: ['error', 'always'],
     'no-return-await': 'error',
     'require-await': 'error',
-    
+
     // Error prevention
     'no-duplicate-imports': 'error',
     'no-unused-expressions': 'error',
   },
-}; 
+};

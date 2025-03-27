@@ -2,15 +2,18 @@ module.exports = {
   extends: ['prettier'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': ['error', {
-      singleQuote: true,
-      trailingComma: 'all',
-      printWidth: 100,
-      tabWidth: 2,
-      semi: true,
-      bracketSpacing: true,
-      arrowParens: 'avoid',
-      endOfLine: 'lf',
-    }],
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+        printWidth: 100,
+        tabWidth: 2,
+        semi: true,
+        bracketSpacing: true,
+        arrowParens: 'avoid',
+        endOfLine: 'lf',
+      },
+    ],
   },
-}; 
+};
