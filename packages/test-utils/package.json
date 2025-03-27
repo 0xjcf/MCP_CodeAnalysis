@@ -1,0 +1,22 @@
+{
+  "name": "@mcp/test-utils",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run --coverage --reporter=verbose --outputFile=test-results.json"
+  },
+  "dependencies": {
+    "vitest": "^1.6.1"
+  },
+  "devDependencies": {
+    "@mcp/tsconfig": "workspace:*",
+    "@types/jsdom": "^21.1.7",
+    "@vitest/coverage-v8": "^1.6.1",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.0.0",
+    "xstate": "^5.19.2"
+  }
+}
