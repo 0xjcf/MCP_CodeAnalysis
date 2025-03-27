@@ -243,6 +243,13 @@
       "path": "responses"
     },
     {
+      "id": "file:types/xstate.ts",
+      "type": "file",
+      "name": "xstate.ts",
+      "path": "types/xstate.ts",
+      "component": "types"
+    },
+    {
       "id": "file:types/responses.ts",
       "type": "file",
       "name": "responses.ts",
@@ -274,6 +281,20 @@
       "type": "file",
       "name": "memory.ts",
       "path": "types/memory.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:types/component.ts",
+      "type": "file",
+      "name": "component.ts",
+      "path": "types/component.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:types/analyzer.ts",
+      "type": "file",
+      "name": "analyzer.ts",
+      "path": "types/analyzer.ts",
       "component": "types"
     },
     {
@@ -477,6 +498,20 @@
       "path": "features/session-manager"
     },
     {
+      "id": "file:features/web-components/analyzer.test.ts",
+      "type": "file",
+      "name": "analyzer.test.ts",
+      "path": "features/web-components/analyzer.test.ts",
+      "component": "web-components"
+    },
+    {
+      "id": "file:features/web-components/analyzer.ts",
+      "type": "file",
+      "name": "analyzer.ts",
+      "path": "features/web-components/analyzer.ts",
+      "component": "web-components"
+    },
+    {
       "id": "file:features/socio-technical/index.ts",
       "type": "file",
       "name": "index.ts",
@@ -597,6 +632,20 @@
       "component": "memory"
     },
     {
+      "id": "file:features/types/component.ts",
+      "type": "file",
+      "name": "component.ts",
+      "path": "features/types/component.ts",
+      "component": "types"
+    },
+    {
+      "id": "file:features/types/analyzer.ts",
+      "type": "file",
+      "name": "analyzer.ts",
+      "path": "features/types/analyzer.ts",
+      "component": "types"
+    },
+    {
       "id": "file:features/knowledge-graph/graph-manager.ts",
       "type": "file",
       "name": "graph-manager.ts",
@@ -704,6 +753,12 @@
       "type": "documentation",
       "name": "redis-integration",
       "path": "redis-integration.md"
+    },
+    {
+      "id": "doc:session-goal-template.md",
+      "type": "documentation",
+      "name": "session-goal-template",
+      "path": "session-goal-template.md"
     },
     {
       "id": "doc:MCP_MASTER_PLAN.md",
@@ -2016,6 +2071,36 @@
       "type": "imports"
     },
     {
+      "source": "file:features/web-components/analyzer.test.ts",
+      "target": "file:lit\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/web-components/analyzer.test.ts",
+      "target": "file:lit-html\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/web-components/analyzer.ts",
+      "target": "file:lit-html\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/web-components/analyzer.ts",
+      "target": "file:lit\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/web-components/analyzer.ts",
+      "target": "file:ignite-element\";",
+      "type": "imports"
+    },
+    {
+      "source": "file:features/web-components/analyzer.ts",
+      "target": "file:{",
+      "type": "imports"
+    },
+    {
       "source": "component:socio-technical",
       "target": "file:features/socio-technical/index.ts",
       "type": "contains"
@@ -2483,7 +2568,7 @@
   ],
   "metadata": {
     "version": "1.0",
-    "generated_at": "2025-03-26T16:57:04.701126",
+    "generated_at": "2025-03-26T22:00:59.231649",
     "base_directory": "/home/jose/Dev/MCP_CodeAnalysis"
   }
 }

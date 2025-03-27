@@ -5,16 +5,16 @@ I'm continuing work on the MCP Code Analysis project. Here's the context from my
 ## Project Context
 
 - Last Session: 2024-03-26
-- Current Phase: Phase 2 - Storage Backend Expansion
-- Focus Area: Rust Component Implementation and Testing
+- Current Phase: Phase 2 - Monorepo Restructuring
+- Focus Area: Project Structure and Development Planning
 
 ## Active Development
 
 Currently working on:
 
-- Component: complexity_analyzer
-- Status: Completed - Testing Phase
-- Progress: 100%
+- Component: monorepo-setup
+- Status: In Progress
+- Progress: 60%
 
 ## Technical Context
 
@@ -6791,6 +6791,382 @@ export interface MemoryQuery {
   insightTypes?: string[];
 
   - Type: data
+- "low" | "medium" | "high"; export interface PropertyValidation { type:
+  - Context: or the MCP platform
+ */
+
+export type ComplexityLevel = "low" | "medium" | "high";
+
+export interface PropertyValidation {
+  type: string;
+  required: boolean;
+  pattern?: string;
+  min?: number;
+  max?: n
+  - Type: freemium
+- defaultValue?: any; } export interface ComponentProperty { name: string; type:
+  - Context: me: string;
+  type: string;
+  required: boolean;
+  defaultValue?: any;
+}
+
+export interface ComponentProperty {
+  name: string;
+  type: string;
+  defaultValue?: any;
+  description?: string;
+  validation?:
+  - Type: freemium
+- defaultValue?: any; description?: string; validation?: PropertyValidation; } export interface ComponentMetadata
+  - Context: erty {
+  name: string;
+  type: string;
+  defaultValue?: any;
+  description?: string;
+  validation?: PropertyValidation;
+}
+
+export interface ComponentMetadata {
+  name: string;
+  description?: string;
+  v
+  - Type: freemium
+- description?: string; version?: string; author?: string; properties: PropertyMetadata[]; events: EventMetadata[];
+  - Context: omponentMetadata {
+  name: string;
+  description?: string;
+  version?: string;
+  author?: string;
+  properties: PropertyMetadata[];
+  events: EventMetadata[];
+  methods: MethodMetadata[];
+  styling: Styl
+  - Type: freemium
+- xssPrevention: boolean; eventHandlerSecurity: boolean; propertyValidation: boolean; }; } export interface
+  - Context: s: string[];
+  };
+  security?: {
+    xssPrevention: boolean;
+    eventHandlerSecurity: boolean;
+    propertyValidation: boolean;
+  };
+}
+
+export interface PropertyMetadata {
+  name: string;
+  type: string
+  - Type: freemium
+- }; } export interface PropertyMetadata { name: string; type: string;
+  - Context: olean;
+    eventHandlerSecurity: boolean;
+    propertyValidation: boolean;
+  };
+}
+
+export interface PropertyMetadata {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  defa
+  - Type: freemium
+- ComponentNode { id: string; name: string; type: string; properties: ComponentProperty[];
+  - Context: n: number;
+  };
+}
+
+export interface ComponentNode {
+  id: string;
+  name: string;
+  type: string;
+  properties: ComponentProperty[];
+  events: ComponentEvent[];
+  methods: any[];
+  relationships: Compone
+  - Type: freemium
+- id: string; name: string; type: string; properties: ComponentProperty[]; events: ComponentEvent[];
+  - Context: port interface ComponentNode {
+  id: string;
+  name: string;
+  type: string;
+  properties: ComponentProperty[];
+  events: ComponentEvent[];
+  methods: any[];
+  relationships: ComponentRelationship[];
+  m
+  - Type: freemium
+- PropertyValidation; } export interface ComponentMetadata { name: string; description?: string;
+  - Context: e?: any;
+  description?: string;
+  validation?: PropertyValidation;
+}
+
+export interface ComponentMetadata {
+  name: string;
+  description?: string;
+  version?: string;
+  author?: string;
+  properties: P
+  - Type: ads
+- string; version?: string; author?: string; properties: PropertyMetadata[]; events: EventMetadata[]; methods:
+  - Context: me: string;
+  description?: string;
+  version?: string;
+  author?: string;
+  properties: PropertyMetadata[];
+  events: EventMetadata[];
+  methods: MethodMetadata[];
+  styling: StyleMetadata[];
+  depende
+  - Type: ads
+- author?: string; properties: PropertyMetadata[]; events: EventMetadata[]; methods: MethodMetadata[]; styling: StyleMetadata[];
+  - Context:  string;
+  version?: string;
+  author?: string;
+  properties: PropertyMetadata[];
+  events: EventMetadata[];
+  methods: MethodMetadata[];
+  styling: StyleMetadata[];
+  dependencies: string[];
+  tags: st
+  - Type: ads
+- PropertyMetadata[]; events: EventMetadata[]; methods: MethodMetadata[]; styling: StyleMetadata[]; dependencies: string[]; tags:
+  - Context:   author?: string;
+  properties: PropertyMetadata[];
+  events: EventMetadata[];
+  methods: MethodMetadata[];
+  styling: StyleMetadata[];
+  dependencies: string[];
+  tags: string[];
+  performance?: {
+   
+  - Type: ads
+- EventMetadata[]; methods: MethodMetadata[]; styling: StyleMetadata[]; dependencies: string[]; tags: string[]; performance?:
+  - Context: ies: PropertyMetadata[];
+  events: EventMetadata[];
+  methods: MethodMetadata[];
+  styling: StyleMetadata[];
+  dependencies: string[];
+  tags: string[];
+  performance?: {
+    renderTime?: number;
+    me
+  - Type: ads
+- }; accessibility?: { keyboardSupport: boolean; screenReaderSupport: boolean; ariaAttributes: string[]; };
+  - Context: ber;
+    eventHandling?: number;
+  };
+  accessibility?: {
+    keyboardSupport: boolean;
+    screenReaderSupport: boolean;
+    ariaAttributes: string[];
+  };
+  security?: {
+    xssPrevention: boolean;
+  
+  - Type: ads
+- } export interface PropertyMetadata { name: string; type: string; description?:
+  - Context: eventHandlerSecurity: boolean;
+    propertyValidation: boolean;
+  };
+}
+
+export interface PropertyMetadata {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  default?: any;
+  - Type: ads
+- reflect?: boolean; attribute?: string; readonly?: boolean; } export interface EventMetadata
+  - Context: ion?: string;
+  required?: boolean;
+  default?: any;
+  reflect?: boolean;
+  attribute?: string;
+  readonly?: boolean;
+}
+
+export interface EventMetadata {
+  name: string;
+  description?: string;
+  detail
+  - Type: ads
+- readonly?: boolean; } export interface EventMetadata { name: string; description?:
+  - Context: : any;
+  reflect?: boolean;
+  attribute?: string;
+  readonly?: boolean;
+}
+
+export interface EventMetadata {
+  name: string;
+  description?: string;
+  detail?: any;
+  bubbles?: boolean;
+  composed?: bool
+  - Type: ads
+- boolean; composed?: boolean; } export interface MethodMetadata { name: string;
+  - Context: n?: string;
+  detail?: any;
+  bubbles?: boolean;
+  composed?: boolean;
+}
+
+export interface MethodMetadata {
+  name: string;
+  description?: string;
+  parameters: ParameterMetadata[];
+  returnType?: stri
+  - Type: ads
+- string; description?: string; parameters: ParameterMetadata[]; returnType?: string; async?: boolean; }
+  - Context: export interface MethodMetadata {
+  name: string;
+  description?: string;
+  parameters: ParameterMetadata[];
+  returnType?: string;
+  async?: boolean;
+}
+
+export interface ParameterMetadata {
+  name: str
+  - Type: ads
+- boolean; } export interface ParameterMetadata { name: string; type: string;
+  - Context: ers: ParameterMetadata[];
+  returnType?: string;
+  async?: boolean;
+}
+
+export interface ParameterMetadata {
+  name: string;
+  type: string;
+  description?: string;
+  required?: boolean;
+  default?: any;
+  - Type: ads
+- } export interface StyleMetadata { name: string; description?: string; type:
+  - Context:  string;
+  description?: string;
+  required?: boolean;
+  default?: any;
+}
+
+export interface StyleMetadata {
+  name: string;
+  description?: string;
+  type: "css" | "scss" | "less";
+  content: string;
+}
+
+  - Type: ads
+- "less"; content: string; } export interface ComponentAnalysis { metadata: ComponentMetadata;
+  - Context: g;
+  type: "css" | "scss" | "less";
+  content: string;
+}
+
+export interface ComponentAnalysis {
+  metadata: ComponentMetadata;
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  complexity: "low" 
+  - Type: ads
+- export interface ComponentAnalysis { metadata: ComponentMetadata; issues: AnalysisIssue[]; recommendations: string[];
+  - Context: "scss" | "less";
+  content: string;
+}
+
+export interface ComponentAnalysis {
+  metadata: ComponentMetadata;
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  complexity: "low" | "medium" | "high"
+  - Type: ads
+- AnalysisIssue[]; recommendations: string[]; metadata: ComponentMetadata; } export interface AnalysisIssue {
+  - Context: lexityLevel;
+  dependencies: string[];
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  metadata: ComponentMetadata;
+}
+
+export interface AnalysisIssue {
+  type: string;
+  message: string;
+  sev
+  - Type: ads
+- string[]; metadata: ComponentMetadata; } export interface AnalysisIssue { type: string;
+  - Context: ndencies: string[];
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  metadata: ComponentMetadata;
+}
+
+export interface AnalysisIssue {
+  type: string;
+  message: string;
+  severity: "low" | "med
+  - Type: ads
+- any[]; relationships: ComponentRelationship[]; metadata: ComponentMetadata; } export interface ComponentRelationship {
+  - Context: rty[];
+  events: ComponentEvent[];
+  methods: any[];
+  relationships: ComponentRelationship[];
+  metadata: ComponentMetadata;
+}
+
+export interface ComponentRelationship {
+  type: string;
+  source: string
+  - Type: ads
+- ComponentRelationship[]; metadata: ComponentMetadata; } export interface ComponentRelationship { type: string;
+  - Context: mponentEvent[];
+  methods: any[];
+  relationships: ComponentRelationship[];
+  metadata: ComponentMetadata;
+}
+
+export interface ComponentRelationship {
+  type: string;
+  source: string;
+  target: string;
+  - Type: ads
+- }; code?: string; } export interface Analyzer { analyzeComponent(component: any):
+  - Context: n: number;
+  };
+  code?: string;
+}
+
+export interface Analyzer {
+  analyzeComponent(component: any): Promise<AnalysisResult>;
+}
+
+  - Type: freemium
+- * Core analyzer types for the MCP platform
+  - Context: /**
+ * Core analyzer types for the MCP platform
+ */
+
+import { ComponentMetadata } from "./component";
+
+export interface AnalysisResult {
+  type: "web-component";
+  name: string
+  - Type: ads
+- issues: AnalysisIssue[]; recommendations: string[]; metadata: ComponentMetadata; } export interface AnalysisIssue
+  - Context: m" | "high";
+  dependencies: string[];
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  metadata: ComponentMetadata;
+}
+
+export interface AnalysisIssue {
+  type: string;
+  message: string;
+  sev
+  - Type: ads
 - module provides a factory function to start an MCP server
   - Context: /**
  * Server Initialization
@@ -15148,6 +15524,3765 @@ import {
   clearSession,
   getSessi
   - Type: freemium
+- * Basic tests for the Web Components Analyzer
+ * Tests core functionality and basic component analysis
+  - Context: /**
+ * Basic tests for the Web Components Analyzer
+ * Tests core functionality and basic component analysis
+ */
+
+  - Type: freemium
+- * Basic tests for the Web Components Analyzer
+ * Tests core functionality and basic component analysis
+  - Context: /**
+ * Basic tests for the Web Components Analyzer
+ * Tests core functionality and basic component analysis
+ */
+
+import { WebComponentsAnalyzer } from "./analyzer";
+import { LitElement } f
+  - Type: freemium
+- * Test component for analyzer testing
+  - Context: on
+/**
+ * Test component for analyzer testing
+ */
+class TestComponent extends LitElement {
+  static properties = {
+    name: { type: String },
+    count: { type: Number },
+  };
+
+  private _name: string =
+  - Type: freemium
+- MEMORY_ANCHOR: {test} component_analysis_test
+  it("should analyze a basic component", async () => {
+    const component = new TestComponent();
+    const result = await analy
+  - Context: ponentsAnalyzer();
+  });
+
+  // MEMORY_ANCHOR: {test} component_analysis_test
+  it("should analyze a basic component", async () => {
+    const component = new TestComponent();
+    const result = await analy
+  - Type: freemium
+- MEMORY_ANCHOR: {test} property_analysis_test
+  test("should analyze component properties", async () => {
+    const component
+  - Context: && issue.message.includes("shadow DOM")
+      )
+    ).toBe(true);
+  });
+
+  // MEMORY_ANCHOR: {test} property_analysis_test
+  test("should analyze component properties", async () => {
+    const component 
+  - Type: freemium
+- MEMORY_ANCHOR: {test} property_analysis_test
+  test("should analyze component properties", async () => {
+    const component = new TestComponent();
+    const result = await analyzer
+  - Context: Be(true);
+  });
+
+  // MEMORY_ANCHOR: {test} property_analysis_test
+  test("should analyze component properties", async () => {
+    const component = new TestComponent();
+    const result = await analyzer
+  - Type: freemium
+- Property analysis should be included in the result
+    expect(
+      result.issues.some(
+        (issue
+  - Context: onent = new TestComponent();
+    const result = await analyzer.analyzeComponent(component);
+
+    // Property analysis should be included in the result
+    expect(
+      result.issues.some(
+        (issue
+  - Type: freemium
+- MEMORY_ANCHOR: {test} event_analysis_test
+  test("shou
+  - Context: pect(
+      result.issues.some(
+        (issue) => issue.type === "info" && issue.message.includes("property")
+      )
+    ).toBe(true);
+  });
+
+  // MEMORY_ANCHOR: {test} event_analysis_test
+  test("shou
+  - Type: freemium
+- * Test component for analyzer testing
+  - Context: {test} test_component_definition
+/**
+ * Test component for analyzer testing
+ */
+class TestComponent extends LitElement {
+  static properties = {
+    name: { type: String },
+    count: { type: Number },
+  };
+  - Type: subscription
+- MEMORY_ANCHOR: {test} shadow_dom_analysis_test
+  test("should analyze shadow DOM usage", async () => {
+    const component = n
+  - Context: ;
+    expect(Array.isArray(result.recommendations)).toBe(true);
+  });
+
+  // MEMORY_ANCHOR: {test} shadow_dom_analysis_test
+  test("should analyze shadow DOM usage", async () => {
+    const component = n
+  - Type: ads
+- MEMORY_ANCHOR: {test} shadow_dom_analysis_test
+  test("should analyze shadow DOM usage", async () => {
+    const component = new TestComponent();
+    const result = await ana
+  - Context: s)).toBe(true);
+  });
+
+  // MEMORY_ANCHOR: {test} shadow_dom_analysis_test
+  test("should analyze shadow DOM usage", async () => {
+    const component = new TestComponent();
+    const result = await ana
+  - Type: ads
+- Shadow DOM analysis should be included in the result
+    expect(
+      result.issues.some(
+        (issu
+  - Context: ent = new TestComponent();
+    const result = await analyzer.analyzeComponent(component);
+
+    // Shadow DOM analysis should be included in the result
+    expect(
+      result.issues.some(
+        (issu
+  - Type: ads
+- MEMORY_ANCHOR: {test} property_analysis_test
+  test("
+  - Context: ct(
+      result.issues.some(
+        (issue) => issue.type === "info" && issue.message.includes("shadow DOM")
+      )
+    ).toBe(true);
+  });
+
+  // MEMORY_ANCHOR: {test} property_analysis_test
+  test("
+  - Type: ads
+- <h1>${this.name}</h1> <p>Count: ${this.count}</p> <button @click=${this.increment}>Increment</button> </div> `; } private increment()
+  - Context: tml`
+      <div>
+        <h1>${this.name}</h1>
+        <p>Count: ${this.count}</p>
+        <button @click=${this.increment}>Increment</button>
+      </div>
+    `;
+  }
+
+  private increment() {
+    this.coun
+  - Type: ads
+- Check for state synchronization patterns
+    const syncPatterns = [
+      "subscribe",
+      "observe",
+      "dispatch",
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((
+  - Context: function"
+    );
+
+    // Check for state synchronization patterns
+    const syncPatterns = [
+      "subscribe",
+      "observe",
+      "dispatch",
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((
+  - Type: freemium
+- * This module provides analysis capabilities for Web Components, *
+  - Context: /**
+ * Web Components Analyzer
+ *
+ * This module provides analysis capabilities for Web Components,
+ * specifically focusing on ignite-element and lit-h
+  - Type: freemium
+- beta * * Why: * - Provides comprehensive analysis of
+  - Context: cally focusing on ignite-element and lit-html implementations.
+ *
+ * Maturity: beta
+ *
+ * Why:
+ * - Provides comprehensive analysis of Web Components structure
+ * - Enables understanding of component rel
+  - Type: freemium
+- from "../../types/analyzer"; import { ComponentNode, ComponentMetadata, ComponentProperty, ComponentEvent, ComponentRelationship, PropertyValidation,
+  - Context: lysisIssue } from "../../types/analyzer";
+import {
+  ComponentNode,
+  ComponentMetadata,
+  ComponentProperty,
+  ComponentEvent,
+  ComponentRelationship,
+  PropertyValidation,
+  ValidationRule,
+  Paramete
+  - Type: freemium
+- ComponentProperty, ComponentEvent, ComponentRelationship, PropertyValidation, ValidationRule, Parameter, } from "../../types/component"; import
+  - Context: mponentNode,
+  ComponentMetadata,
+  ComponentProperty,
+  ComponentEvent,
+  ComponentRelationship,
+  PropertyValidation,
+  ValidationRule,
+  Parameter,
+} from "../../types/component";
+import { StateMachin
+  - Type: freemium
+- - Shadow DOM usage analysis * - Property and event
+  - Context: Web Components,
+ * including:
+ * - Component structure analysis
+ * - Shadow DOM usage analysis
+ * - Property and event analysis
+ * - Performance optimization suggestions
+ */
+export class WebComponentsAna
+  - Type: freemium
+- * - Shadow DOM usage * - Property definitions *
+  - Context: of a Web Component,
+   * including:
+   * - Component lifecycle hooks
+   * - Shadow DOM usage
+   * - Property definitions
+   * - Event handlers
+   * - State management patterns
+   */
+  async analyzeCompon
+  - Type: freemium
+- component: LitElement | typeof LitElement ): Promise<AnalysisResult> { const metadata
+  - Context: agement patterns
+   */
+  async analyzeComponent(
+    component: LitElement | typeof LitElement
+  ): Promise<AnalysisResult> {
+    const metadata = this.analyzeMetadata(component);
+    const issues: Analy
+  - Type: freemium
+- Add basic analysis issues
+    issues.push(
+      {
+        type: "info",
+        message: "Component uses sha
+  - Context: ent);
+    const issues: AnalysisIssue[] = [];
+    const recommendations: string[] = [];
+
+    // Add basic analysis issues
+    issues.push(
+      {
+        type: "info",
+        message: "Component uses sha
+  - Type: freemium
+- type: "info", message: "Component has defined properties", severity: "low", },
+  - Context:     severity: "low",
+      },
+      {
+        type: "info",
+        message: "Component has defined properties",
+        severity: "low",
+      },
+      {
+        type: "info",
+        message: "Componen
+  - Type: freemium
+- type: "info", message: "Component has basic accessibility features", severity: "low",
+  - Context: e",
+        severity: "low",
+      },
+      {
+        type: "info",
+        message: "Component has basic accessibility features",
+        severity: "low",
+      }
+    );
+
+    return {
+      type: "web-com
+  - Type: freemium
+- "", version: "1.0.0", properties: [], events: [], methods: [], styling:
+  - Context: t.name
+          : component.constructor.name,
+      description: "",
+      version: "1.0.0",
+      properties: [],
+      events: [],
+      methods: [],
+      styling: [],
+      dependencies: [],
+      t
+  - Type: freemium
+- xssPrevention: false, eventHandlerSecurity: false, propertyValidation: false, }, }; } private
+  - Context:     },
+      security: {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        propertyValidation: false,
+      },
+    };
+  }
+
+  private analyzeProperties(
+    component: LitElement 
+  - Type: freemium
+- Basic prope
+  - Context: entHandlerSecurity: false,
+        propertyValidation: false,
+      },
+    };
+  }
+
+  private analyzeProperties(
+    component: LitElement | typeof LitElement
+  ): ComponentProperty[] {
+    // Basic prope
+  - Type: freemium
+- Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analy
+  - Context:    };
+  }
+
+  private analyzeProperties(
+    component: LitElement | typeof LitElement
+  ): ComponentProperty[] {
+    // Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analy
+  - Type: freemium
+- Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeEvents(
+    componen
+  - Context:  analyzeProperties(
+    component: LitElement | typeof LitElement
+  ): ComponentProperty[] {
+    // Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeEvents(
+    componen
+  - Type: freemium
+- Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeEvents(
+    component: L
+  - Context: zeProperties(
+    component: LitElement | typeof LitElement
+  ): ComponentProperty[] {
+    // Basic property analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeEvents(
+    component: L
+  - Type: freemium
+- Basic event analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeDependencies(
+    compo
+  - Context: private analyzeEvents(
+    component: LitElement | typeof LitElement
+  ): ComponentEvent[] {
+    // Basic event analysis - can be expanded later
+    return [];
+  }
+
+  private analyzeDependencies(
+    compo
+  - Type: freemium
+- Basic dependency analysis - can be expanded later
+    return ["lit-html", "lit-element"];
+  }
+
+  private
+  - Context:   private analyzeDependencies(
+    component: LitElement | typeof LitElement
+  ): string[] {
+    // Basic dependency analysis - can be expanded later
+    return ["lit-html", "lit-element"];
+  }
+
+  private 
+  - Type: freemium
+- component.constructor.name, type: "web-component", properties: [], events: [], methods: [], relationships:
+  - Context:         ? component.name
+          : component.constructor.name,
+      type: "web-component",
+      properties: [],
+      events: [],
+      methods: [],
+      relationships: [],
+      metadata: this.anal
+  - Type: freemium
+- Properties complexity
+    score += node.properties.length;
+
+    // Events complexity
+    score += node.
+  - Context: te calculateComplexity(node: ComponentNode): "low" | "medium" | "high" {
+    let score = 0;
+
+    // Properties complexity
+    score += node.properties.length;
+
+    // Events complexity
+    score += node.
+  - Type: freemium
+- Properties complexity
+    score += node.properties.length;
+
+    // Events complexity
+    score += node.events.length * 2;
+
+    // Methods compl
+  - Context: de): "low" | "medium" | "high" {
+    let score = 0;
+
+    // Properties complexity
+    score += node.properties.length;
+
+    // Events complexity
+    score += node.events.length * 2;
+
+    // Methods compl
+  - Type: freemium
+- Map score to complexity level
+    if (score <= 10) return
+  - Context:     if (!node.metadata.security.eventHandlerSecurity) score += 3;
+      if (!node.metadata.security.propertyValidation) score += 3;
+    }
+
+    // Map score to complexity level
+    if (score <= 10) return
+  - Type: freemium
+- Check properties
+    if (node.properties.length === 0) {
+      issues.push({
+        type: "warning",
+  - Context: ssues(node: ComponentNode): AnalysisIssue[] {
+    const issues: AnalysisIssue[] = [];
+
+    // Check properties
+    if (node.properties.length === 0) {
+      issues.push({
+        type: "warning",
+       
+  - Type: freemium
+- Check properties
+    if (node.properties.length === 0) {
+      issues.push({
+        type: "warning",
+        message: "Component has
+  - Context: e): AnalysisIssue[] {
+    const issues: AnalysisIssue[] = [];
+
+    // Check properties
+    if (node.properties.length === 0) {
+      issues.push({
+        type: "warning",
+        message: "Component has
+  - Type: freemium
+- Check events
+    if (node.events.length =
+  - Context: th === 0) {
+      issues.push({
+        type: "warning",
+        message: "Component has no defined properties",
+        severity: "low",
+      });
+    }
+
+    // Check events
+    if (node.events.length =
+  - Type: freemium
+- severity: "high", }); } if (!node.metadata.security.propertyValidation) { issues.push({ type: "warning",
+  - Context: to XSS attacks",
+          severity: "high",
+        });
+      }
+
+      if (!node.metadata.security.propertyValidation) {
+        issues.push({
+          type: "warning",
+          message: "Component la
+  - Type: freemium
+- "warning", message: "Component lacks property validation", severity: "medium", }); }
+  - Context: yValidation) {
+        issues.push({
+          type: "warning",
+          message: "Component lacks property validation",
+          severity: "medium",
+        });
+      }
+    }
+
+    return issues;
+  }
+
+
+  - Type: freemium
+- Property recommendations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "C
+  - Context: eRecommendations(node: ComponentNode): string[] {
+    const recommendations: string[] = [];
+
+    // Property recommendations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "C
+  - Type: freemium
+- Property recommendations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "Consider adding properties to make the
+  - Context:  string[] {
+    const recommendations: string[] = [];
+
+    // Property recommendations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "Consider adding properties to make the 
+  - Type: freemium
+- Event recommendations
+    if
+  - Context: ations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "Consider adding properties to make the component more configurable"
+      );
+    }
+
+    // Event recommendations
+    if
+  - Type: freemium
+- Accessibility recommendations
+    if (node.metada
+  - Context: node.events.length === 0) {
+      recommendations.push(
+        "Consider adding custom events to improve component interactivity"
+      );
+    }
+
+    // Accessibility recommendations
+    if (node.metada
+  - Type: freemium
+- for user input" ); } if (!node.metadata.security.propertyValidation) { recommendations.push( "Add
+  - Context: ement XSS prevention measures for user input"
+        );
+      }
+
+      if (!node.metadata.security.propertyValidation) {
+        recommendations.push(
+          "Add property validation to improve compo
+  - Type: freemium
+- Performance reco
+  - Context:      if (!node.metadata.security.propertyValidation) {
+        recommendations.push(
+          "Add property validation to improve component reliability"
+        );
+      }
+    }
+
+    // Performance reco
+  - Type: freemium
+- Performance recommendations
+    if (
+  - Context: ecurity.propertyValidation) {
+        recommendations.push(
+          "Add property validation to improve component reliability"
+        );
+      }
+    }
+
+    // Performance recommendations
+    if (
+    
+  - Type: freemium
+- { xssPrevention: false, eventHandlerSecurity: false, propertyValidation: false, }; } componentNode.metadata.security.xssPrevention
+  - Context: adata.security = {
+          xssPrevention: false,
+          eventHandlerSecurity: false,
+          propertyValidation: false,
+        };
+      }
+      componentNode.metadata.security.xssPrevention = fal
+  - Type: freemium
+- Check style encapsulation
+    const styles = shadowRoot.querySelec
+  - Context: structor.name,
+        target: "slot",
+        description: `Uses ${slots.length} slots for content projection`,
+      });
+    }
+
+    // Check style encapsulation
+    const styles = shadowRoot.querySelec
+  - Type: freemium
+- Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.prope
+  - Context: this.generateComponentId(component)
+    );
+    if (!componentNode) return;
+
+    // Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.prope
+  - Type: freemium
+- Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+  - Context: onent)
+    );
+    if (!componentNode) return;
+
+    // Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+  - Type: freemium
+- Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+
+    // Analyze state updat
+  - Context: nentNode) return;
+
+    // Analyze reactive properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+
+    // Analyze state updat
+  - Type: freemium
+- Analyze state update methods
+    this.analyzeStateUpdateMeth
+  - Context: e properties
+    const reactiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+
+    // Analyze state update methods
+    this.analyzeStateUpdateMeth
+  - Type: freemium
+- Analyze state update methods
+    this.analyzeStateUpdateMethods(component, componentNod
+  - Context: tiveProps = this.analyzeReactiveProperties(component);
+    componentNode.properties.push(...reactiveProps);
+
+    // Analyze state update methods
+    this.analyzeStateUpdateMethods(component, componentNod
+  - Type: freemium
+- componentNode); } private analyzeReactiveProperties( component: LitElement ): ComponentProperty[] { const
+  - Context: ation
+    this.analyzeStateSynchronization(component, componentNode);
+  }
+
+  private analyzeReactiveProperties(
+    component: LitElement
+  ): ComponentProperty[] {
+    const properties: ComponentPropert
+  - Type: freemium
+- analyzeReactiveProperties( component: LitElement ): ComponentProperty[] { const properties: ComponentProperty[] =
+  - Context: , componentNode);
+  }
+
+  private analyzeReactiveProperties(
+    component: LitElement
+  ): ComponentProperty[] {
+    const properties: ComponentProperty[] = [];
+    const staticProps =
+      (component.c
+  - Type: freemium
+- ): ComponentProperty[] { const properties: ComponentProperty[] = []; const staticProps
+  - Context:   private analyzeReactiveProperties(
+    component: LitElement
+  ): ComponentProperty[] {
+    const properties: ComponentProperty[] = [];
+    const staticProps =
+      (component.constructor as typeof Li
+  - Type: freemium
+- ComponentProperty[] { const properties: ComponentProperty[] = []; const staticProps =
+  - Context: tiveProperties(
+    component: LitElement
+  ): ComponentProperty[] {
+    const properties: ComponentProperty[] = [];
+    const staticProps =
+      (component.constructor as typeof LitElement).properties 
+  - Type: freemium
+- const properties: ComponentProperty[] = []; const staticProps = (component.constructor as
+  - Context: tElement
+  ): ComponentProperty[] {
+    const properties: ComponentProperty[] = [];
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    Object.entries(static
+  - Type: freemium
+- staticProps = (component.constructor as typeof LitElement).properties || {}; Object.entries(staticProps).forEach(([name, config])
+  - Context: omponentProperty[] = [];
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    Object.entries(staticProps).forEach(([name, config]) => {
+      if (this.isReact
+  - Type: freemium
+- as typeof LitElement).properties || {}; Object.entries(staticProps).forEach(([name, config]) => { if
+  - Context: ps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    Object.entries(staticProps).forEach(([name, config]) => {
+      if (this.isReactiveProperty(config)) {
+        properties.pu
+  - Type: freemium
+- {}; Object.entries(staticProps).forEach(([name, config]) => { if (this.isReactiveProperty(config)) { properties.push({ name,
+  - Context: ties || {};
+
+    Object.entries(staticProps).forEach(([name, config]) => {
+      if (this.isReactiveProperty(config)) {
+        properties.push({
+          name,
+          type: this.getPropertyType(conf
+  - Type: freemium
+- config]) => { if (this.isReactiveProperty(config)) { properties.push({ name, type: this.getPropertyType(config),
+  - Context: ies(staticProps).forEach(([name, config]) => {
+      if (this.isReactiveProperty(config)) {
+        properties.push({
+          name,
+          type: this.getPropertyType(config),
+          defaultValue:
+  - Type: freemium
+- his.isReactiveProperty(config)) { properties.push({ name, type: this.getPropertyType(config), defaultValue: this.getDefaultValue(config), description: "Rea
+  - Context: his.isReactiveProperty(config)) {
+        properties.push({
+          name,
+          type: this.getPropertyType(config),
+          defaultValue: this.getDefaultValue(config),
+          description: "Rea
+  - Type: freemium
+- defaultValue: this.getDefaultValue(config), description: "Reactive property with state management", validation: {
+  - Context: ype(config),
+          defaultValue: this.getDefaultValue(config),
+          description: "Reactive property with state management",
+          validation: {
+            type: this.getPropertyType(config)
+  - Type: freemium
+- with state management", validation: { type: this.getPropertyType(config) as any, required:
+  - Context: ption: "Reactive property with state management",
+          validation: {
+            type: this.getPropertyType(config) as any,
+            required: !this.hasDefaultValue(config),
+            rules: th
+  - Type: freemium
+- any, required: !this.hasDefaultValue(config), rules: this.getReactivePropertyRules(config), }, }); } }); return
+  - Context: ig) as any,
+            required: !this.hasDefaultValue(config),
+            rules: this.getReactivePropertyRules(config),
+          },
+        });
+      }
+    });
+
+    return properties;
+  }
+
+  private 
+  - Type: freemium
+- } }); return properties; } private isReactiveProperty(config: any): boolean {
+  - Context:  rules: this.getReactivePropertyRules(config),
+          },
+        });
+      }
+    });
+
+    return properties;
+  }
+
+  private isReactiveProperty(config: any): boolean {
+    return (
+      config &&
+    
+  - Type: freemium
+- return properties; } private isReactiveProperty(config: any): boolean { return (
+  - Context: (config),
+          },
+        });
+      }
+    });
+
+    return properties;
+  }
+
+  private isReactiveProperty(config: any): boolean {
+    return (
+      config &&
+      (config.state || config.reflect || 
+  - Type: freemium
+- || config.converter) ); } private getReactivePropertyRules(config: any): ValidationRule[] { const
+  - Context: .state || config.reflect || config.hasChanged || config.converter)
+    );
+  }
+
+  private getReactivePropertyRules(config: any): ValidationRule[] {
+    const rules: ValidationRule[] = [];
+
+    if (config.
+  - Type: freemium
+- componentNode: ComponentNode ): void { const prototype = Object.getPrototypeOf(component); const
+  - Context: ateUpdateMethods(
+    component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const updateMethods = Object.getOwnPropertyNames(prot
+  - Type: freemium
+- ComponentNode ): void { const prototype = Object.getPrototypeOf(component); const updateMethods
+  - Context: component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const updateMethods = Object.getOwnPropertyNames(prototype).filter(
+      (
+  - Type: freemium
+- = Object.getPrototypeOf(component); const updateMethods = Object.getOwnPropertyNames(prototype).filter( (name) => { const
+  - Context: id {
+    const prototype = Object.getPrototypeOf(component);
+    const updateMethods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => {
+        const method = prototype[name];
+        if (
+  - Type: freemium
+- const updateMethods = Object.getOwnPropertyNames(prototype).filter( (name) => { const method =
+  - Context:  prototype = Object.getPrototypeOf(component);
+    const updateMethods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => {
+        const method = prototype[name];
+        if (typeof method 
+  - Type: freemium
+- { const method = prototype[name]; if (typeof method !== "function")
+  - Context: ateMethods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => {
+        const method = prototype[name];
+        if (typeof method !== "function") return false;
+        const methodStr = meth
+  - Type: freemium
+- name: method, parameters: this.getMethodParameters(prototype[method]), returnType: "void", description: "State update method",
+  - Context:     componentNode.methods.push({
+        name: method,
+        parameters: this.getMethodParameters(prototype[method]),
+        returnType: "void",
+        description: "State update method",
+        isP
+  - Type: freemium
+- ComponentNode ): void { const prototype = Object.getPrototypeOf(component); const methods
+  - Context: component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) 
+  - Type: freemium
+- = Object.getPrototypeOf(component); const methods = Object.getOwnPropertyNames(prototype).filter( (name) => typeof prototype[name]
+  - Context:  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // C
+  - Type: freemium
+- Check for stora
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for stora
+  - Type: freemium
+- Check for storage usage
+    const storagePatterns = [
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for storage usage
+    const storagePatterns = [
+   
+  - Type: freemium
+- ]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if (
+  - Context: dexedDB",
+      "window.storage",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (
+        storagePatterns.some((pattern) =>
+      
+  - Type: freemium
+- componentNode: ComponentNode ): void { const prototype = Object.getPrototypeOf(component); const
+  - Context: eSynchronization(
+    component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype)
+  - Type: freemium
+- Check for state
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for state
+  - Type: freemium
+- Check for state synchronization patterns
+    const syncPa
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for state synchronization patterns
+    const syncPa
+  - Type: freemium
+- ]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if (
+  - Context: 
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (
+        syncPatterns.some((pattern) =>
+         
+  - Type: freemium
+- ): void { const renderMethod = Object.getPrototypeOf(component).render; if (!renderMethod) return;
+  - Context: ponent: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const renderMethod = Object.getPrototypeOf(component).render;
+    if (!renderMethod) return;
+
+    const renderStr = renderMethod.toStr
+  - Type: freemium
+- prototype = Object.getPrototypeOf(component); const methods = Object.getOwnPropertyNames(prototype).filter( (name) => typeof
+  - Context:  ): void {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    meth
+  - Type: freemium
+- Object.getPrototypeOf(component); const methods = Object.getOwnPropertyNames(prototype).filter( (name) => typeof prototype[name] ===
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    methods.forEach((m
+  - Type: freemium
+- Object.getOwnPropertyNames(prototype).filter( (name) => typeof prototype[name] === "function" ); methods.forEach((method) =>
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    methods.forEach((method) => {
+      const methodStr = protot
+  - Type: freemium
+- Look for event dispatch to specific components
+      const disp
+  - Context: of prototype[name] === "function"
+    );
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString();
+
+      // Look for event dispatch to specific components
+      const disp
+  - Type: freemium
+- Look for shared
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Look for shared
+  - Type: freemium
+- Look for shared state patterns
+    const statePatterns =
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Look for shared state patterns
+    const statePatterns = 
+  - Type: freemium
+- "state-store" }, { pattern: "context", type: "context-provider" }, { pattern:
+  - Context: rns = [
+      { pattern: "store", type: "state-store" },
+      { pattern: "context", type: "context-provider" },
+      { pattern: "service", type: "service-dependency" },
+      { pattern: "provider", typ
+  - Type: freemium
+- "service", type: "service-dependency" }, { pattern: "provider", type: "provider-consumer" },
+  - Context: : "context-provider" },
+      { pattern: "service", type: "service-dependency" },
+      { pattern: "provider", type: "provider-consumer" },
+    ];
+
+    methods.forEach((method) => {
+      const methodStr
+  - Type: freemium
+- "service-dependency" }, { pattern: "provider", type: "provider-consumer" }, ]; methods.forEach((method)
+  - Context: r" },
+      { pattern: "service", type: "service-dependency" },
+      { pattern: "provider", type: "provider-consumer" },
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[metho
+  - Type: freemium
+- ]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); statePatterns.forEach(({ pattern,
+  - Context: er", type: "provider-consumer" },
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+
+      statePatterns.forEach(({ pattern, type }) => {
+     
+  - Type: freemium
+- ); if (!componentNode) return; const prototype = Object.getPrototypeOf(component); const methods
+  - Context: ts.get(
+      this.generateComponentId(component)
+    );
+    if (!componentNode) return;
+
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype)
+  - Type: freemium
+- if (!componentNode) return; const prototype = Object.getPrototypeOf(component); const methods =
+  - Context: erateComponentId(component)
+    );
+    if (!componentNode) return;
+
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name: 
+  - Type: freemium
+- = Object.getPrototypeOf(component); const methods = Object.getOwnPropertyNames(prototype).filter( (name: string) => typeof
+  - Context: ) return;
+
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name: string) => typeof prototype[name] === "function"
+    );
+
+
+  - Type: freemium
+- const methods = Object.getOwnPropertyNames(prototype).filter( (name: string) => typeof prototype[name] ===
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name: string) => typeof prototype[name] === "function"
+    );
+
+    // Check f
+  - Type: freemium
+- Check for ignite-element patterns
+    const ignitePattern
+  - Context: );
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name: string) => typeof prototype[name] === "function"
+    );
+
+    // Check for ignite-element patterns
+    const ignitePattern
+  - Type: freemium
+- ignite-element usage methods.forEach((method: string) => { const methodStr = prototype[method].toString();
+  - Context:  methods for ignite-element usage
+    methods.forEach((method: string) => {
+      const methodStr = prototype[method].toString();
+
+      Object.entries(ignitePatterns).forEach(
+        ([feature, pattern
+  - Type: freemium
+- (!componentNode) return; const renderMethod = Object.getPrototypeOf(component).render; if (!renderMethod) return; const
+  - Context: teComponentId(component)
+    );
+    if (!componentNode) return;
+
+    const renderMethod = Object.getPrototypeOf(component).render;
+    if (!renderMethod) return;
+
+    const renderStr = renderMethod.toStr
+  - Type: freemium
+- { xssPrevention: false, eventHandlerSecurity: false, propertyValidation: false, }; } if
+  - Context: ty = {
+              xssPrevention: false,
+              eventHandlerSecurity: false,
+              propertyValidation: false,
+            };
+          }
+          if (componentNode.metadata.security) {
+
+  - Type: freemium
+- handler security * - Shadow DOM security * - Property
+  - Context: s, including:
+   * - XSS prevention
+   * - Event handler security
+   * - Shadow DOM security
+   * - Property validation
+   */
+  private analyzeSecurity(component: LitElement): void {
+    const componentN
+  - Type: freemium
+- Analyze property validation
+    this.analyzePropertySecurity(component, componentNode);
+
+    // Analyze templat
+  - Context: nt handler security
+    this.analyzeEventHandlerSecurity(component, componentNode);
+
+    // Analyze property validation
+    this.analyzePropertySecurity(component, componentNode);
+
+    // Analyze templat
+  - Type: freemium
+- Analyze property validation
+    this.analyzePropertySecurity(component, componentNode);
+
+    // Analyze template security
+    this.analyzeTemplateS
+  - Context: EventHandlerSecurity(component, componentNode);
+
+    // Analyze property validation
+    this.analyzePropertySecurity(component, componentNode);
+
+    // Analyze template security
+    this.analyzeTemplateS
+  - Type: freemium
+- Analyze template security
+    this.analyzeTemplateSecurity(
+      Object.getPrototypeOf(component).render?.toString() || "",
+      componentNode
+    );
+  }
+
+  private analyzeInput
+  - Context: componentNode);
+
+    // Analyze template security
+    this.analyzeTemplateSecurity(
+      Object.getPrototypeOf(component).render?.toString() || "",
+      componentNode
+    );
+  }
+
+  private analyzeInput
+  - Type: freemium
+- Check for sanit
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for sanit
+  - Type: freemium
+- Check for sanitization patterns
+    const sanitizationPat
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for sanitization patterns
+    const sanitizationPat
+  - Type: freemium
+- = false; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if
+  - Context: 
+    ];
+
+    let hasSanitization = false;
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (sanitizationPatterns.some((pattern) => methodStr.
+  - Type: freemium
+- Check for secur
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for secur
+  - Type: freemium
+- Check for security issues in event handlers
+    const sec
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for security issues in event handlers
+    const sec
+  - Type: freemium
+- const securityIssues = methods.some((method) => { const methodStr = prototype[method].toString().toLowerCase();
+  - Context: ues in event handlers
+    const securityIssues = methods.some((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      return (
+        methodStr.includes("eval(") ||
+     
+  - Type: freemium
+- { xssPrevention: false, eventHandlerSecurity: false, propertyValidation: false, }; } componentNode.metadata.security.eventHandlerSecurity
+  - Context: de.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.eventHandlerSecurity = !s
+  - Type: freemium
+- !securityIssues; } private analyzePropertySecurity( component: LitElement, componentNode: ComponentNode ): void
+  - Context: }
+    componentNode.metadata.security.eventHandlerSecurity = !securityIssues;
+  }
+
+  private analyzePropertySecurity(
+    component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const sta
+  - Type: freemium
+- Check if propertie
+  - Context: tySecurity(
+    component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    // Check if propertie
+  - Type: freemium
+- Check if properties have validation
+    const hasValidation = Object.values(s
+  - Context: omponentNode
+  ): void {
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    // Check if properties have validation
+    const hasValidation = Object.values(s
+  - Type: freemium
+- Check if properties have validation
+    const hasValidation = Object.values(staticProps).some(
+      (config) =>
+  - Context: staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+
+    // Check if properties have validation
+    const hasValidation = Object.values(staticProps).some(
+      (config) =>
+  - Type: freemium
+- Check if properties have validation
+    const hasValidation = Object.values(staticProps).some(
+      (config) =>
+        config && (config.hasChanged || config.converter || config.type)
+  - Context: es || {};
+
+    // Check if properties have validation
+    const hasValidation = Object.values(staticProps).some(
+      (config) =>
+        config && (config.hasChanged || config.converter || config.type)
+  - Type: freemium
+- { xssPrevention: false, eventHandlerSecurity: false, propertyValidation: false, }; } componentNode.metadata.security.propertyValidation
+  - Context: de.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.propertyValidation = hasV
+  - Type: freemium
+- MEMORY_ANCHOR: {core} accessibility_analysis
+  /**
+   * A
+  - Context: urity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.propertyValidation = hasValidation;
+  }
+
+  // MEMORY_ANCHOR: {core} accessibility_analysis
+  /**
+   * A
+  - Type: freemium
+- Check for keybo
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for keybo
+  - Type: freemium
+- Check for keyboard event handlers
+    const hasKeyboardHa
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for keyboard event handlers
+    const hasKeyboardHa
+  - Type: freemium
+- const hasKeyboardHandlers = methods.some((method) => { const methodStr = prototype[method].toString().toLowerCase();
+  - Context: d event handlers
+    const hasKeyboardHandlers = methods.some((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      return (
+        methodStr.includes("keydown") ||
+   
+  - Type: freemium
+- rendered component and its styles const renderMethod = Object.getPrototypeOf(component).render; if
+  - Context: uld need to analyze the actual rendered component and its styles
+    const renderMethod = Object.getPrototypeOf(component).render;
+    if (!renderMethod) return;
+
+    const renderStr = renderMethod.toStr
+  - Type: freemium
+- Check for color-related properties
+    const hasColorProperties =
+      renderStr.includes("color:") ||
+      renderStr.include
+  - Context: nderMethod) return;
+
+    const renderStr = renderMethod.toString();
+
+    // Check for color-related properties
+    const hasColorProperties =
+      renderStr.includes("color:") ||
+      renderStr.include
+  - Type: freemium
+- Check for color-related properties
+    const hasColorProperties =
+      renderStr.includes("color:") ||
+      renderStr.includes("background-color:") ||
+  - Context: t renderStr = renderMethod.toString();
+
+    // Check for color-related properties
+    const hasColorProperties =
+      renderStr.includes("color:") ||
+      renderStr.includes("background-color:") ||
+   
+  - Type: freemium
+- MEMORY_ANCHOR: {co
+  - Context: enderStr.includes("background-color:") ||
+      renderStr.includes("background:");
+
+    if (hasColorProperties) {
+      componentNode.metadata.tags.push("uses-colors");
+    }
+  }
+
+  // MEMORY_ANCHOR: {co
+  - Type: freemium
+- Check for offli
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for offli
+  - Type: freemium
+- Check for offline-related patterns
+    const offlinePatte
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for offline-related patterns
+    const offlinePatte
+  - Type: freemium
+- ]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if (offlinePatterns.some((pattern)
+  - Context: indexedDB",
+      "localStorage",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (offlinePatterns.some((pattern) => methodStr.inclu
+  - Type: freemium
+- Check for servi
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for servi
+  - Type: freemium
+- Check for service worker integration
+    const swPatterns
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for service worker integration
+    const swPatterns
+  - Type: freemium
+- "workbox"]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if (swPatterns.some((pattern)
+  - Context: , "navigator.serviceWorker", "workbox"];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (swPatterns.some((pattern) => methodStr.includes(p
+  - Type: freemium
+- Check for cachi
+  - Context:  const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for cachi
+  - Type: freemium
+- Check for caching patterns
+    const cachePatterns = [
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for caching patterns
+    const cachePatterns = [
+  
+  - Type: freemium
+- ]; methods.forEach((method) => { const methodStr = prototype[method].toString().toLowerCase(); if (cachePatterns.some((pattern)
+  - Context: m",
+      "localStorage.getItem",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      if (cachePatterns.some((pattern) => methodStr.include
+  - Type: freemium
+- formancePatterns = { lazyLoading: /loading=["']lazy["']/, asyncOperations: /async|await|Promise/, heavyComputation: /(map|filter|reduce)\(/, };
+  - Context: formancePatterns = {
+      lazyLoading: /loading=["']lazy["']/,
+      asyncOperations: /async|await|Promise/,
+      heavyComputation: /(map|filter|reduce)\(/,
+    };
+
+    Object.entries(performancePatter
+  - Type: freemium
+- 50; } } } private getPropertyType(config: any): string { if
+  - Context:          (componentNode.metadata.performance.renderTime || 0) + 50;
+      }
+    }
+  }
+
+  private getPropertyType(config: any): string {
+    if (config.type) return config.type;
+    if (config.converter) 
+  - Type: freemium
+- private hasDefaultValue(config: any): boolean { return ( config.hasOwnProperty("value") || config.hasOwnProperty("defaultValue")
+  - Context: n "unknown";
+  }
+
+  private hasDefaultValue(config: any): boolean {
+    return (
+      config.hasOwnProperty("value") || config.hasOwnProperty("defaultValue")
+    );
+  }
+
+  private getDefaultValue(config
+  - Type: freemium
+- return ( config.hasOwnProperty("value") || config.hasOwnProperty("defaultValue") ); } private getDefaultValue(config: any):
+  - Context: aultValue(config: any): boolean {
+    return (
+      config.hasOwnProperty("value") || config.hasOwnProperty("defaultValue")
+    );
+  }
+
+  private getDefaultValue(config: any): any {
+    return config.va
+  - Type: freemium
+- Check for XSS prevention
+    const hasXSSPrevention =
+  - Context: de.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+
+    // Check for XSS prevention
+    const hasXSSPrevention =
+  - Type: freemium
+- Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (no
+  - Context: ) {
+      node.metadata.security.eventHandlerSecurity = hasSecureEventHandlers;
+    }
+
+    // Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (no
+  - Type: freemium
+- Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      nod
+  - Context: eventHandlerSecurity = hasSecureEventHandlers;
+    }
+
+    // Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      nod
+  - Type: freemium
+- Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      node.metadata.security.propertyV
+  - Context: ureEventHandlers;
+    }
+
+    // Check property validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      node.metadata.security.propertyV
+  - Type: freemium
+- if (node.metadata.security) { node.metadata.security.propertyValidation = hasPropertyValidation; } } private analyzeComponentAccessibility(
+  - Context: is.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      node.metadata.security.propertyValidation = hasPropertyValidation;
+    }
+  }
+
+  private analyzeComponentAccessibility(
+    com
+  - Type: freemium
+- } private hasXSSPrevention(component: LitElement): boolean { const prototype = Object.getPrototypeOf(component);
+  - Context: nt handling measurement
+  }
+
+  private hasXSSPrevention(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype)
+  - Type: freemium
+- hasXSSPrevention(component: LitElement): boolean { const prototype = Object.getPrototypeOf(component); const methods
+  - Context: t
+  }
+
+  private hasXSSPrevention(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) 
+  - Type: freemium
+- ]; return methods.some((method) => { const methodStr = prototype[method].toString().toLowerCase(); return
+  - Context:   "validate",
+      "filter",
+    ];
+
+    return methods.some((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      return sanitizationPatterns.some((pattern) =>
+       
+  - Type: freemium
+- private hasSecureEventHandlers(component: LitElement): boolean { const prototype = Object.getPrototypeOf(component); const
+  - Context: 
+      );
+    });
+  }
+
+  private hasSecureEventHandlers(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype)
+  - Type: freemium
+- LitElement): boolean { const prototype = Object.getPrototypeOf(component); const methods =
+  - Context: 
+  private hasSecureEventHandlers(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) 
+  - Type: freemium
+- Check for security issues in event handlers
+    return !m
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    // Check for security issues in event handlers
+    return !m
+  - Type: freemium
+- event handlers return !methods.some((method) => { const methodStr = prototype[method].toString().toLowerCase();
+  - Context: or security issues in event handlers
+    return !methods.some((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      return (
+        methodStr.includes("eval(") ||
+     
+  - Type: freemium
+- methodStr.includes("outerhtml") ); }); } private hasPropertyValidation(component: LitElement): boolean { const
+  - Context: includes("innerhtml") ||
+        methodStr.includes("outerhtml")
+      );
+    });
+  }
+
+  private hasPropertyValidation(component: LitElement): boolean {
+    const staticProps =
+      (component.construct
+  - Type: freemium
+- hasPropertyValidation(component: LitElement): boolean { const staticProps = (component.constructor as typeof
+  - Context:   );
+    });
+  }
+
+  private hasPropertyValidation(component: LitElement): boolean {
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+    return Object.values(s
+  - Type: freemium
+- staticProps = (component.constructor as typeof LitElement).properties || {}; return Object.values(staticProps).some(
+  - Context: : LitElement): boolean {
+    const staticProps =
+      (component.constructor as typeof LitElement).properties || {};
+    return Object.values(staticProps).some(
+      (config) =>
+        config && (conf
+  - Type: freemium
+- LitElement).properties || {}; return Object.values(staticProps).some( (config) => config && (config.hasChanged
+  - Context:       (component.constructor as typeof LitElement).properties || {};
+    return Object.values(staticProps).some(
+      (config) =>
+        config && (config.hasChanged || config.converter || config.type)
+  - Type: freemium
+- } private hasKeyboardSupport(component: LitElement): boolean { const prototype = Object.getPrototypeOf(component);
+  - Context: | config.type)
+    );
+  }
+
+  private hasKeyboardSupport(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype)
+  - Type: freemium
+- hasKeyboardSupport(component: LitElement): boolean { const prototype = Object.getPrototypeOf(component); const methods
+  - Context:   }
+
+  private hasKeyboardSupport(component: LitElement): boolean {
+    const prototype = Object.getPrototypeOf(component);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) 
+  - Type: freemium
+- (name) => typeof prototype[name] === "function" ); return methods.some((method) =>
+  - Context: omponent);
+    const methods = Object.getOwnPropertyNames(prototype).filter(
+      (name) => typeof prototype[name] === "function"
+    );
+
+    return methods.some((method) => {
+      const methodStr = pr
+  - Type: freemium
+- ); return methods.some((method) => { const methodStr = prototype[method].toString().toLowerCase(); return
+  - Context: rototype[name] === "function"
+    );
+
+    return methods.some((method) => {
+      const methodStr = prototype[method].toString().toLowerCase();
+      return (
+        methodStr.includes("keydown") ||
+   
+  - Type: freemium
+- boolean { const renderMethod = Object.getPrototypeOf(component).render; if (!renderMethod) return false;
+  - Context: private hasScreenReaderSupport(component: LitElement): boolean {
+    const renderMethod = Object.getPrototypeOf(component).render;
+    if (!renderMethod) return false;
+
+    const renderStr = renderMethod
+  - Type: freemium
+- string[] { const renderMethod = Object.getPrototypeOf(component).render; if (!renderMethod) return [];
+  - Context: 
+
+  private getAriaAttributes(component: LitElement): string[] {
+    const renderMethod = Object.getPrototypeOf(component).render;
+    if (!renderMethod) return [];
+
+    const renderStr = renderMethod.to
+  - Type: freemium
+- Check for state synchronization patterns
+    const syncPatterns = [
+      "subscribe",
+      "observe",
+      "dispatch",
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((
+  - Context: function"
+    );
+
+    // Check for state synchronization patterns
+    const syncPatterns = [
+      "subscribe",
+      "observe",
+      "dispatch",
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((
+  - Type: subscription
+- Look for shared state patterns
+    const statePatterns = [
+      { pattern: "store", type: "state-store" },
+      { pattern: "context", type: "context-provider" },
+      { pattern: "
+  - Context: nction"
+    );
+
+    // Look for shared state patterns
+    const statePatterns = [
+      { pattern: "store", type: "state-store" },
+      { pattern: "context", type: "context-provider" },
+      { pattern: "
+  - Type: marketplace
+- = [ { pattern: "store", type: "state-store" }, { pattern:
+  - Context: / Look for shared state patterns
+    const statePatterns = [
+      { pattern: "store", type: "state-store" },
+      { pattern: "context", type: "context-provider" },
+      { pattern: "service", type: "serv
+  - Type: marketplace
+- "cache.add", "caches.open", "localStorage.setItem", "localStorage.getItem", ]; methods.forEach((method) => { const methodStr
+  - Context:    "cache.match",
+      "cache.put",
+      "cache.add",
+      "caches.open",
+      "localStorage.setItem",
+      "localStorage.getItem",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = p
+  - Type: marketplace
+- } from "../../types/analyzer"; import { ComponentNode, ComponentMetadata, ComponentProperty, ComponentEvent, ComponentRelationship,
+  - Context: nalysisResult, AnalysisIssue } from "../../types/analyzer";
+import {
+  ComponentNode,
+  ComponentMetadata,
+  ComponentProperty,
+  ComponentEvent,
+  ComponentRelationship,
+  PropertyValidation,
+  Validat
+  - Type: ads
+- Component structure analysis * - Shadow DOM usage analysis *
+  - Context: e analysis functionality for Web Components,
+ * including:
+ * - Component structure analysis
+ * - Shadow DOM usage analysis
+ * - Property and event analysis
+ * - Performance optimization suggestions
+ */
+  - Type: ads
+- lifecycle hooks * - Shadow DOM usage * - Property
+  - Context: omprehensive analysis of a Web Component,
+   * including:
+   * - Component lifecycle hooks
+   * - Shadow DOM usage
+   * - Property definitions
+   * - Event handlers
+   * - State management patterns
+   *
+  - Type: ads
+- LitElement ): Promise<AnalysisResult> { const metadata = this.analyzeMetadata(component); const issues:
+  - Context: omponent(
+    component: LitElement | typeof LitElement
+  ): Promise<AnalysisResult> {
+    const metadata = this.analyzeMetadata(component);
+    const issues: AnalysisIssue[] = [];
+    const recommendat
+  - Type: ads
+- Promise<AnalysisResult> { const metadata = this.analyzeMetadata(component); const issues: AnalysisIssue[] =
+  - Context: : LitElement | typeof LitElement
+  ): Promise<AnalysisResult> {
+    const metadata = this.analyzeMetadata(component);
+    const issues: AnalysisIssue[] = [];
+    const recommendations: string[] = [];
+
+ 
+  - Type: ads
+- Add basic analysis issues
+    issues.push(
+      {
+        type: "info",
+        message: "Component u
+  - Context: mponent);
+    const issues: AnalysisIssue[] = [];
+    const recommendations: string[] = [];
+
+    // Add basic analysis issues
+    issues.push(
+      {
+        type: "info",
+        message: "Component u
+  - Type: ads
+- type: "info", message: "Component uses shadow DOM for encapsulation", severity:
+  - Context: c analysis issues
+    issues.push(
+      {
+        type: "info",
+        message: "Component uses shadow DOM for encapsulation",
+        severity: "low",
+      },
+      {
+        type: "info",
+        m
+  - Type: ads
+- recommendations, metadata, }; } private analyzeMetadata( component: LitElement | typeof
+  - Context:    dependencies: this.analyzeDependencies(component),
+      issues,
+      recommendations,
+      metadata,
+    };
+  }
+
+  private analyzeMetadata(
+    component: LitElement | typeof LitElement
+  ): Compo
+  - Type: ads
+- }; } private analyzeMetadata( component: LitElement | typeof LitElement ):
+  - Context: es(component),
+      issues,
+      recommendations,
+      metadata,
+    };
+  }
+
+  private analyzeMetadata(
+    component: LitElement | typeof LitElement
+  ): ComponentMetadata {
+    return {
+      name:
+  - Type: ads
+- LitElement | typeof LitElement ): ComponentMetadata { return { name:
+  - Context:   };
+  }
+
+  private analyzeMetadata(
+    component: LitElement | typeof LitElement
+  ): ComponentMetadata {
+    return {
+      name:
+        typeof component === "function"
+          ? component.name
+  
+  - Type: ads
+- accessibility: { keyboardSupport: false, screenReaderSupport: false, ariaAttributes: [], }, security:
+  - Context:   eventHandling: 0,
+      },
+      accessibility: {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ariaAttributes: [],
+      },
+      security: {
+        xssPrevention: fals
+  - Type: ads
+- events: [], methods: [], relationships: [], metadata: this.analyzeMetadata(component), }; }
+  - Context: nent",
+      properties: [],
+      events: [],
+      methods: [],
+      relationships: [],
+      metadata: this.analyzeMetadata(component),
+    };
+  }
+
+  private calculateComplexity(node: ComponentNode)
+  - Type: ads
+- [], relationships: [], metadata: this.analyzeMetadata(component), }; } private calculateComplexity(node: ComponentNode):
+  - Context: s: [],
+      events: [],
+      methods: [],
+      relationships: [],
+      metadata: this.analyzeMetadata(component),
+    };
+  }
+
+  private calculateComplexity(node: ComponentNode): "low" | "medium" | "
+  - Type: ads
+- Consider performance metrics if available
+    if (node.metadata.performance?.renderTime) {
+      score += node.metadata.performance.renderTime > 100 ? 5 : 0;
+  - Context: += node.relationships.length * 3;
+
+    // Consider performance metrics if available
+    if (node.metadata.performance?.renderTime) {
+      score += node.metadata.performance.renderTime > 100 ? 5 : 0;
+  
+  - Type: ads
+- Consider security factors
+    if (node.metad
+  - Context: rmance metrics if available
+    if (node.metadata.performance?.renderTime) {
+      score += node.metadata.performance.renderTime > 100 ? 5 : 0;
+    }
+
+    // Consider security factors
+    if (node.metad
+  - Type: ads
+- Consider security factors
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) score += 3;
+      if (!node.metadat
+  - Context: adata.performance.renderTime > 100 ? 5 : 0;
+    }
+
+    // Consider security factors
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) score += 3;
+      if (!node.metadat
+  - Type: ads
+- Consider security factors
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) score += 3;
+      if (!node.metadata.security.eventHandlerSecurity) scor
+  - Context: 5 : 0;
+    }
+
+    // Consider security factors
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) score += 3;
+      if (!node.metadata.security.eventHandlerSecurity) scor
+  - Type: ads
+- if (!node.metadata.security.xssPrevention) score += 3; if (!node.metadata.security.eventHandlerSecurity) score += 3;
+  - Context: etadata.security) {
+      if (!node.metadata.security.xssPrevention) score += 3;
+      if (!node.metadata.security.eventHandlerSecurity) score += 3;
+      if (!node.metadata.security.propertyValidation)
+  - Type: ads
+- Map score to complexity level
+    if (sco
+  - Context:  score += 3;
+      if (!node.metadata.security.eventHandlerSecurity) score += 3;
+      if (!node.metadata.security.propertyValidation) score += 3;
+    }
+
+    // Map score to complexity level
+    if (sco
+  - Type: ads
+- Add direct dependencies from relationships
+    node.relationships
+      .filter((rel) => rel.type ===
+  - Context: ctDependencies(node: ComponentNode): string[] {
+    const dependencies = new Set<string>();
+
+    // Add direct dependencies from relationships
+    node.relationships
+      .filter((rel) => rel.type === 
+  - Type: ads
+- Add parent components
+    node.relationships
+      .filter((rel) => rel.type
+  - Context: elationships
+      .filter((rel) => rel.type === "dependency")
+      .forEach((rel) => dependencies.add(rel.target));
+
+    // Add parent components
+    node.relationships
+      .filter((rel) => rel.type
+  - Type: ads
+- Add parent components
+    node.relationships
+      .filter((rel) => rel.type === "parent-child")
+  - Context: ((rel) => rel.type === "dependency")
+      .forEach((rel) => dependencies.add(rel.target));
+
+    // Add parent components
+    node.relationships
+      .filter((rel) => rel.type === "parent-child")
+     
+  - Type: ads
+- Add composed components
+    node.relationships
+      .filter((rel) => rel.ty
+  - Context: ationships
+      .filter((rel) => rel.type === "parent-child")
+      .forEach((rel) => dependencies.add(rel.target));
+
+    // Add composed components
+    node.relationships
+      .filter((rel) => rel.ty
+  - Type: ads
+- Add composed components
+    node.relationships
+      .filter((rel) => rel.type === "composition")
+  - Context: rel) => rel.type === "parent-child")
+      .forEach((rel) => dependencies.add(rel.target));
+
+    // Add composed components
+    node.relationships
+      .filter((rel) => rel.type === "composition")
+    
+  - Type: ads
+- => rel.type === "composition") .forEach((rel) => dependencies.add(rel.target)); return Array.from(dependencies); }
+  - Context: lationships
+      .filter((rel) => rel.type === "composition")
+      .forEach((rel) => dependencies.add(rel.target));
+
+    return Array.from(dependencies);
+  }
+
+  private collectIssues(node: ComponentNo
+  - Type: ads
+- Check accessibility
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        issues.push({
+  - Context: ents defined",
+        severity: "low",
+      });
+    }
+
+    // Check accessibility
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        issues.push({
+  - Type: ads
+- Check accessibility
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        issues.push({
+          type: "warning",
+          mess
+  - Context:     });
+    }
+
+    // Check accessibility
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        issues.push({
+          type: "warning",
+          mess
+  - Type: ads
+- keyboard support", severity: "high", }); } if (!node.metadata.accessibility.screenReaderSupport) { issues.push({
+  - Context: ponent lacks keyboard support",
+          severity: "high",
+        });
+      }
+
+      if (!node.metadata.accessibility.screenReaderSupport) {
+        issues.push({
+          type: "warning",
+          
+  - Type: ads
+- "high", }); } if (!node.metadata.accessibility.screenReaderSupport) { issues.push({ type: "warning", message:
+  - Context: t",
+          severity: "high",
+        });
+      }
+
+      if (!node.metadata.accessibility.screenReaderSupport) {
+        issues.push({
+          type: "warning",
+          message: "Component lacks sc
+  - Type: ads
+- Check security
+    if (no
+  - Context: rt) {
+        issues.push({
+          type: "warning",
+          message: "Component lacks screen reader support",
+          severity: "high",
+        });
+      }
+    }
+
+    // Check security
+    if (no
+  - Type: ads
+- Check security
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        issues.push({
+          t
+  - Context: port",
+          severity: "high",
+        });
+      }
+    }
+
+    // Check security
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        issues.push({
+          t
+  - Type: ads
+- Check security
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        issues.push({
+          type: "warning",
+          message: "C
+  - Context:       });
+      }
+    }
+
+    // Check security
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        issues.push({
+          type: "warning",
+          message: "C
+  - Type: ads
+- XSS attacks", severity: "high", }); } if (!node.metadata.security.propertyValidation) { issues.push({
+  - Context:  be vulnerable to XSS attacks",
+          severity: "high",
+        });
+      }
+
+      if (!node.metadata.security.propertyValidation) {
+        issues.push({
+          type: "warning",
+          messag
+  - Type: ads
+- Event recommendation
+  - Context: commendations
+    if (node.properties.length === 0) {
+      recommendations.push(
+        "Consider adding properties to make the component more configurable"
+      );
+    }
+
+    // Event recommendation
+  - Type: ads
+- Accessibility recommen
+  - Context: t recommendations
+    if (node.events.length === 0) {
+      recommendations.push(
+        "Consider adding custom events to improve component interactivity"
+      );
+    }
+
+    // Accessibility recommen
+  - Type: ads
+- Accessibility recommendations
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        recommendatio
+  - Context: prove component interactivity"
+      );
+    }
+
+    // Accessibility recommendations
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        recommendatio
+  - Type: ads
+- Accessibility recommendations
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        recommendations.push("Add keyboard support for better a
+  - Context:   }
+
+    // Accessibility recommendations
+    if (node.metadata.accessibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        recommendations.push("Add keyboard support for better a
+  - Type: ads
+- if (!node.metadata.accessibility.keyboardSupport) { recommendations.push("Add keyboard support for better accessibility"); }
+  - Context: sibility) {
+      if (!node.metadata.accessibility.keyboardSupport) {
+        recommendations.push("Add keyboard support for better accessibility");
+      }
+
+      if (!node.metadata.accessibility.scree
+  - Type: ads
+- support for better accessibility"); } if (!node.metadata.accessibility.screenReaderSupport) { recommendations.push( "Add
+  - Context:  recommendations.push("Add keyboard support for better accessibility");
+      }
+
+      if (!node.metadata.accessibility.screenReaderSupport) {
+        recommendations.push(
+          "Add ARIA attribute
+  - Type: ads
+- accessibility"); } if (!node.metadata.accessibility.screenReaderSupport) { recommendations.push( "Add ARIA attributes and
+  - Context: eyboard support for better accessibility");
+      }
+
+      if (!node.metadata.accessibility.screenReaderSupport) {
+        recommendations.push(
+          "Add ARIA attributes and ensure screen reader c
+  - Type: ads
+- recommendations.push( "Add ARIA attributes and ensure screen reader compatibility" );
+  - Context:    if (!node.metadata.accessibility.screenReaderSupport) {
+        recommendations.push(
+          "Add ARIA attributes and ensure screen reader compatibility"
+        );
+      }
+    }
+
+    // Security 
+  - Type: ads
+- Security recommendations
+    if (node.metadata.se
+  - Context: enReaderSupport) {
+        recommendations.push(
+          "Add ARIA attributes and ensure screen reader compatibility"
+        );
+      }
+    }
+
+    // Security recommendations
+    if (node.metadata.se
+  - Type: ads
+- Security recommendations
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        recommendations.push(
+  - Context: een reader compatibility"
+        );
+      }
+    }
+
+    // Security recommendations
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        recommendations.push(
+   
+  - Type: ads
+- Security recommendations
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        recommendations.push(
+          "Implement XSS prevention meas
+  - Context:       }
+    }
+
+    // Security recommendations
+    if (node.metadata.security) {
+      if (!node.metadata.security.xssPrevention) {
+        recommendations.push(
+          "Implement XSS prevention meas
+  - Type: ads
+- measures for user input" ); } if (!node.metadata.security.propertyValidation) { recommendations.push(
+  - Context:           "Implement XSS prevention measures for user input"
+        );
+      }
+
+      if (!node.metadata.security.propertyValidation) {
+        recommendations.push(
+          "Add property validation 
+  - Type: ads
+- Performance
+  - Context: }
+
+      if (!node.metadata.security.propertyValidation) {
+        recommendations.push(
+          "Add property validation to improve component reliability"
+        );
+      }
+    }
+
+    // Performance
+  - Type: ads
+- Performance recommendations
+    if (
+      node.metadata.performance &&
+      node.metadata.performance.renderTime &&
+      node.metadata.performance.ren
+  - Context: nt reliability"
+        );
+      }
+    }
+
+    // Performance recommendations
+    if (
+      node.metadata.performance &&
+      node.metadata.performance.renderTime &&
+      node.metadata.performance.ren
+  - Type: ads
+- Performance recommendations
+    if (
+      node.metadata.performance &&
+      node.metadata.performance.renderTime &&
+      node.metadata.performance.renderTime > 100
+    ) {
+      recomme
+  - Context:     }
+
+    // Performance recommendations
+    if (
+      node.metadata.performance &&
+      node.metadata.performance.renderTime &&
+      node.metadata.performance.renderTime > 100
+    ) {
+      recomme
+  - Type: ads
+- node.metadata.performance && node.metadata.performance.renderTime && node.metadata.performance.renderTime > 100 ) { recommendations.push("Consider
+  - Context: if (
+      node.metadata.performance &&
+      node.metadata.performance.renderTime &&
+      node.metadata.performance.renderTime > 100
+    ) {
+      recommendations.push("Consider optimizing component r
+  - Type: ads
+- MEMORY_ANCHOR: {core} shadow_dom_analysis
+  /**
+   * Analyzes Shadow DOM usage and encapsulation
+   *
+   * This method examine
+  - Context: omponent render performance");
+    }
+
+    return recommendations;
+  }
+
+  // MEMORY_ANCHOR: {core} shadow_dom_analysis
+  /**
+   * Analyzes Shadow DOM usage and encapsulation
+   *
+   * This method examine
+  - Type: ads
+- MEMORY_ANCHOR: {core} shadow_dom_analysis
+  /**
+   * Analyzes Shadow DOM usage and encapsulation
+   *
+   * This method examines how a component uses Shadow DOM,
+   *
+  - Context:   return recommendations;
+  }
+
+  // MEMORY_ANCHOR: {core} shadow_dom_analysis
+  /**
+   * Analyzes Shadow DOM usage and encapsulation
+   *
+   * This method examines how a component uses Shadow DOM,
+   * 
+  - Type: ads
+- examines how a component uses Shadow DOM, * including: *
+  - Context: * Analyzes Shadow DOM usage and encapsulation
+   *
+   * This method examines how a component uses Shadow DOM,
+   * including:
+   * - Shadow root configuration
+   * - Style encapsulation
+   * - Slot usag
+  - Type: ads
+- DOM, * including: * - Shadow root configuration * -
+  - Context: apsulation
+   *
+   * This method examines how a component uses Shadow DOM,
+   * including:
+   * - Shadow root configuration
+   * - Style encapsulation
+   * - Slot usage
+   * - Event delegation
+   */
+  p
+  - Type: ads
+- Slot usage * - Event delegation */ private analyzeShadowDOM(component: LitElement):
+  - Context: ation
+   * - Style encapsulation
+   * - Slot usage
+   * - Event delegation
+   */
+  private analyzeShadowDOM(component: LitElement): void {
+    const shadowRoot = component.shadowRoot;
+    const componen
+  - Type: ads
+- */ private analyzeShadowDOM(component: LitElement): void { const shadowRoot = component.shadowRoot;
+  - Context:    * - Event delegation
+   */
+  private analyzeShadowDOM(component: LitElement): void {
+    const shadowRoot = component.shadowRoot;
+    const componentNode = this.components.get(
+      this.generateCom
+  - Type: ads
+- analyzeShadowDOM(component: LitElement): void { const shadowRoot = component.shadowRoot; const componentNode
+  - Context: 
+   */
+  private analyzeShadowDOM(component: LitElement): void {
+    const shadowRoot = component.shadowRoot;
+    const componentNode = this.components.get(
+      this.generateComponentId(component)
+   
+  - Type: ads
+- this.generateComponentId(component) ); if (!componentNode) return; if (!shadowRoot) { if (!componentNode.metadata.accessibility)
+  - Context: s.get(
+      this.generateComponentId(component)
+    );
+    if (!componentNode) return;
+
+    if (!shadowRoot) {
+      if (!componentNode.metadata.accessibility) {
+        componentNode.metadata.accessib
+  - Type: ads
+- (!componentNode) return; if (!shadowRoot) { if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility =
+  - Context: mponent)
+    );
+    if (!componentNode) return;
+
+    if (!shadowRoot) {
+      if (!componentNode.metadata.accessibility) {
+        componentNode.metadata.accessibility = {
+          keyboardSupport: fal
+  - Type: ads
+- (!shadowRoot) { if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = { keyboardSupport: false,
+  - Context: 
+    if (!shadowRoot) {
+      if (!componentNode.metadata.accessibility) {
+        componentNode.metadata.accessibility = {
+          keyboardSupport: false,
+          screenReaderSupport: false,
+      
+  - Type: ads
+- = { keyboardSupport: false, screenReaderSupport: false, ariaAttributes: [], }; }
+  - Context:        componentNode.metadata.accessibility = {
+          keyboardSupport: false,
+          screenReaderSupport: false,
+          ariaAttributes: [],
+        };
+      }
+      componentNode.metadata.acce
+  - Type: ads
+- Check shadow root mode
+  - Context: screenReaderSupport: false,
+          ariaAttributes: [],
+        };
+      }
+      componentNode.metadata.accessibility.screenReaderSupport = false;
+      return;
+    }
+
+    // Check shadow root mode
+  
+  - Type: ads
+- Check shadow root mode
+    const mode = shadowRoot.mo
+  - Context:           ariaAttributes: [],
+        };
+      }
+      componentNode.metadata.accessibility.screenReaderSupport = false;
+      return;
+    }
+
+    // Check shadow root mode
+    const mode = shadowRoot.mo
+  - Type: ads
+- Check shadow root mode
+    const mode = shadowRoot.mode;
+    if (mode === "closed") {
+      if (!componentNode
+  - Context: mponentNode.metadata.accessibility.screenReaderSupport = false;
+      return;
+    }
+
+    // Check shadow root mode
+    const mode = shadowRoot.mode;
+    if (mode === "closed") {
+      if (!componentNode
+  - Type: ads
+- Check shadow root mode
+    const mode = shadowRoot.mode;
+    if (mode === "closed") {
+      if (!componentNode.metadata.security) {
+        comp
+  - Context: .screenReaderSupport = false;
+      return;
+    }
+
+    // Check shadow root mode
+    const mode = shadowRoot.mode;
+    if (mode === "closed") {
+      if (!componentNode.metadata.security) {
+        comp
+  - Type: ads
+- = shadowRoot.mode; if (mode === "closed") { if (!componentNode.metadata.security) {
+  - Context: oot mode
+    const mode = shadowRoot.mode;
+    if (mode === "closed") {
+      if (!componentNode.metadata.security) {
+        componentNode.metadata.security = {
+          xssPrevention: false,
+        
+  - Type: ads
+- "closed") { if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false,
+  - Context:     if (mode === "closed") {
+      if (!componentNode.metadata.security) {
+        componentNode.metadata.security = {
+          xssPrevention: false,
+          eventHandlerSecurity: false,
+          pr
+  - Type: ads
+- Check slot usage
+    const slots = shadowRoot.quer
+  - Context: dlerSecurity: false,
+          propertyValidation: false,
+        };
+      }
+      componentNode.metadata.security.xssPrevention = false;
+    }
+
+    // Check slot usage
+    const slots = shadowRoot.quer
+  - Type: ads
+- Check slot usage
+    const slots = shadowRoot.querySelectorAll("slot");
+    if (slots.length > 0) {
+      componentNode.relationships.push(
+  - Context: entNode.metadata.security.xssPrevention = false;
+    }
+
+    // Check slot usage
+    const slots = shadowRoot.querySelectorAll("slot");
+    if (slots.length > 0) {
+      componentNode.relationships.push(
+  - Type: ads
+- Check style encapsulation
+    const styles = shadowRoot.querySelectorAll("style");
+    if (styles.length > 0) {
+      if (!componentNode.metadata.per
+  - Context: ots for content projection`,
+      });
+    }
+
+    // Check style encapsulation
+    const styles = shadowRoot.querySelectorAll("style");
+    if (styles.length > 0) {
+      if (!componentNode.metadata.per
+  - Type: ads
+- if (styles.length > 0) { if (!componentNode.metadata.performance) { componentNode.metadata.performance =
+  - Context: es = shadowRoot.querySelectorAll("style");
+    if (styles.length > 0) {
+      if (!componentNode.metadata.performance) {
+        componentNode.metadata.performance = {
+          renderTime: 0,
+         
+  - Type: ads
+- 0) { if (!componentNode.metadata.performance) { componentNode.metadata.performance = { renderTime: 0,
+  - Context:  if (styles.length > 0) {
+      if (!componentNode.metadata.performance) {
+        componentNode.metadata.performance = {
+          renderTime: 0,
+          memoryUsage: 0,
+          eventHandling: 0,
+ 
+  - Type: ads
+- Rough estimate based on style
+  - Context:  0,
+          memoryUsage: 0,
+          eventHandling: 0,
+        };
+      }
+      componentNode.metadata.performance.renderTime =
+        styles.length > 3 ? 150 : 50; // Rough estimate based on style 
+  - Type: ads
+- Check event delegation
+    const eventListeners = this.getEventListeners(shadowRoot);
+    if (eventListeners.length > 0) {
+      componentNode.events.push(
+        ...eventListe
+  - Context: tyle count
+    }
+
+    // Check event delegation
+    const eventListeners = this.getEventListeners(shadowRoot);
+    if (eventListeners.length > 0) {
+      componentNode.events.push(
+        ...eventListe
+  - Type: ads
+- composed: true, description: "Shadow DOM event listener", })) ); }
+  - Context:           type: "DOM",
+          bubbles: true,
+          composed: true,
+          description: "Shadow DOM event listener",
+        }))
+      );
+    }
+  }
+
+  private getEventListeners(element: Element
+  - Type: ads
+- This is a simplified version. In a real implementation,
+    //
+  - Context: M event listener",
+        }))
+      );
+    }
+  }
+
+  private getEventListeners(element: Element | ShadowRoot): { type: string }[] {
+    // This is a simplified version. In a real implementation,
+    // 
+  - Type: ads
+- methodStr.includes(pattern.toLowerCase()) ) ) { componentNode.metadata.tags.push("persistent-state"); } }); } private analyzeStateSynchronization(
+  - Context: =>
+          methodStr.includes(pattern.toLowerCase())
+        )
+      ) {
+        componentNode.metadata.tags.push("persistent-state");
+      }
+    });
+  }
+
+  private analyzeStateSynchronization(
+    c
+  - Type: ads
+- [ "subscribe", "observe", "dispatch", "emit", "broadcast", ]; methods.forEach((method) => {
+  - Context: onst syncPatterns = [
+      "subscribe",
+      "observe",
+      "dispatch",
+      "emit",
+      "broadcast",
+    ];
+
+    methods.forEach((method) => {
+      const methodStr = prototype[method].toString(
+  - Type: ads
+- MEMORY_ANCHOR: {core} component_relat
+  - Context: =>
+          methodStr.includes(pattern.toLowerCase())
+        )
+      ) {
+        componentNode.metadata.tags.push("synchronized-state");
+      }
+    });
+  }
+
+  // MEMORY_ANCHOR: {core} component_relat
+  - Type: ads
+- Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.ch
+  - Context: tion: "Parent element relationship",
+      });
+    }
+
+    // Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.ch
+  - Type: ads
+- Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.children);
+      children
+  - Context: elationship",
+      });
+    }
+
+    // Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.children);
+      children
+  - Type: ads
+- Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.children);
+      children.forEach((child) =>
+  - Context: });
+    }
+
+    // Check for child components
+    const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.children);
+      children.forEach((child) => 
+  - Type: ads
+- (shadowRoot) { const children = Array.from(shadowRoot.children); children.forEach((child) => { if
+  - Context:  const shadowRoot = component.shadowRoot;
+    if (shadowRoot) {
+      const children = Array.from(shadowRoot.children);
+      children.forEach((child) => {
+        if (child instanceof HTMLElement && ch
+  - Type: ads
+- usage, including: * - Adapter configuration * - State machine
+  - Context: te-element specific features
+   *
+   * This method examines ignite-element usage, including:
+   * - Adapter configuration
+   * - State machine integration
+   * - Component lifecycle
+   * - Performance o
+  - Type: ads
+- Check for ignite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|
+  - Context:  === "function"
+    );
+
+    // Check for ignite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|
+  - Type: ads
+- Check for ignite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|useMachine/i,
+  - Context:     );
+
+    // Check for ignite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|useMachine/i,
+  
+  - Type: ads
+- for ignite-element patterns const ignitePatterns = { adapter: /igniteAdapter|createAdapter|setupAdapter/i, stateMachine:
+  - Context:  Check for ignite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|useMachine/i,
+      lifecycle:
+  - Type: ads
+- patterns const ignitePatterns = { adapter: /igniteAdapter|createAdapter|setupAdapter/i, stateMachine: /createMachine|setupMachine|useMachine/i, lifecycle:
+  - Context: nite-element patterns
+    const ignitePatterns = {
+      adapter: /igniteAdapter|createAdapter|setupAdapter/i,
+      stateMachine: /createMachine|setupMachine|useMachine/i,
+      lifecycle: /igniteLifec
+  - Type: ads
+- Add relationship for ignite integration
+  - Context: tern]: [string, RegExp]) => {
+          if (pattern.test(methodStr)) {
+            componentNode.metadata.tags.push(`ignite-${feature}`);
+
+            // Add relationship for ignite integration
+        
+  - Type: ads
+- Add relationship for ignite integration
+            componentNode.relationships.push({
+              t
+  - Context: st(methodStr)) {
+            componentNode.metadata.tags.push(`ignite-${feature}`);
+
+            // Add relationship for ignite integration
+            componentNode.relationships.push({
+              t
+  - Type: ads
+- MEMORY_ANCHOR: {core} lit_html_template_analysis
+  - Context: onent.constructor.toString();
+    if (classStr.includes("ignite-element")) {
+      componentNode.metadata.tags.push("ignite-component");
+    }
+  }
+
+  // MEMORY_ANCHOR: {core} lit_html_template_analysis
+
+  - Type: ads
+- if (matches && matches.length > 0) { componentNode.metadata.tags.push(`template-${feature}`); if (matches.length
+  - Context: hes = renderStr.match(pattern);
+      if (matches && matches.length > 0) {
+        componentNode.metadata.tags.push(`template-${feature}`);
+        if (matches.length > 5) {
+          componentNode.meta
+  - Type: ads
+- if (matches.length > 5) { componentNode.metadata.tags.push(`complex-${feature}`); } } }); }
+  - Context: data.tags.push(`template-${feature}`);
+        if (matches.length > 5) {
+          componentNode.metadata.tags.push(`complex-${feature}`);
+        }
+      }
+    });
+  }
+
+  private analyzeDirectiveUsage(
+  - Type: ads
+- string) => { if (renderStr.includes(directive)) { componentNode.metadata.tags.push(`uses-${directive}-directive`); } }); }
+  - Context: orEach((directive: string) => {
+      if (renderStr.includes(directive)) {
+        componentNode.metadata.tags.push(`uses-${directive}-directive`);
+      }
+    });
+  }
+
+  private analyzeTemplatePerforma
+  - Type: ads
+- renderStr.match(pattern); if (matches && matches.length > 0) { componentNode.metadata.tags.push(`performance-${issue}`); if
+  - Context: = renderStr.match(pattern);
+        if (matches && matches.length > 0) {
+          componentNode.metadata.tags.push(`performance-${issue}`);
+          if (!componentNode.metadata.performance) {
+        
+  - Type: ads
+- componentNode.metadata.tags.push(`performance-${issue}`); if (!componentNode.metadata.performance) { componentNode.metadata.performance = { renderTime: 0,
+  - Context:           componentNode.metadata.tags.push(`performance-${issue}`);
+          if (!componentNode.metadata.performance) {
+            componentNode.metadata.performance = {
+              renderTime: 0,
+ 
+  - Type: ads
+- if (!componentNode.metadata.performance) { componentNode.metadata.performance = { renderTime: 0, memoryUsage: 0,
+  - Context: mance-${issue}`);
+          if (!componentNode.metadata.performance) {
+            componentNode.metadata.performance = {
+              renderTime: 0,
+              memoryUsage: 0,
+              eventHa
+  - Type: ads
+- 0, eventHandling: 0, }; } if (componentNode.metadata.performance) { componentNode.metadata.performance.renderTime =
+  - Context: Usage: 0,
+              eventHandling: 0,
+            };
+          }
+          if (componentNode.metadata.performance) {
+            componentNode.metadata.performance.renderTime =
+              (compon
+  - Type: ads
+- }; } if (componentNode.metadata.performance) { componentNode.metadata.performance.renderTime = (componentNode.metadata.performance.renderTime || 0)
+  - Context:     };
+          }
+          if (componentNode.metadata.performance) {
+            componentNode.metadata.performance.renderTime =
+              (componentNode.metadata.performance.renderTime || 0) +
+  
+  - Type: ads
+- componentNode.metadata.performance.renderTime = (componentNode.metadata.performance.renderTime || 0) + matches.length * 10; }
+  - Context: ance) {
+            componentNode.metadata.performance.renderTime =
+              (componentNode.metadata.performance.renderTime || 0) +
+              matches.length * 10;
+          }
+        }
+      }
+
+  - Type: ads
+- [string, RegExp]) => { if (pattern.test(renderStr)) { componentNode.metadata.tags.push(`security-risk-${issue}`); if (!componentNode.metadata.security)
+  - Context:  pattern]: [string, RegExp]) => {
+        if (pattern.test(renderStr)) {
+          componentNode.metadata.tags.push(`security-risk-${issue}`);
+          if (!componentNode.metadata.security) {
+         
+  - Type: ads
+- componentNode.metadata.tags.push(`security-risk-${issue}`); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false,
+  - Context:         componentNode.metadata.tags.push(`security-risk-${issue}`);
+          if (!componentNode.metadata.security) {
+            componentNode.metadata.security = {
+              xssPrevention: false,
+
+  - Type: ads
+- ity-risk-${issue}`); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false, eventHandlerSecurity:
+  - Context: ity-risk-${issue}`);
+          if (!componentNode.metadata.security) {
+            componentNode.metadata.security = {
+              xssPrevention: false,
+              eventHandlerSecurity: false,
+    
+  - Type: ads
+- propertyValidation: false, }; } if (componentNode.metadata.security) { componentNode.metadata.security.xssPrevention = false;
+  - Context: 
+              propertyValidation: false,
+            };
+          }
+          if (componentNode.metadata.security) {
+            componentNode.metadata.security.xssPrevention = false;
+          }
+     
+  - Type: ads
+- MEMORY_ANCHOR: {c
+  - Context:        };
+          }
+          if (componentNode.metadata.security) {
+            componentNode.metadata.security.xssPrevention = false;
+          }
+        }
+      }
+    );
+  }
+
+  // MEMORY_ANCHOR: {c
+  - Type: ads
+- * - Event handler security * - Shadow DOM security
+  - Context: es security considerations, including:
+   * - XSS prevention
+   * - Event handler security
+   * - Shadow DOM security
+   * - Property validation
+   */
+  private analyzeSecurity(component: LitElement): v
+  - Type: ads
+- => methodStr.includes(pattern))) { hasSanitization = true; componentNode.metadata.tags.push("input-sanitization"); } }); if
+  - Context: attern) => methodStr.includes(pattern))) {
+        hasSanitization = true;
+        componentNode.metadata.tags.push("input-sanitization");
+      }
+    });
+
+    if (!componentNode.metadata.security) {
+  
+  - Type: ads
+- } }); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false,
+  - Context:  componentNode.metadata.tags.push("input-sanitization");
+      }
+    });
+
+    if (!componentNode.metadata.security) {
+      componentNode.metadata.security = {
+        xssPrevention: false,
+        even
+  - Type: ads
+- }); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false, eventHandlerSecurity:
+  - Context: sanitization");
+      }
+    });
+
+    if (!componentNode.metadata.security) {
+      componentNode.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        property
+  - Type: ads
+- false, propertyValidation: false, }; } componentNode.metadata.security.xssPrevention = hasSanitization; } private
+  - Context: eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.xssPrevention = hasSanitization;
+  }
+
+  private analyzeEventHandlerSecurity(
+    compon
+  - Type: ads
+- methodStr.includes("outerhtml") ); }); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention:
+  - Context: "innerhtml") ||
+        methodStr.includes("outerhtml")
+      );
+    });
+
+    if (!componentNode.metadata.security) {
+      componentNode.metadata.security = {
+        xssPrevention: false,
+        even
+  - Type: ads
+- false, propertyValidation: false, }; } componentNode.metadata.security.eventHandlerSecurity = !securityIssues; } private
+  - Context: eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.eventHandlerSecurity = !securityIssues;
+  }
+
+  private analyzePropertySecurity(
+    com
+  - Type: ads
+- || config.converter || config.type) ); if (!componentNode.metadata.security) { componentNode.metadata.security =
+  - Context:  config && (config.hasChanged || config.converter || config.type)
+    );
+
+    if (!componentNode.metadata.security) {
+      componentNode.metadata.security = {
+        xssPrevention: false,
+        even
+  - Type: ads
+- config.type) ); if (!componentNode.metadata.security) { componentNode.metadata.security = { xssPrevention: false,
+  - Context: onverter || config.type)
+    );
+
+    if (!componentNode.metadata.security) {
+      componentNode.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        property
+  - Type: ads
+- MEMORY_ANCHOR: {core} accessibility_analy
+  - Context: eventHandlerSecurity: false,
+        propertyValidation: false,
+      };
+    }
+    componentNode.metadata.security.propertyValidation = hasValidation;
+  }
+
+  // MEMORY_ANCHOR: {core} accessibility_analy
+  - Type: ads
+- - Keyboard navigation * - Screen reader support * -
+  - Context: accessibility aspects, including:
+   * - ARIA attributes
+   * - Keyboard navigation
+   * - Screen reader support
+   * - Color contrast
+   */
+  private analyzeAccessibility(component: LitElement): void {
+  - Type: ads
+- Analyze screen reader support
+    this.analyzeScreenReaderSupport(component, componentNode);
+
+    // Analyze color cont
+  - Context: d navigation
+    this.analyzeKeyboardNavigation(component, componentNode);
+
+    // Analyze screen reader support
+    this.analyzeScreenReaderSupport(component, componentNode);
+
+    // Analyze color cont
+  - Type: ads
+- Analyze screen reader support
+    this.analyzeScreenReaderSupport(component, componentNode);
+
+    // Analyze color contrast (if possible)
+    this.analyzeCo
+  - Context: Navigation(component, componentNode);
+
+    // Analyze screen reader support
+    this.analyzeScreenReaderSupport(component, componentNode);
+
+    // Analyze color contrast (if possible)
+    this.analyzeCo
+  - Type: ads
+- roles = renderStr.match(/role=["'][a-zA-Z]+["']/g) || []; if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility =
+  - Context:  [];
+    const roles = renderStr.match(/role=["'][a-zA-Z]+["']/g) || [];
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+
+  - Type: ads
+- []; if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = { keyboardSupport: false, screenReaderSupport:
+  - Context: "'][a-zA-Z]+["']/g) || [];
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ar
+  - Type: ads
+- componentNode.metadata.accessibility = { keyboardSupport: false, screenReaderSupport: false, ariaAttributes: [], };
+  - Context: y) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ariaAttributes: [],
+      };
+    }
+
+    componentNode.metadata.accessibili
+  - Type: ads
+- false, ariaAttributes: [], }; } componentNode.metadata.accessibility.ariaAttributes = [ ...new Set([
+  - Context:        screenReaderSupport: false,
+        ariaAttributes: [],
+      };
+    }
+
+    componentNode.metadata.accessibility.ariaAttributes = [
+      ...new Set([
+        ...ariaAttributes,
+        ...roles.
+  - Type: ads
+- Update screen reader support based on ARIA usage
+    componentNode.metadata.accessibility.screenReaderSupport =
+  - Context: ap((r: string) => r.match(/["']([^"']+)["']/)?.[1] || ""),
+      ]),
+    ];
+
+    // Update screen reader support based on ARIA usage
+    componentNode.metadata.accessibility.screenReaderSupport =
+      
+  - Type: ads
+- Update screen reader support based on ARIA usage
+    componentNode.metadata.accessibility.screenReaderSupport =
+      ariaAttributes.length > 0 || roles.length > 0;
+  }
+  - Context: ""),
+      ]),
+    ];
+
+    // Update screen reader support based on ARIA usage
+    componentNode.metadata.accessibility.screenReaderSupport =
+      ariaAttributes.length > 0 || roles.length > 0;
+  }
+
+  
+  - Type: ads
+- based on ARIA usage componentNode.metadata.accessibility.screenReaderSupport = ariaAttributes.length > 0 ||
+  - Context: / Update screen reader support based on ARIA usage
+    componentNode.metadata.accessibility.screenReaderSupport =
+      ariaAttributes.length > 0 || roles.length > 0;
+  }
+
+  private analyzeKeyboardNavig
+  - Type: ads
+- || methodStr.includes("onkey") ); }); if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = {
+  - Context: udes("keypress") ||
+        methodStr.includes("onkey")
+      );
+    });
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+
+  - Type: ads
+- }); if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = { keyboardSupport: false, screenReaderSupport:
+  - Context: ("onkey")
+      );
+    });
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ar
+  - Type: ads
+- false, ariaAttributes: [], }; } componentNode.metadata.accessibility.keyboardSupport = hasKeyboardHandlers; } private
+  - Context:         screenReaderSupport: false,
+        ariaAttributes: [],
+      };
+    }
+    componentNode.metadata.accessibility.keyboardSupport = hasKeyboardHandlers;
+  }
+
+  private analyzeScreenReaderSupport(
+
+  - Type: ads
+- hasKeyboardHandlers; } private analyzeScreenReaderSupport( component: LitElement, componentNode: ComponentNode ): void
+  - Context: entNode.metadata.accessibility.keyboardSupport = hasKeyboardHandlers;
+  }
+
+  private analyzeScreenReaderSupport(
+    component: LitElement,
+    componentNode: ComponentNode
+  ): void {
+    const renderM
+  - Type: ads
+- Check for screen reader friendly patterns
+    const screenReaderPatterns = [
+      "aria-label",
+      "aria-describedby"
+  - Context:  (!renderMethod) return;
+
+    const renderStr = renderMethod.toString();
+
+    // Check for screen reader friendly patterns
+    const screenReaderPatterns = [
+      "aria-label",
+      "aria-describedby"
+  - Type: ads
+- Check for screen reader friendly patterns
+    const screenReaderPatterns = [
+      "aria-label",
+      "aria-describedby",
+      "aria-live",
+      "role=",
+  - Context: rStr = renderMethod.toString();
+
+    // Check for screen reader friendly patterns
+    const screenReaderPatterns = [
+      "aria-label",
+      "aria-describedby",
+      "aria-live",
+      "role=",
+     
+  - Type: ads
+- "role=", "alt=", "title=", ]; const hasScreenReaderSupport = screenReaderPatterns.some((pattern) => renderStr.includes(pattern)
+  - Context: edby",
+      "aria-live",
+      "role=",
+      "alt=",
+      "title=",
+    ];
+
+    const hasScreenReaderSupport = screenReaderPatterns.some((pattern) =>
+      renderStr.includes(pattern)
+    );
+
+    if 
+  - Type: ads
+- "alt=", "title=", ]; const hasScreenReaderSupport = screenReaderPatterns.some((pattern) => renderStr.includes(pattern) );
+  - Context: e",
+      "role=",
+      "alt=",
+      "title=",
+    ];
+
+    const hasScreenReaderSupport = screenReaderPatterns.some((pattern) =>
+      renderStr.includes(pattern)
+    );
+
+    if (!componentNode.metada
+  - Type: ads
+- => renderStr.includes(pattern) ); if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = { keyboardSupport:
+  - Context: eaderPatterns.some((pattern) =>
+      renderStr.includes(pattern)
+    );
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+
+  - Type: ads
+- ); if (!componentNode.metadata.accessibility) { componentNode.metadata.accessibility = { keyboardSupport: false, screenReaderSupport:
+  - Context: r.includes(pattern)
+    );
+
+    if (!componentNode.metadata.accessibility) {
+      componentNode.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ar
+  - Type: ads
+- false, ariaAttributes: [], }; } componentNode.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport; } private
+  - Context:         screenReaderSupport: false,
+        ariaAttributes: [],
+      };
+    }
+    componentNode.metadata.accessibility.screenReaderSupport =
+      hasScreenReaderSupport;
+  }
+
+  private analyzeColorCon
+  - Type: ads
+- ariaAttributes: [], }; } componentNode.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport; } private analyzeColorContrast(
+  - Context:  false,
+        ariaAttributes: [],
+      };
+    }
+    componentNode.metadata.accessibility.screenReaderSupport =
+      hasScreenReaderSupport;
+  }
+
+  private analyzeColorContrast(
+    component: LitEle
+  - Type: ads
+- }; } componentNode.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport; } private analyzeColorContrast( component: LitElement,
+  - Context:  [],
+      };
+    }
+    componentNode.metadata.accessibility.screenReaderSupport =
+      hasScreenReaderSupport;
+  }
+
+  private analyzeColorContrast(
+    component: LitElement,
+    componentNode: Compon
+  - Type: ads
+- MEMORY_ANCHOR: {core} pwa_compatibility_analysis
+  /**
+  - Context: ) ||
+      renderStr.includes("background:");
+
+    if (hasColorProperties) {
+      componentNode.metadata.tags.push("uses-colors");
+    }
+  }
+
+  // MEMORY_ANCHOR: {core} pwa_compatibility_analysis
+  /**
+  - Type: ads
+- if (offlinePatterns.some((pattern) => methodStr.includes(pattern))) { componentNode.metadata.tags.push("offline-capable"); } }); } private
+  - Context:      if (offlinePatterns.some((pattern) => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push("offline-capable");
+      }
+    });
+  }
+
+  private analyzeServiceWorkerIntegration(
+  
+  - Type: ads
+- if (swPatterns.some((pattern) => methodStr.includes(pattern))) { componentNode.metadata.tags.push("service-worker-integrated"); } }); } private
+  - Context: ();
+      if (swPatterns.some((pattern) => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push("service-worker-integrated");
+      }
+    });
+  }
+
+  private analyzeCachingStrategy(
+ 
+  - Type: ads
+- patterns const cachePatterns = [ "cache.match", "cache.put", "cache.add", "caches.open", "localStorage.setItem",
+  - Context: r caching patterns
+    const cachePatterns = [
+      "cache.match",
+      "cache.put",
+      "cache.add",
+      "caches.open",
+      "localStorage.setItem",
+      "localStorage.getItem",
+    ];
+
+    met
+  - Type: ads
+- (cachePatterns.some((pattern) => methodStr.includes(pattern))) { componentNode.metadata.tags.push("implements-caching"); } }); } private analyzePWAPerformance(
+  - Context: 
+      if (cachePatterns.some((pattern) => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push("implements-caching");
+      }
+    });
+  }
+
+  private analyzePWAPerformance(
+    compo
+  - Type: ads
+- Check for performance patterns
+    const performancePatterns = {
+      lazyLoading: /loading=["']lazy["']/,
+      asyncOperations: /async|await|Promise/,
+      heavyComputation: /
+  - Context: od.toString();
+
+    // Check for performance patterns
+    const performancePatterns = {
+      lazyLoading: /loading=["']lazy["']/,
+      asyncOperations: /async|await|Promise/,
+      heavyComputation: /
+  - Type: ads
+- Check for performance patterns
+    const performancePatterns = {
+      lazyLoading: /loading=["']lazy["']/,
+      asyncOperations: /async|await|Promise/,
+      heavyComputation: /(map|filte
+  - Context: g();
+
+    // Check for performance patterns
+    const performancePatterns = {
+      lazyLoading: /loading=["']lazy["']/,
+      asyncOperations: /async|await|Promise/,
+      heavyComputation: /(map|filte
+  - Type: ads
+- Update performance metadata
+    if (compone
+  - Context: tterns).forEach(([pattern, regex]) => {
+      if (regex.test(renderStr)) {
+        componentNode.metadata.tags.push(`pwa-${pattern}`);
+      }
+    });
+
+    // Update performance metadata
+    if (compone
+  - Type: ads
+- Update performance metadata
+    if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+      if (!componentNode
+  - Context:   componentNode.metadata.tags.push(`pwa-${pattern}`);
+      }
+    });
+
+    // Update performance metadata
+    if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+      if (!componentNode
+  - Type: ads
+- Update performance metadata
+    if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+      if (!componentNode.metadata.performance) {
+  - Context: ush(`pwa-${pattern}`);
+      }
+    });
+
+    // Update performance metadata
+    if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+      if (!componentNode.metadata.performance) {
+      
+  - Type: ads
+- if (componentNode.metadata.tags.includes("pwa-heavyComputation")) { if (!componentNode.metadata.performance) { componentNode.metadata.performance = { renderTime:
+  - Context:     if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+      if (!componentNode.metadata.performance) {
+        componentNode.metadata.performance = {
+          renderTime: 0,
+         
+  - Type: ads
+- = (componentNode.metadata.performance.renderTime || 0) + 50; } } } private
+  - Context: .performance) {
+        componentNode.metadata.performance.renderTime =
+          (componentNode.metadata.performance.renderTime || 0) + 50;
+      }
+    }
+  }
+
+  private getPropertyType(config: any): st
+  - Type: ads
+- Initialize performance metrics if not present
+    if (!node.metadata.performance) {
+      node.metadata.performance = {
+        renderTime: 0,
+        memoryUsage: 0
+  - Context: de: ComponentNode
+  ): void {
+    // Initialize performance metrics if not present
+    if (!node.metadata.performance) {
+      node.metadata.performance = {
+        renderTime: 0,
+        memoryUsage: 0
+  - Type: ads
+- not present if (!node.metadata.performance) { node.metadata.performance = { renderTime: 0,
+  - Context: / Initialize performance metrics if not present
+    if (!node.metadata.performance) {
+      node.metadata.performance = {
+        renderTime: 0,
+        memoryUsage: 0,
+        eventHandling: 0,
+      }
+  - Type: ads
+- const renderTime = this.measureRenderTime(component); if (node.metadata.performance) { node.metadata.performance.renderTime = renderTime;
+  - Context: nalyze render performance
+    const renderTime = this.measureRenderTime(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.renderTime = renderTime;
+    }
+
+    // Analyze me
+  - Type: ads
+- Analyze memory usage
+    const memoryUsage =
+  - Context:  renderTime = this.measureRenderTime(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.renderTime = renderTime;
+    }
+
+    // Analyze memory usage
+    const memoryUsage = 
+  - Type: ads
+- Analyze memory usage
+    const memoryUsage = this.measureMemoryUsage(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.memoryUsage = memoryUsage;
+    }
+
+    // Analyze
+  - Context: // Analyze memory usage
+    const memoryUsage = this.measureMemoryUsage(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.memoryUsage = memoryUsage;
+    }
+
+    // Analyze 
+  - Type: ads
+- Analyze event handling performance
+    cons
+  - Context: emoryUsage = this.measureMemoryUsage(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.memoryUsage = memoryUsage;
+    }
+
+    // Analyze event handling performance
+    cons
+  - Type: ads
+- const eventHandling = this.measureEventHandling(component); if (node.metadata.performance) { node.metadata.performance.eventHandling = eventHandling;
+  - Context: andling performance
+    const eventHandling = this.measureEventHandling(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.eventHandling = eventHandling;
+    }
+  }
+
+  priva
+  - Type: ads
+- this.measureEventHandling(component); if (node.metadata.performance) { node.metadata.performance.eventHandling = eventHandling; } } private
+  - Context: Handling = this.measureEventHandling(component);
+    if (node.metadata.performance) {
+      node.metadata.performance.eventHandling = eventHandling;
+    }
+  }
+
+  private analyzeComponentSecurity(
+    co
+  - Type: ads
+- Initialize security metrics if not present
+    if (!node.metadata.security) {
+      node.metadata.security = {
+        xssPrevention: false,
+        eventHandlerS
+  - Context:  node: ComponentNode
+  ): void {
+    // Initialize security metrics if not present
+    if (!node.metadata.security) {
+      node.metadata.security = {
+        xssPrevention: false,
+        eventHandlerS
+  - Type: ads
+- Initialize security metrics if not present
+    if (!node.metadata.security) {
+      node.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        property
+  - Context: 
+    // Initialize security metrics if not present
+    if (!node.metadata.security) {
+      node.metadata.security = {
+        xssPrevention: false,
+        eventHandlerSecurity: false,
+        property
+  - Type: ads
+- const hasXSSPrevention = this.hasXSSPrevention(component); if (node.metadata.security) { node.metadata.security.xssPrevention = hasXSSPrevention;
+  - Context: k for XSS prevention
+    const hasXSSPrevention = this.hasXSSPrevention(component);
+    if (node.metadata.security) {
+      node.metadata.security.xssPrevention = hasXSSPrevention;
+    }
+
+    // Check e
+  - Type: ads
+- Check event handler security
+    const
+  - Context: asXSSPrevention = this.hasXSSPrevention(component);
+    if (node.metadata.security) {
+      node.metadata.security.xssPrevention = hasXSSPrevention;
+    }
+
+    // Check event handler security
+    const 
+  - Type: ads
+- const hasSecureEventHandlers = this.hasSecureEventHandlers(component); if (node.metadata.security) { node.metadata.security.eventHandlerSecurity = hasSecureEventHandlers;
+  - Context: security
+    const hasSecureEventHandlers = this.hasSecureEventHandlers(component);
+    if (node.metadata.security) {
+      node.metadata.security.eventHandlerSecurity = hasSecureEventHandlers;
+    }
+
+ 
+  - Type: ads
+- Check property validation
+  - Context: tHandlers = this.hasSecureEventHandlers(component);
+    if (node.metadata.security) {
+      node.metadata.security.eventHandlerSecurity = hasSecureEventHandlers;
+    }
+
+    // Check property validation
+
+  - Type: ads
+- const hasPropertyValidation = this.hasPropertyValidation(component); if (node.metadata.security) { node.metadata.security.propertyValidation = hasPropertyValidation;
+  - Context: validation
+    const hasPropertyValidation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      node.metadata.security.propertyValidation = hasPropertyValidation;
+    }
+  }
+
+
+  - Type: ads
+- = this.hasPropertyValidation(component); if (node.metadata.security) { node.metadata.security.propertyValidation = hasPropertyValidation; } }
+  - Context: Validation = this.hasPropertyValidation(component);
+    if (node.metadata.security) {
+      node.metadata.security.propertyValidation = hasPropertyValidation;
+    }
+  }
+
+  private analyzeComponentAccess
+  - Type: ads
+- Initialize accessibility metrics if not present
+    if (!node.metadata.accessibility) {
+      node.metadata.accessibility = {
+        keyboardSupport: false,
+        s
+  - Context: : ComponentNode
+  ): void {
+    // Initialize accessibility metrics if not present
+    if (!node.metadata.accessibility) {
+      node.metadata.accessibility = {
+        keyboardSupport: false,
+        s
+  - Type: ads
+- if not present if (!node.metadata.accessibility) { node.metadata.accessibility = { keyboardSupport:
+  - Context: itialize accessibility metrics if not present
+    if (!node.metadata.accessibility) {
+      node.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ar
+  - Type: ads
+- Check keyboard support
+    cons
+  - Context: essibility) {
+      node.metadata.accessibility = {
+        keyboardSupport: false,
+        screenReaderSupport: false,
+        ariaAttributes: [],
+      };
+    }
+
+    // Check keyboard support
+    cons
+  - Type: ads
+- support const hasKeyboardSupport = this.hasKeyboardSupport(component); if (node.metadata.accessibility) { node.metadata.accessibility.keyboardSupport =
+  - Context: keyboard support
+    const hasKeyboardSupport = this.hasKeyboardSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.keyboardSupport = hasKeyboardSupport;
+    }
+
+
+  - Type: ads
+- Check screen reader support
+  - Context: dSupport = this.hasKeyboardSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.keyboardSupport = hasKeyboardSupport;
+    }
+
+    // Check screen reader support
+  
+  - Type: ads
+- Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.m
+  - Context:      node.metadata.accessibility.keyboardSupport = hasKeyboardSupport;
+    }
+
+    // Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.m
+  - Type: ads
+- Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      nod
+  - Context: eyboardSupport = hasKeyboardSupport;
+    }
+
+    // Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      nod
+  - Type: ads
+- Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.scree
+  - Context: pport;
+    }
+
+    // Check screen reader support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.scree
+  - Type: ads
+- support const hasScreenReaderSupport = this.hasScreenReaderSupport(component); if (node.metadata.accessibility) { node.metadata.accessibility.screenReaderSupport =
+  - Context:  support
+    const hasScreenReaderSupport = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport;
+  - Type: ads
+- Check ARIA attributes
+  - Context: port = this.hasScreenReaderSupport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport;
+    }
+
+    // Check ARIA attributes
+
+  - Type: ads
+- Check ARIA attributes
+    const ariaAttributes = t
+  - Context: upport(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport;
+    }
+
+    // Check ARIA attributes
+    const ariaAttributes = t
+  - Type: ads
+- Check ARIA attributes
+    const ariaAttributes = this.getAriaAttributes(com
+  - Context:  (node.metadata.accessibility) {
+      node.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport;
+    }
+
+    // Check ARIA attributes
+    const ariaAttributes = this.getAriaAttributes(com
+  - Type: ads
+- attributes const ariaAttributes = this.getAriaAttributes(component); if (node.metadata.accessibility) { node.metadata.accessibility.ariaAttributes =
+  - Context: Check ARIA attributes
+    const ariaAttributes = this.getAriaAttributes(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.ariaAttributes = ariaAttributes;
+    }
+  }
+
+ 
+  - Type: ads
+- = this.getAriaAttributes(component); if (node.metadata.accessibility) { node.metadata.accessibility.ariaAttributes = ariaAttributes; } }
+  - Context: ttributes = this.getAriaAttributes(component);
+    if (node.metadata.accessibility) {
+      node.metadata.accessibility.ariaAttributes = ariaAttributes;
+    }
+  }
+
+  private measureRenderTime(component:
+  - Type: ads
+- methodStr.includes("onkey") ); }); } private hasScreenReaderSupport(component: LitElement): boolean { const
+  - Context: ludes("keypress") ||
+        methodStr.includes("onkey")
+      );
+    });
+  }
+
+  private hasScreenReaderSupport(component: LitElement): boolean {
+    const renderMethod = Object.getPrototypeOf(component
+  - Type: ads
+- false; const renderStr = renderMethod.toString(); const screenReaderPatterns = [ "aria-label",
+  - Context:  if (!renderMethod) return false;
+
+    const renderStr = renderMethod.toString();
+    const screenReaderPatterns = [
+      "aria-label",
+      "aria-describedby",
+      "aria-live",
+      "role=",
+     
+  - Type: ads
+- "aria-live", "role=", "alt=", "title=", ]; return screenReaderPatterns.some((pattern) => renderStr.includes(pattern)); }
+  - Context: ibedby",
+      "aria-live",
+      "role=",
+      "alt=",
+      "title=",
+    ];
+
+    return screenReaderPatterns.some((pattern) => renderStr.includes(pattern));
+  }
+
+  private getAriaAttributes(componen
+  - Type: ads
 - Return appropriate content type based on visualization format
         if (visualizationFormat === "mermaid") {
   - Context: ynamics,
@@ -17968,6 +22103,122 @@ export async function updateMemory(updates: {
       if (insightContent) {
         sql += ` insightCo
   - Type: data
+- name: string; type: "web-component" | "custom-element" | "shadow-root"; properties: ComponentProperty[];
+  - Context: tNode {
+  id: string;
+  name: string;
+  type: "web-component" | "custom-element" | "shadow-root";
+  properties: ComponentProperty[];
+  events: ComponentEvent[];
+  methods: ComponentMethod[];
+  relationsh
+  - Type: freemium
+- "web-component" | "custom-element" | "shadow-root"; properties: ComponentProperty[]; events: ComponentEvent[]; methods:
+  - Context: 
+  name: string;
+  type: "web-component" | "custom-element" | "shadow-root";
+  properties: ComponentProperty[];
+  events: ComponentEvent[];
+  methods: ComponentMethod[];
+  relationships: ComponentRelatio
+  - Type: freemium
+- } export interface ComponentProperty { name: string; type: string; required:
+  - Context: relationships: ComponentRelationship[];
+  metadata: ComponentMetadata;
+}
+
+export interface ComponentProperty {
+  name: string;
+  type: string;
+  required: boolean;
+  defaultValue?: any;
+  description?: s
+  - Type: freemium
+- any; description?: string; validation?: PropertyValidation; } export interface ComponentEvent {
+  - Context: ;
+  type: string;
+  required: boolean;
+  defaultValue?: any;
+  description?: string;
+  validation?: PropertyValidation;
+}
+
+export interface ComponentEvent {
+  name: string;
+  type: string;
+  bubbles: boo
+  - Type: freemium
+- export interface PropertyValidation { type: "string" | "number" | "boolean"
+  - Context: olean;
+    eventHandlerSecurity: boolean;
+    propertyValidation: boolean;
+  };
+}
+
+export interface PropertyValidation {
+  type: "string" | "number" | "boolean" | "array" | "object" | "custom";
+  rules?:
+  - Type: freemium
+- string; name: string; type: "web-component" | "custom-element" | "shadow-root"; properties:
+  - Context: rface ComponentNode {
+  id: string;
+  name: string;
+  type: "web-component" | "custom-element" | "shadow-root";
+  properties: ComponentProperty[];
+  events: ComponentEvent[];
+  methods: ComponentMethod[
+  - Type: ads
+- relationships: ComponentRelationship[]; metadata: ComponentMetadata; } export interface ComponentProperty { name:
+  - Context: nts: ComponentEvent[];
+  methods: ComponentMethod[];
+  relationships: ComponentRelationship[];
+  metadata: ComponentMetadata;
+}
+
+export interface ComponentProperty {
+  name: string;
+  type: string;
+  re
+  - Type: ads
+- ComponentRelationship[]; metadata: ComponentMetadata; } export interface ComponentProperty { name: string;
+  - Context: [];
+  methods: ComponentMethod[];
+  relationships: ComponentRelationship[];
+  metadata: ComponentMetadata;
+}
+
+export interface ComponentProperty {
+  name: string;
+  type: string;
+  required: boolean;
+  
+  - Type: ads
+- string; } export interface ComponentMetadata { version: string; author?: string;
+  - Context: event";
+  source: string;
+  target: string;
+  description?: string;
+}
+
+export interface ComponentMetadata {
+  version: string;
+  author?: string;
+  lastModified: Date;
+  tags: string[];
+  complexity: "l
+  - Type: ads
+- { ariaAttributes: string[]; keyboardSupport: boolean; screenReaderSupport: boolean; }; security: {
+  - Context: er;
+  };
+  accessibility: {
+    ariaAttributes: string[];
+    keyboardSupport: boolean;
+    screenReaderSupport: boolean;
+  };
+  security: {
+    xssPrevention: boolean;
+    eventHandlerSecurity: boolean
+  - Type: ads
 - nodes WHERE name = ? LIMIT 1`, [name] ); if
   - Context: t result = await db.get(
     `SELECT id, type, name, attributes FROM nodes
