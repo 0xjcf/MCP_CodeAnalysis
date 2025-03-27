@@ -1,38 +1,40 @@
 import type {
-  WebComponentsAnalyzer,
-  WebComponentsAnalyzerOptions,
-  WebComponentAnalysisResult,
-} from "./types";
+  IWebComponentsAnalyzer,
+  IWebComponentsAnalyzerOptions,
+  IWebComponentAnalysisResult,
+} from './types';
 
-export class WebComponentsAnalyzerImpl implements WebComponentsAnalyzer {
+export class WebComponentsAnalyzerImpl implements IWebComponentsAnalyzer {
   async analyze(
-    _sourceCode: string,
-    _options: WebComponentsAnalyzerOptions = {}
-  ): Promise<WebComponentAnalysisResult> {
+    sourceCode: string,
+    _options: IWebComponentsAnalyzerOptions = {},
+  ): Promise<IWebComponentAnalysisResult> {
+    // Simulate async parsing operation
+    await new Promise(resolve => setTimeout(resolve, 0));
+
     // TODO: Implement actual analysis logic
-    const result: WebComponentAnalysisResult = {
+    const result: IWebComponentAnalysisResult = {
       success: true,
-      data: {
-        components: [],
-        lifecycleHooks: [],
-        shadowDOMUsage: [],
-        properties: [],
-        events: [],
-        performance: {
-          renderTime: 0,
-          memoryUsage: 0,
-          reflowCount: 0,
-          repaintCount: 0,
-        },
+      data: null,
+      components: [],
+      totalComponents: 0,
+      totalCustomElements: 0,
+      totalShadowRoots: 0,
+      totalSlots: 0,
+      totalEvents: 0,
+      totalProperties: 0,
+      performanceMetrics: {
+        constructorTime: 0,
+        renderTime: 0,
+        updateTime: 0,
+        memoryUsage: 0,
       },
-      errors: [],
-      warnings: [],
     };
 
     return result;
   }
 }
 
-export const createWebComponentsAnalyzer = (): WebComponentsAnalyzer => {
+export const createWebComponentsAnalyzer = (): IWebComponentsAnalyzer => {
   return new WebComponentsAnalyzerImpl();
 };

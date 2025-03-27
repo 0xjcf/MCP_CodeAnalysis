@@ -1,5 +1,5 @@
-export * from "./types";
-export * from "./analyzer";
+export * from './types';
+export * from './analyzer';
 
 // Re-export the factory function as the default export
-export { createWebComponentsAnalyzer as default } from "./analyzer";
+export { createWebComponentsAnalyzer as default } from './analyzer';

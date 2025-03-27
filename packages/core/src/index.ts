@@ -3,18 +3,18 @@
  * @module @mcp/core
  */
 
-export interface Analyzer {
-  analyze(source: string): Promise<AnalysisResult>;
+export interface IAnalyzer {
+  analyze(source: string): Promise<IAnalysisResult>;
 }
 
-export interface AnalysisResult {
+export interface IAnalysisResult {
   success: boolean;
   data: unknown;
   errors?: Error[];
   warnings?: string[];
 }
 
-export interface AnalysisOptions {
+export interface IAnalysisOptions {
   strict?: boolean;
   verbose?: boolean;
   timeout?: number;

@@ -1,88 +1,86 @@
-import type { Analyzer, AnalysisResult, AnalysisOptions } from "@mcp/core";
+import type { AnalysisResult, AnalysisOptions } from '@mcp/core';
 
-export interface WebComponentAnalysisResult extends AnalysisResult {
-  data: {
-    components: WebComponent[];
-    lifecycleHooks: LifecycleHook[];
-    shadowDOMUsage: ShadowDOMUsage[];
-    properties: Property[];
-    events: Event[];
-    performance: PerformanceMetrics;
-  };
+// Analysis result specific to web components
+export interface IWebComponentAnalysisResult extends AnalysisResult {
+  components: IWebComponent[];
+  totalComponents: number;
+  totalCustomElements: number;
+  totalShadowRoots: number;
+  totalSlots: number;
+  totalEvents: number;
+  totalProperties: number;
+  performanceMetrics: IPerformanceMetrics;
 }
 
-export interface WebComponent {
-  name: string;
+// Represents a single web component
+export interface IWebComponent {
+  tagName: string;
+  className: string;
   extends?: string;
-  lifecycleHooks: string[];
-  properties: Property[];
-  events: Event[];
-  shadowDOM: boolean;
-  location: {
-    file: string;
-    line: number;
-    column: number;
-  };
+  lifecycleHooks: ILifecycleHook[];
+  shadowDOM?: IShadowDOMUsage;
+  slots: string[];
+  properties: IProperty[];
+  events: IEvent[];
+  metrics: IPerformanceMetrics;
 }
 
-export interface LifecycleHook {
+// Lifecycle hooks used in the component
+export interface ILifecycleHook {
   name: string;
-  component: string;
-  location: {
-    file: string;
-    line: number;
-    column: number;
-  };
+  used: boolean;
+  hasAsyncLogic: boolean;
+  dependencies: string[];
+  callbackCount: number;
 }
 
-export interface ShadowDOMUsage {
-  component: string;
-  mode: "open" | "closed";
-  location: {
-    file: string;
-    line: number;
-    column: number;
-  };
+// Shadow DOM configuration
+export interface IShadowDOMUsage {
+  mode: 'open' | 'closed';
+  delegatesFocus: boolean;
+  adoptedStyleSheets: boolean;
 }
 
-export interface Property {
+// Component property definition
+export interface IProperty {
   name: string;
   type: string;
-  required: boolean;
-  component: string;
-  location: {
-    file: string;
-    line: number;
-    column: number;
-  };
+  defaultValue?: unknown;
+  attribute?: string;
+  reflect: boolean;
+  observed: boolean;
+  hasGetter: boolean;
+  hasSetter: boolean;
 }
 
-export interface Event {
+// Component event definition
+export interface IEvent {
   name: string;
-  component: string;
-  location: {
-    file: string;
-    line: number;
-    column: number;
-  };
+  bubbles: boolean;
+  composed: boolean;
+  cancelable: boolean;
+  detail?: unknown;
+  listeners: number;
 }
 
-export interface PerformanceMetrics {
+// Performance metrics for the component
+export interface IPerformanceMetrics {
+  constructorTime: number;
   renderTime: number;
+  updateTime: number;
   memoryUsage: number;
-  reflowCount: number;
-  repaintCount: number;
 }
 
-export interface WebComponentsAnalyzerOptions extends AnalysisOptions {
-  analyzePerformance?: boolean;
-  analyzeShadowDOM?: boolean;
-  analyzeLifecycle?: boolean;
+// Options for the analyzer
+export interface IWebComponentsAnalyzerOptions extends AnalysisOptions {
+  includeMetrics?: boolean;
+  deepAnalysis?: boolean;
 }
 
-export interface WebComponentsAnalyzer extends Analyzer {
+// Main analyzer interface
+export interface IWebComponentsAnalyzer {
   analyze(
-    sourceCode: string,
-    options?: WebComponentsAnalyzerOptions
-  ): Promise<WebComponentAnalysisResult>;
+    source: string,
+    options?: IWebComponentsAnalyzerOptions,
+  ): Promise<IWebComponentAnalysisResult>;
 }

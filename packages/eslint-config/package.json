@@ -1,0 +1,44 @@
+{
+  "name": "@mcp/eslint-config",
+  "version": "1.0.0",
+  "description": "Shared ESLint configuration for MCP packages",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "typescript.js",
+    "react.js",
+    "prettier.js"
+  ],
+  "scripts": {
+    "test": "eslint test.tsx",
+    "test:fix": "eslint test.tsx --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "eslint",
+    "eslint-config",
+    "typescript",
+    "react",
+    "prettier"
+  ],
+  "author": "MCP Team",
+  "license": "MIT",
+  "peerDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.12",
+    "eslint-plugin-prettier": "^5.2.5",
+    "react": "^19.0.0"
+  }
+}
