@@ -20,6 +20,8 @@ export interface IAnalysisOptions {
   timeout?: number;
 }
 
+export * from './redisSessionStore';
+
 // Export types that will be used across packages
 export // Add more type exports as needed
  type {};

@@ -1,0 +1,87 @@
+{
+  "session_metadata": {
+    "last_session_date": "YYYY-MM-DD",
+    "duration": "~X hours",
+    "project_phase": "Phase X - [Phase Name]",
+    "current_focus": "[Current Focus Area]"
+  },
+  "technical_context": {
+    "active_components": [
+      {
+        "name": "[component-name]",
+        "status": "[In Progress|Completed|Pending]",
+        "completion_percentage": 0,
+        "location": "packages/[component-name]/",
+        "details": {
+          "language": "TypeScript",
+          "features_to_implement": ["[Feature 1]", "[Feature 2]", "[Feature 3]"],
+          "current_metrics": {
+            "package_count": "0",
+            "test_coverage": "0%",
+            "build_success": "100%"
+          },
+          "next_steps": ["[Next Step 1]", "[Next Step 2]", "[Next Step 3]"],
+          "test_fixture": {
+            "app": "[app-name]",
+            "location": "test/fixtures/[category]/[app-name]",
+            "features": ["[Feature 1]", "[Feature 2]", "[Feature 3]"]
+          }
+        }
+      }
+    ]
+  },
+  "architectural_decisions": [
+    {
+      "decision": "[Decision Title]",
+      "rationale": "[Decision Rationale]",
+      "impact": "[Decision Impact]",
+      "status": "[implemented|in_progress|pending]"
+    }
+  ],
+  "development_status": {
+    "completed": ["[Completed Task 1]", "[Completed Task 2]"],
+    "in_progress": ["[In Progress Task 1]", "[In Progress Task 2]"],
+    "next_priorities": ["[Next Priority 1]", "[Next Priority 2]"]
+  },
+  "knowledge_context": {
+    "key_files": ["[Key File 1]", "[Key File 2]"],
+    "documentation": {
+      "updated": ["[Updated Doc 1]", "[Updated Doc 2]"],
+      "needs_update": ["[Needs Update Doc 1]", "[Needs Update Doc 2]"]
+    }
+  },
+  "next_session_plan": {
+    "focus": "[Next Session Focus]",
+    "tasks": ["[Task 1]", "[Task 2]"],
+    "dependencies": ["[Dependency 1]", "[Dependency 2]"]
+  },
+  "session_summary": {
+    "date": "YYYY-MM-DD",
+    "duration": "X hours",
+    "focus_area": "[Focus Area]",
+    "status": "[in_progress|completed]",
+    "completed_tasks": ["[Completed Task 1]", "[Completed Task 2]"],
+    "in_progress_tasks": ["[In Progress Task 1]", "[In Progress Task 2]"],
+    "pending_tasks": ["[Pending Task 1]", "[Pending Task 2]"],
+    "next_steps": ["[Next Step 1]", "[Next Step 2]"],
+    "metrics": {
+      "package_count": "0",
+      "test_coverage": "0%",
+      "build_success": "100%"
+    },
+    "notes": ["[Note 1]", "[Note 2]"]
+  },
+  "technical_details": {
+    "packages_modified": ["[Package 1]", "[Package 2]"],
+    "files_modified": ["[File 1]", "[File 2]"],
+    "dependencies_added": ["[Dependency 1]", "[Dependency 2]"],
+    "test_coverage": {
+      "[package-name]": "0%"
+    }
+  },
+  "session_goals_status": {
+    "completed": ["[Completed Goal 1]", "[Completed Goal 2]"],
+    "in_progress": ["[In Progress Goal 1]", "[In Progress Goal 2]"],
+    "pending": ["[Pending Goal 1]", "[Pending Goal 2]"]
+  }
+}

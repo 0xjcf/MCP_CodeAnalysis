@@ -1,4 +1,4 @@
-import { createMachine } from 'xstate';
+import { setup } from 'xstate';
 import type { AnyStateMachine } from 'xstate';
 
 /**
@@ -16,10 +16,16 @@ export const createTestMachine = (
 
   const stateObj: Record<string, any> = {};
   const guardObj: Record<string, () => boolean> = {};
+  const actionObj: Record<string, () => void> = {};
 
   // Create guards
   for (let i = 0; i < guards; i++) {
     guardObj[`guard${i + 1}`] = () => true;
+  }
+
+  // Create actions
+  for (let i = 0; i < actions; i++) {
+    actionObj[`action${i + 1}`] = () => {};
   }
 
   // Create states
@@ -48,18 +54,18 @@ export const createTestMachine = (
     };
   }
 
-  return createMachine({
+  return setup({
+    types: {
+      context: {} as Record<string, never>,
+      events: {} as { type: 'NEXT' },
+    },
+    guards: guardObj,
+    actions: actionObj,
+  }).createMachine({
     id: 'test',
     initial: 'state1',
+    context: {},
     states: stateObj,
-    ...(guards > 0 ? { guards: guardObj } : {}),
-    ...(actions > 0
-      ? {
-          actions: Object.fromEntries(
-            Array.from({ length: actions }, (_, i) => [`action${i + 1}`, () => {}]),
-          ),
-        }
-      : {}),
   });
 };
 

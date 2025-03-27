@@ -11,13 +11,16 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "uuid": "^9.0.0",
+    "ioredis": "^5.0.0"
   },
   "devDependencies": {
     "@mcp/eslint-config": "workspace:*",
     "@types/node": "^20.0.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@types/uuid": "^9.0.0",
     "eslint": "^8.0.0",
     "prettier": "^3.0.0",
     "vitest": "^1.0.0"
@@ -25,4 +28,4 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   }
-} 
+}
