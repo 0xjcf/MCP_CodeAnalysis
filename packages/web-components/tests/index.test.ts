@@ -13,12 +13,18 @@ describe("@mcp/web-components", () => {
     const result = await analyzer.analyze("// Test code");
 
     expect(result).toBeDefined();
-    expect(result.data).toBeDefined();
-    expect(Array.isArray(result.data.components)).toBe(true);
-    expect(Array.isArray(result.data.lifecycleHooks)).toBe(true);
-    expect(Array.isArray(result.data.shadowDOMUsage)).toBe(true);
-    expect(Array.isArray(result.data.properties)).toBe(true);
-    expect(Array.isArray(result.data.events)).toBe(true);
-    expect(result.data.performance).toBeDefined();
+    expect(result.success).toBe(true);
+    expect(Array.isArray(result.components)).toBe(true);
+    expect(typeof result.totalComponents).toBe("number");
+    expect(typeof result.totalCustomElements).toBe("number");
+    expect(typeof result.totalShadowRoots).toBe("number");
+    expect(typeof result.totalSlots).toBe("number");
+    expect(typeof result.totalEvents).toBe("number");
+    expect(typeof result.totalProperties).toBe("number");
+    expect(result.performanceMetrics).toBeDefined();
+    expect(typeof result.performanceMetrics.constructorTime).toBe("number");
+    expect(typeof result.performanceMetrics.renderTime).toBe("number");
+    expect(typeof result.performanceMetrics.updateTime).toBe("number");
+    expect(typeof result.performanceMetrics.memoryUsage).toBe("number");
   });
 });

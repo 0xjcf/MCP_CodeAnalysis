@@ -6,8 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
-    "test:coverage": "vitest run --coverage",
+    "test": "vitest run --reporter verbose",
+    "test:watch": "vitest --reporter verbose",
+    "test:coverage": "vitest run --coverage --reporter verbose",
+    "test:ui": "vitest --ui",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\""
   },

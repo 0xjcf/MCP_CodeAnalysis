@@ -17,6 +17,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ignite-element": "^1.4.5",
     "lit-html": "^3.2.1",
     "xstate": "^5.19.2"
   },

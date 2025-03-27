@@ -1,4 +1,4 @@
-import type { AnalysisResult, AnalysisOptions } from '@mcp/core';
+import type { AnalysisResult, AnalysisOptions } from "@mcp/core";
 
 // Analysis result specific to web components
 export interface IWebComponentAnalysisResult extends AnalysisResult {
@@ -10,6 +10,13 @@ export interface IWebComponentAnalysisResult extends AnalysisResult {
   totalEvents: number;
   totalProperties: number;
   performanceMetrics: IPerformanceMetrics;
+  type: "web-component";
+  name: string;
+  complexity: "low" | "medium" | "high";
+  dependencies: string[];
+  issues: AnalysisIssue[];
+  recommendations: string[];
+  metadata: ComponentMetadata;
 }
 
 // Represents a single web component
@@ -36,7 +43,7 @@ export interface ILifecycleHook {
 
 // Shadow DOM configuration
 export interface IShadowDOMUsage {
-  mode: 'open' | 'closed';
+  mode: "open" | "closed";
   delegatesFocus: boolean;
   adoptedStyleSheets: boolean;
 }
@@ -81,6 +88,39 @@ export interface IWebComponentsAnalyzerOptions extends AnalysisOptions {
 export interface IWebComponentsAnalyzer {
   analyze(
     source: string,
-    options?: IWebComponentsAnalyzerOptions,
+    options?: IWebComponentsAnalyzerOptions
   ): Promise<IWebComponentAnalysisResult>;
+}
+
+export interface AnalysisIssue {
+  type: "info" | "warning" | "error";
+  message: string;
+  severity: "low" | "medium" | "high";
+}
+
+export interface ComponentMetadata {
+  name: string;
+  description: string;
+  version: string;
+  properties: IProperty[];
+  events: IEvent[];
+  methods: ILifecycleHook[];
+  styling: string[];
+  dependencies: string[];
+  tags: string[];
+  performance: {
+    renderTime: number;
+    memoryUsage: number;
+    eventHandling: number;
+  };
+  accessibility: {
+    keyboardSupport: boolean;
+    screenReaderSupport: boolean;
+    ariaAttributes: string[];
+  };
+  security: {
+    xssPrevention: boolean;
+    eventHandlerSecurity: boolean;
+    propertyValidation: boolean;
+  };
 }

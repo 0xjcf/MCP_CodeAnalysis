@@ -1,8 +1,6 @@
 import { html } from "lit-html";
-import { igniteCore } from "../../IgniteCore";
-import { RenderArgs } from "../../RenderArgs";
+import { igniteCore, RenderArgs, setGlobalStyles } from "ignite-element";
 import { taskManagerMachine } from "./taskManagerMachine";
-import { setGlobalStyles } from "../../globalStyles";
 
 setGlobalStyles("./dist/styles.css");
 
@@ -27,8 +25,8 @@ export class TaskList {
               task.priority === "High"
                 ? "bg-red-400"
                 : task.priority === "Medium"
-                ? "bg-yellow-400"
-                : "bg-green-400";
+                  ? "bg-yellow-400"
+                  : "bg-green-400";
 
             return html` <li
               class="grid p-4 border rounded-lg shadow-sm hover:shadow-md transition ${priorityColor}"
