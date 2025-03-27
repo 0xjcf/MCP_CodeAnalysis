@@ -1,5 +1,128 @@
 # Session Continuation Prompt
 
+## Purpose
+
+This document provides context for continuing development work across sessions, ensuring consistency and progress tracking.
+
+## Current Context
+
+### Project Phase
+
+Phase 2 - Monorepo Restructuring
+
+### Current Focus
+
+Project Structure and Development Planning
+
+### Last Session Date
+
+2024-03-26
+
+### Active Component
+
+monorepo-setup (60% complete)
+
+## Session Goals
+
+1. Restructure project into monorepo with pnpm workspaces (High Priority)
+2. Enhance Web Components analyzer package structure (High Priority)
+3. Set up shared development tools and configurations (Medium Priority)
+
+## Command Output Handling
+
+When running commands that might hang or require user interaction, use the following approaches:
+
+1. **For commands that might hang**:
+
+   ```bash
+   # Use EDITOR=cat to prevent hanging
+   EDITOR=cat command
+
+   # Or use --no-pager for git commands
+   git --no-pager command
+   ```
+
+2. **For commands that require output capture**:
+
+   ```bash
+   # Use | cat to prevent paging
+   command | cat
+
+   # Or redirect to a file
+   command > output.txt
+   ```
+
+3. **For long-running processes**:
+
+   ```bash
+   # Use background processing with output redirection
+   command > output.log 2>&1 &
+
+   # Or use nohup for persistent output
+   nohup command > output.log 2>&1 &
+   ```
+
+4. **For interactive commands**:
+
+   ```bash
+   # Use -y or --yes for automatic yes responses
+   command -y
+
+   # Or use expect for complex interactions
+   expect -c 'spawn command; expect "prompt"; send "response\r"; interact'
+   ```
+
+## Progress Tracking
+
+### Completed Tasks
+
+- Set up pnpm workspace configuration
+- Created @mcp/core package
+- Configured shared dependencies
+- Set up Vitest for testing
+
+### In Progress
+
+- Creating remaining packages
+- Setting up shared development tools
+
+### Next Steps
+
+1. Create @mcp/web-components package
+2. Set up @mcp/eslint-config
+3. Configure @mcp/test-utils
+4. Set up CI/CD pipeline
+
+## Development Guidelines
+
+1. Follow established package structure
+2. Maintain consistent naming conventions
+3. Ensure proper dependency management
+4. Write comprehensive tests
+5. Update documentation as needed
+
+## Resources
+
+### Key Files
+
+- pnpm-workspace.yaml
+- package.json
+- tsconfig.json
+- packages/core/\*
+
+### Documentation
+
+- Package READMEs
+- TypeScript configuration
+- Build and test setup
+
+## Notes
+
+- All commands should be run with appropriate output handling to prevent hanging
+- Follow the established package structure for new packages
+- Maintain backward compatibility
+- Update documentation with any changes
+
 To continue a session, you have two options:
 
 1. **Recommended Default**: Non-interactive mode (displays without vim):
