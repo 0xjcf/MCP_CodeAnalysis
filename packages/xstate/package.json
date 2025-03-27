@@ -1,0 +1,26 @@
+{
+  "name": "@mcp/xstate",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "@mcp/core": "workspace:*",
+    "xstate": "^5.0.0",
+    "@xstate/inspect": "^0.7.0"
+  },
+  "devDependencies": {
+    "@mcp/eslint-config": "workspace:*",
+    "@mcp/tsconfig": "workspace:*",
+    "@mcp/test-utils": "workspace:*",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
