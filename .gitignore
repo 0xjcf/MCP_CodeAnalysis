@@ -68,14 +68,21 @@ Thumbs.db
 *.bak
 *.swp
 *.swo
+*.bak
+*.tmp
 
 # Redis dump files
 dump.rdb
 *.rdb
 
 # MCP specific
-mcp-test-output.txt
+.mcp-history
+.mcp-session
 ai-context.json
+monetization_analysis.json
+knowledge_graph.json
+complexity_analysis*.json
+mcp-test-output.txt
 llms-*.txt
 
 # Generated files
@@ -83,62 +90,11 @@ llms-*.txt
 .cursor/cursors/
 
 # Database files
-data/ 
-/target
-
-/target/debug/
-
-# MCP specific
-.mcp-history
-.mcp-session
-complexity_analysis*.json
-
-# MCP specific
-tools/complexity_analyzer/test-output.json
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Dependencies
-node_modules
-.pnpm-store
-
-# Test coverage
-coverage
-.nyc_output
-
-# IDE and editor files
-.idea
-.vscode
-*.swp
-*.swo
-.DS_Store
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Cache
-.cache
-.temp
-.tmp
-
-# TypeScript
-*.tsbuildinfo
+data/*.db
+data/*.sqlite
+data/*.sqlite3
 
 # Package manager
-.pnpm-store
 .yarn/*
 !.yarn/patches
 !.yarn/plugins

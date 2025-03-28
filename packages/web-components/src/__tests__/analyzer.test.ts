@@ -53,6 +53,40 @@ describe('WebComponentsAnalyzer', () => {
 
       const component = result.data.components[0];
       expect(component.accessibility?.issues.length).toBeGreaterThan(0);
+
+      // Verify specific accessibility issues
+      const issues = component.accessibility?.issues || [];
+      expect(issues.some(i => i.type === 'warning')).toBe(true);
+      expect(issues.some(i => i.message.includes('ARIA attributes'))).toBe(true);
+      expect(issues.some(i => i.message.includes('keyboard'))).toBe(true);
+      expect(issues.some(i => i.message.includes('semantic'))).toBe(true);
+      expect(issues.some(i => i.message.includes('text alternatives'))).toBe(true);
+      expect(issues.some(i => i.message.includes('focus'))).toBe(true);
+      expect(issues.some(i => i.message.includes('color contrast'))).toBe(true);
+      expect(issues.some(i => i.message.includes('dynamic content'))).toBe(true);
+      expect(issues.some(i => i.message.includes('form elements'))).toBe(true);
+      expect(issues.some(i => i.message.includes('interactive elements'))).toBe(true);
+      expect(issues.some(i => i.message.includes('headings'))).toBe(true);
+      expect(issues.some(i => i.message.includes('lists'))).toBe(true);
+      expect(issues.some(i => i.message.includes('tables'))).toBe(true);
+      expect(issues.some(i => i.message.includes('iframes'))).toBe(true);
+      expect(issues.some(i => i.message.includes('media elements'))).toBe(true);
+
+      // Verify accessibility metrics
+      expect(component.accessibility?.hasAriaAttributes).toBe(false);
+      expect(component.accessibility?.hasKeyboardSupport).toBe(false);
+      expect(component.accessibility?.hasSemanticHTML).toBe(false);
+      expect(component.accessibility?.hasTextAlternatives).toBe(false);
+      expect(component.accessibility?.hasFocusManagement).toBe(false);
+      expect(component.accessibility?.hasColorContrast).toBe(true);
+      expect(component.accessibility?.hasDynamicContent).toBe(true);
+      expect(component.accessibility?.hasFormElements).toBe(true);
+      expect(component.accessibility?.hasInteractiveElements).toBe(true);
+      expect(component.accessibility?.hasHeadings).toBe(true);
+      expect(component.accessibility?.hasLists).toBe(true);
+      expect(component.accessibility?.hasTables).toBe(true);
+      expect(component.accessibility?.hasIframes).toBe(true);
+      expect(component.accessibility?.hasMedia).toBe(true);
     });
 
     it('should validate good accessibility practices', async () => {
@@ -67,6 +101,22 @@ describe('WebComponentsAnalyzer', () => {
 
       const component = result.data.components[0];
       expect(component.accessibility?.issues.length).toBe(0);
+
+      // Verify accessibility metrics
+      expect(component.accessibility?.hasAriaAttributes).toBe(true);
+      expect(component.accessibility?.hasKeyboardSupport).toBe(true);
+      expect(component.accessibility?.hasSemanticHTML).toBe(true);
+      expect(component.accessibility?.hasTextAlternatives).toBe(true);
+      expect(component.accessibility?.hasFocusManagement).toBe(true);
+      expect(component.accessibility?.hasColorContrast).toBe(true);
+      expect(component.accessibility?.hasDynamicContent).toBe(false);
+      expect(component.accessibility?.hasFormElements).toBe(true);
+      expect(component.accessibility?.hasInteractiveElements).toBe(true);
+      expect(component.accessibility?.hasHeadings).toBe(true);
+      expect(component.accessibility?.hasLists).toBe(true);
+      expect(component.accessibility?.hasTables).toBe(false);
+      expect(component.accessibility?.hasIframes).toBe(false);
+      expect(component.accessibility?.hasMedia).toBe(true);
     });
   });
 

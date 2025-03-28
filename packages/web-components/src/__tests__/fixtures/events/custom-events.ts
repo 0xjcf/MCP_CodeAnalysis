@@ -1,29 +1,35 @@
-import { Shared } from '@ignite/core';
-import { LitElement, html } from 'lit';
+import { html } from 'lit-html';
+import { igniteCore, RenderArgs } from 'ignite-element';
+import { createMachine } from 'xstate';
 
-@Shared('test-component')
-export class TestComponent extends LitElement {
-  connectedCallback() {
-    super.connectedCallback();
-    this.dispatchEvent(
-      new CustomEvent('custom-event', {
-        bubbles: true,
-        composed: true,
-      }),
-    );
-  }
+// Initialize Ignite-core
+const { Shared } = igniteCore({
+  adapter: 'xstate',
+  source: createMachine({
+    id: 'custom-events',
+    initial: 'idle',
+    states: {
+      idle: {},
+    },
+  }),
+});
 
-  handleCustomEvent() {
-    this.addEventListener('custom-event', () => {
-      console.log('Custom event handled');
-    });
-  }
-
-  render() {
+@Shared('custom-events')
+export class CustomEventsComponent extends HTMLElement {
+  render(_args: RenderArgs<any, any>) {
     return html`
       <div>
-        <button @click=${this.handleCustomEvent}>Listen for custom event</button>
+        <button @click=${this.dispatchCustomEvent}>Trigger Event</button>
       </div>
     `;
+  }
+
+  private dispatchCustomEvent() {
+    const event = new CustomEvent('custom-event', {
+      bubbles: true,
+      composed: true,
+      detail: { data: 'test' },
+    });
+    this.dispatchEvent(event);
   }
 }

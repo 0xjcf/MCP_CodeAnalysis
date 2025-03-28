@@ -4,6 +4,8 @@ This repository contains a modular code analysis framework designed to provide e
 
 ## Project Structure
 
+For detailed information about the project structure and best practices, see [Project Structure Documentation](docs/project-structure.md).
+
 ```
 packages/
 ├── @mcp/core/                 # Core analysis framework
@@ -13,9 +15,16 @@ packages/
 ├── @mcp/tsconfig/            # Shared TypeScript configuration
 └── @mcp/test-utils/          # Shared testing utilities
 
-test/
-└── fixtures/                 # Test fixtures and example projects
-    └── web-components/       # Web Components example projects
+tools/
+└── complexity_analyzer/       # Rust-based complexity analyzer
+
+docs/
+├── archive/                  # Archived documentation
+└── templates/               # Documentation templates
+
+templates/
+├── session/                # Session management templates
+└── analysis/              # Analysis templates
 ```
 
 ## Getting Started
@@ -83,6 +92,8 @@ The XState analyzer provides:
 
 ## Development Guidelines
 
+For detailed development guidelines, see [Project Structure Documentation](docs/project-structure.md).
+
 ### Package Structure
 
 Each analyzer package should follow this structure:
@@ -129,6 +140,16 @@ packages/@mcp/[analyzer-name]/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Documentation
+
+For detailed documentation, see the following:
+
+- [Project Structure](docs/project-structure.md)
+- [Development Guidelines](docs/project-structure.md#best-practices-for-new-features)
+- [API Documentation](docs/api/)
+- [Analysis Tools](docs/tools/)
+- [Templates](docs/templates/)
+
 # MCP SDK State Management Architecture
 
 This project implements stateful tools for the Model Context Protocol (MCP) SDK, providing a framework for building tools that maintain context between invocations.
@@ -163,10 +184,10 @@ The central integration point with the MCP SDK, providing:
 
 ```typescript
 // Creating a stateful tool with state persistence
-createStatefulTool(server, "my-tool", schema, handler);
+createStatefulTool(server, 'my-tool', schema, handler);
 
 // With description
-createStatefulTool(server, "my-tool", "My stateful tool", schema, handler);
+createStatefulTool(server, 'my-tool', 'My stateful tool', schema, handler);
 ```
 
 ### Tool Machine (`toolMachine.ts`)
@@ -206,21 +227,21 @@ The architecture integrates with the MCP SDK by:
 ## Usage Example
 
 ```typescript
-import { createServer } from "@modelcontextprotocol/sdk";
-import { createStatefulTool } from "./state/helpers/statefulTool";
-import { z } from "zod";
+import { createServer } from '@modelcontextprotocol/sdk';
+import { createStatefulTool } from './state/helpers/statefulTool';
+import { z } from 'zod';
 
 const server = createServer();
 
 // Register a stateful tool
 createStatefulTool(
   server,
-  "counter",
-  "A tool that maintains a count between invocations",
+  'counter',
+  'A tool that maintains a count between invocations',
   {
-    action: z.enum(["increment", "decrement", "reset"]),
+    action: z.enum(['increment', 'decrement', 'reset']),
   },
-  async (params) => {
+  async params => {
     // Get session ID from params (or a new one will be created)
     const sessionId = params.sessionId;
 
@@ -230,7 +251,7 @@ createStatefulTool(
     // Tool logic with state manipulation...
 
     return { count };
-  }
+  },
 );
 
 server.listen(3000);

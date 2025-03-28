@@ -115,15 +115,24 @@ export interface AccessibilityMetrics {
   hasKeyboardSupport: boolean;
   hasSemanticHTML: boolean;
   hasTextAlternatives: boolean;
+  hasFocusManagement: boolean;
+  hasColorContrast: boolean;
+  hasDynamicContent: boolean;
+  hasFormElements: boolean;
+  hasInteractiveElements: boolean;
+  hasHeadings: boolean;
+  hasLists: boolean;
+  hasTables: boolean;
+  hasIframes: boolean;
+  hasMedia: boolean;
   issues: AccessibilityIssue[];
 }
 
 export interface AccessibilityIssue {
-  type: 'aria' | 'keyboard' | 'semantic' | 'contrast' | 'text';
-  severity: 'error' | 'warning' | 'info';
-  description: string;
-  location: Location;
-  suggestion: string;
+  type: 'warning' | 'error';
+  message: string;
+  element?: string;
+  suggestion?: string;
 }
 
 export interface WebComponentsAnalyzerOptions extends AnalysisOptions {

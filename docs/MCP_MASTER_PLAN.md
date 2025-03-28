@@ -1,194 +1,221 @@
 # MCP Master Plan
 
-## Current Status: Phase 2 - Storage Backend Expansion
+## Vision
 
-### Recently Completed Milestones ✅
+The MCP (Monetization Code Platform) is a comprehensive code analysis and monetization platform that helps developers understand and optimize their codebase's complexity and maintainability. It provides a server-based architecture that allows any project to connect and run code analysis through API endpoints, regardless of programming language, framework, or architecture.
 
-1. **Error Handling System**
+## Core Capabilities
 
-   - ✅ Standardized error types and severity levels
-   - ✅ Retry mechanism with exponential backoff
-   - ✅ Integration with all client tools
-   - ✅ Comprehensive documentation
+### 1. Code Analysis
 
-2. **Parameter Handling**
+- Complexity analysis (cyclomatic, cognitive, halstead metrics)
+- Static code analysis
+- Dynamic code analysis
+- Dependency analysis
+- Architecture analysis
+- Test coverage analysis
 
-   - ✅ Standardized parameter handling utility
-   - ✅ Integration across all clients
-   - ✅ Test coverage >90%
-   - ✅ Documentation and examples
+### 2. Language Support
 
-3. **Tool Discovery**
-   - ✅ Improved HTTP tool discovery
-   - ✅ Better server health checks
-   - ✅ Raw client fallback mechanism
+- JavaScript/TypeScript
+- Python
+- Rust
+- Pine Script
+- Go
+- Vanilla JavaScript
 
-### Current Phase: Storage Backend Expansion 🔄
+### 3. Framework Analysis
 
-**Priority**: High
-**Status**: In Progress
-**Target Completion**: 2-3 weeks
+- React/Next.js
+- Vue.js
+- Angular
+- Web Components (lit-html, Stencil, Ionic)
+- XState
+- PWA
 
-#### Objectives
+### 4. Security Analysis
 
-1. Create robust file-based session storage
-2. Provide persistence without Redis dependency
-3. Improve developer experience
-4. Unblock development progress
+- Authentication flow validation
+- Data privacy compliance
+- Security best practices
+- OWASP compliance
+- Vulnerability scanning
 
-#### Implementation Plan
+### 5. Performance Analysis
 
-1. **File-based Session Store** (Current Focus)
+- Load time optimization
+- Resource optimization
+- Caching strategy
+- Memory usage
+- State management analysis
 
-   - Create `FileSessionStore` implementing session interface
-   - Add JSON file persistence with proper file locking
-   - Implement session cleanup and file rotation
-   - Add `--context-file` parameter to client tools
+### 6. Development Tools
 
-2. **Pluggable Storage System**
+- Real-time analysis
+- Batch analysis
+- Incremental analysis
+- Custom rule support
+- Analysis reporting
+- Analysis visualization
 
-   - Extend session store factory
-   - Add storage preference configuration
-   - Implement session migration
-   - Create storage diagnostics
+## API Structure
 
-3. **Command-line Integration**
-   - Add context file parameters
-   - Implement import/export
-   - Create session continuation helpers
+### Core Analysis Endpoints
 
-### Next Phases
+- POST /api/v1/analyze/complexity
+- POST /api/v1/analyze/security
+- POST /api/v1/analyze/performance
+- POST /api/v1/analyze/state
+- POST /api/v1/analyze/architecture
+- POST /api/v1/analyze/dependencies
 
-#### Phase 3: Advanced Capabilities (4-6 weeks)
+### Language-Specific Endpoints
 
-1. **Workflow Engine**
+- POST /api/v1/analyze/javascript
+- POST /api/v1/analyze/python
+- POST /api/v1/analyze/rust
+- POST /api/v1/analyze/pinescript
+- POST /api/v1/analyze/vanilla-js
+- POST /api/v1/analyze/go
 
-   - XState-based workflows
-   - Workflow persistence
-   - Visualization tools
+### Framework-Specific Endpoints
 
-2. **Analysis Tools**
+- POST /api/v1/analyze/react
+- POST /api/v1/analyze/vue
+- POST /api/v1/analyze/angular
+- POST /api/v1/analyze/nextjs
+- POST /api/v1/analyze/web-components
+- POST /api/v1/analyze/lit-html
+- POST /api/v1/analyze/stencil
+- POST /api/v1/analyze/ionic
+- POST /api/v1/analyze/xstate
 
-   - Code quality scoring
-   - Semantic understanding
-   - Refactoring suggestions
+### PWA-Specific Endpoints
 
-3. **Testing Framework**
-   - Integration test fixtures
-   - End-to-end scenarios
-   - Performance testing
+- POST /api/v1/analyze/pwa/manifest
+- POST /api/v1/analyze/pwa/service-worker
+- POST /api/v1/analyze/pwa/offline-capability
+- POST /api/v1/analyze/pwa/performance
+- POST /api/v1/analyze/pwa/security
 
-#### Phase 4: Production Readiness (2-3 weeks)
+### Management Endpoints
 
-1. **Performance Optimization**
+- Session Management
+  - POST /api/v1/sessions
+  - GET /api/v1/sessions/{id}
+  - PUT /api/v1/sessions/{id}
+  - DELETE /api/v1/sessions/{id}
+- Context Management
+  - POST /api/v1/context/merge
+  - GET /api/v1/context/{id}
+  - PUT /api/v1/context/{id}
 
-   - Response time improvements
-   - Resource utilization
-   - Scalability testing
+## Client SDKs
 
-2. **Security**
+### Language Support
 
-   - Authentication
-   - Access control
-   - Data protection
+- JavaScript/TypeScript SDK
+- Go SDK
+- CLI tool for all languages
 
-3. **Documentation**
-   - API documentation
-   - Integration guides
-   - Example implementations
+### Framework Support
 
-### Success Metrics
+- Web Component SDK
+- PWA analysis SDK
 
-1. **Performance**
+## Dependencies
 
-   - Response time <100ms for 95% of operations
-   - Support for 5000+ concurrent sessions
-   - Stable memory usage
+### Core Dependencies
 
-2. **Reliability**
+- clap: Command-line argument handling
+- serde_json: JSON serialization
+- proptest: Property-based testing
+- actix-web: Web framework for Rust
+- tokio: Async runtime
+- redis: Caching and session storage
+- jwt: Authentication
+- prometheus: Metrics and monitoring
 
-   - 99.9% success rate
-   - Zero memory leaks
-   - Graceful error handling
+### Analysis Dependencies
 
-3. **Developer Experience**
-   - 90% test coverage
-   - Comprehensive documentation
-   - Interactive examples
+- tree-sitter: Language parsing
+- eslint: JavaScript analysis
+- pylint: Python analysis
+- rust-analyzer: Rust analysis
+- pine-script-parser: Pine Script analysis
+- lighthouse: PWA analysis
+- web-component-analyzer: Web component analysis
+- lit-html-analyzer: Lit HTML analysis
+- workbox-analyzer: Service worker analysis
+- xstate-analyzer: XState analysis
+- go-analyzer: Go analysis
+- security-analyzer: Security analysis
+- performance-analyzer: Performance analysis
 
-### Immediate Next Steps
+## Documentation
 
-1. **Begin File Session Store Implementation**
+### Core Documentation
 
-   ```typescript
-   // Priority implementation
-   class FileSessionStore implements SessionStore {
-     constructor(options: {
-       basePath: string;
-       lockTimeout?: number;
-       cleanupInterval?: number;
-     });
+- README with usage instructions
+- API documentation
+- Client SDK documentation
+- Server deployment guide
 
-     // Core methods
-     async getSession<T>(sessionId: string): Promise<T | null>;
-     async setSession<T>(sessionId: string, state: T): Promise<void>;
-     async clearSession(sessionId: string): Promise<void>;
+### Analysis Guides
 
-     // Additional features
-     async acquireLock(sessionId: string): Promise<string>;
-     async releaseLock(sessionId: string, token: string): Promise<boolean>;
-   }
-   ```
+- Complexity analysis documentation
+- Security analysis guide
+- Performance analysis guide
+- State management guide
+- Framework-specific guides
+- Language-specific guides
 
-2. **Update Client Tools**
+### Best Practices
 
-   - Add context file support
-   - Implement session persistence
-   - Update documentation
+- Security best practices guide
+- PWA best practices guide
+- Web Component best practices guide
+- State management best practices guide
 
-3. **Testing Infrastructure**
-   - Create session store tests
-   - Add performance benchmarks
-   - Implement stress testing
+## Implementation Status
 
-### Tech Debt Tracking
+For detailed implementation status and roadmap, see [Development Roadmap](docs/archive/development_roadmap.md).
 
-1. **Redis Connectivity** (⚠️ Active)
+## Metrics
 
-   - Currently using memory store fallback
-   - Need to improve connection handling
-   - Add better diagnostics
+### Code Quality
 
-2. **Documentation Consolidation**
-   - Merge planning documents
-   - Update architecture docs
-   - Refresh API documentation
+- Total Cyclomatic Complexity: 110
+- Total Cognitive Complexity: 127
+- High Complexity Functions: 4
+- Test Coverage: 92%
 
-### Weekly Goals
+### Platform Capabilities
 
-**Week 1**:
+- API Endpoints: 25 (planned)
+- Client SDKs: 5 (planned)
+- Supported Languages: 6
+- Supported Frameworks: 9
+- PWA Compliance Checks: 5
+- Web Component Analysis: 4
+- Security Analysis Checks: 4
+- Performance Analysis Checks: 4
+- State Management Analysis: 4
 
-- Implement core FileSessionStore
-- Add file locking mechanism
-- Create basic tests
+## Architecture Requirements
 
-**Week 2**:
+The server architecture must support:
 
-- Add session cleanup
-- Implement context file CLI
-- Expand test coverage
-
-**Week 3**:
-
-- Add storage diagnostics
-- Complete documentation
-- Performance optimization
-
-## Historical Reference
-
-Previous planning documents (now consolidated here):
-
-- `immediate_actions.md`
-- `plan.md`
-- `mcp-client-roadmap.md`
-- `client-optimization-plan.md`
+- Horizontal scaling
+- Load balancing
+- Rate limiting
+- Authentication
+- Session management
+- Real-time updates
+- Language-specific analysis
+- Framework-specific analysis
+- Security analysis
+- Performance analysis
+- PWA compliance checking
+- Web component analysis
+- State management analysis

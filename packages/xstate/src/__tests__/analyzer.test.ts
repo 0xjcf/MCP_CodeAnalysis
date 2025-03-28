@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { createMachine } from 'xstate';
 import { XStateAnalyzer, XStateAnalysisData } from '../analyzer';
 import { readFileSync } from 'fs';
 import { join } from 'path';
