@@ -1,16 +1,16 @@
-import { html } from "lit-html";
-import { igniteCore, RenderArgs, setGlobalStyles } from "ignite-element";
-import { taskManagerMachine } from "./taskManagerMachine";
+import { html } from 'lit-html';
+import { igniteCore, RenderArgs, setGlobalStyles } from 'ignite-element';
+import { taskManagerMachine } from './taskManagerMachine';
 
-setGlobalStyles("./dist/styles.css");
+setGlobalStyles('./dist/styles.css');
 
 // Initialize Ignite-core
 const { Shared } = igniteCore({
-  adapter: "xstate",
+  adapter: 'xstate',
   source: taskManagerMachine,
 });
 
-@Shared("task-list")
+@Shared('task-list')
 export class TaskList {
   render({ state, send }: RenderArgs<typeof taskManagerMachine>) {
     const { tasks } = state;
@@ -22,28 +22,26 @@ export class TaskList {
           ${tasks.map((task, index) => {
             // Determine background color based on priority
             const priorityColor =
-              task.priority === "High"
-                ? "bg-red-400"
-                : task.priority === "Medium"
-                  ? "bg-yellow-400"
-                  : "bg-green-400";
+              task.priority === 'High'
+                ? 'bg-red-400'
+                : task.priority === 'Medium'
+                  ? 'bg-yellow-400'
+                  : 'bg-green-400';
 
             return html` <li
               class="grid p-4 border rounded-lg shadow-sm hover:shadow-md transition ${priorityColor}"
               style="grid-template-columns: 1fr auto; align-items: center"
             >
               <span
-                class="text-md ${task.completed
-                  ? "line-through text-gray-500"
-                  : "text-gray-900"}"
+                class="text-md ${task.completed ? 'line-through text-gray-500' : 'text-gray-900'}"
               >
                 ${task.name}
               </span>
               <button
-                @click=${() => send({ type: "TOGGLE", index })}
+                @click=${() => send({ type: 'TOGGLE', index })}
                 class="text-sm bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
               >
-                ${task.completed ? "Undo" : "Complete"}
+                ${task.completed ? 'Undo' : 'Complete'}
               </button>
             </li>`;
           })}
@@ -53,17 +51,17 @@ export class TaskList {
   }
 }
 
-@Shared("progress-bar")
+@Shared('progress-bar')
 export class ProgressBar {
   render({ state }: RenderArgs<typeof taskManagerMachine>) {
     const { tasks } = state.context;
-    const completed = tasks.filter((t) => t.completed).length;
+    const completed = tasks.filter(t => t.completed).length;
     const total = tasks.length;
     const percentage = total > 0 ? (completed / total) * 100 : 0;
 
     const backgroundStyle =
       percentage === 100
-        ? "background: #22c55e;"
+        ? 'background: #22c55e;'
         : `background: linear-gradient(
             90deg,
             rgba(34, 197, 94, 1) 0%,
@@ -86,7 +84,7 @@ export class ProgressBar {
   }
 }
 
-@Shared("task-form")
+@Shared('task-form')
 export class TaskForm {
   render({ send }: RenderArgs<typeof taskManagerMachine>) {
     return html`
@@ -97,10 +95,10 @@ export class TaskForm {
             e.preventDefault();
             const formElement = e.target as HTMLFormElement;
             const formData = new FormData(formElement);
-            const name = formData.get("name") as string;
-            const priority = formData.get("priority") as string;
+            const name = formData.get('name') as string;
+            const priority = formData.get('priority') as string;
             if (name.trim()) {
-              send({ type: "ADD", name, priority });
+              send({ type: 'ADD', name, priority });
               formElement.reset();
             }
           }}
@@ -122,9 +120,7 @@ export class TaskForm {
             <option value="Low">Low</option>
           </select>
 
-          <button
-            class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
+          <button class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
             Add Task
           </button>
         </form>
@@ -133,7 +129,7 @@ export class TaskForm {
   }
 }
 
-@Shared("confetti-effect")
+@Shared('confetti-effect')
 export class ConfettiEffect {
   render({ state, send }: RenderArgs<typeof taskManagerMachine>) {
     const { tasks } = state;
@@ -143,12 +139,10 @@ export class ConfettiEffect {
       <div class="relative h-64 overflow-hidden">
         <!-- Celebration Message -->
         <div class="text-center mt-16">
-          <h3 class="text-2xl font-bold text-green-700">
-            🎉 Congratulations! 🎉
-          </h3>
+          <h3 class="text-2xl font-bold text-green-700">🎉 Congratulations! 🎉</h3>
           <p class="text-md text-gray-600">You completed all ${total} tasks!</p>
           <button
-            @click=${() => send({ type: "RESET" })}
+            @click=${() => send({ type: 'RESET' })}
             class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
           >
             Reset Tasks
@@ -159,10 +153,10 @@ export class ConfettiEffect {
   }
 }
 
-@Shared("task-manager")
+@Shared('task-manager')
 export class TaskManager {
   render({ state }: RenderArgs<typeof taskManagerMachine>) {
-    const isCompleted = state.matches("completed");
+    const isCompleted = state.matches('completed');
 
     return html`
       <div class="p-4 space-y-4 max-w-fit mx-auto">

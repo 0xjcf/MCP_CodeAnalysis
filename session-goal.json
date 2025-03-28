@@ -142,5 +142,99 @@
     "Document analysis methods thoroughly",
     "Consider future extensibility",
     "Maintain backward compatibility"
-  ]
+  ],
+  "goal_id": "web-components-restructure-2024-03-28",
+  "title": "Restructure Web Components Test Fixtures",
+  "status": "in_progress",
+  "start_date": "2024-03-28",
+  "target_completion": "2024-03-28",
+  "dependencies": [],
+  "subtasks": [
+    {
+      "id": "move-task-manager",
+      "title": "Move Task Manager Example",
+      "description": "Move task-manager example to packages/examples/task-manager",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "reorganize-fixtures",
+      "title": "Reorganize Test Fixtures",
+      "description": "Organize test fixtures by feature/analysis type",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "update-dependencies",
+      "title": "Update Dependencies",
+      "description": "Update package.json files to properly handle dependencies in monorepo structure",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "cleanup-directories",
+      "title": "Clean Up Directories",
+      "description": "Remove empty directories and clean up structure",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": "update-tests",
+      "title": "Update Test References",
+      "description": "Update test references to new structure",
+      "status": "pending",
+      "priority": "high"
+    }
+  ],
+  "success_criteria": [
+    "Task manager example successfully moved to packages/examples",
+    "Test fixtures organized by feature/analysis type",
+    "Dependencies properly managed in monorepo structure",
+    "No empty directories remain",
+    "All tests pass with new structure"
+  ],
+  "risks": [
+    {
+      "description": "Breaking changes in test references",
+      "mitigation": "Update all test files to use new paths"
+    },
+    {
+      "description": "Dependency conflicts in monorepo",
+      "mitigation": "Carefully manage package.json dependencies"
+    }
+  ],
+  "resources": [
+    "packages/web-components/package.json",
+    "test/fixtures/web-components/*",
+    "packages/examples/task-manager/*"
+  ],
+  "current_goal": "Monorepo Restructuring and Cleanup",
+  "progress": {
+    "completed": [
+      "Moved task-manager example to packages/examples",
+      "Organized web components test fixtures by feature type",
+      "Installed missing dependencies for test fixtures",
+      "Identified empty directories and files for cleanup",
+      "Planned reorganization of root-level files"
+    ],
+    "in_progress": [
+      "Cleaning up empty directories",
+      "Moving root-level files to appropriate packages"
+    ],
+    "pending": [
+      "Update .gitignore for build outputs",
+      "Consolidate test directories",
+      "Update documentation to reflect new structure"
+    ]
+  },
+  "next_actions": [
+    "Remove empty directories",
+    "Move analysis files to packages/analysis",
+    "Move session files to packages/session",
+    "Move documentation files to docs/",
+    "Move Rust files to tools/complexity_analyzer/",
+    "Update .gitignore"
+  ],
+  "blockers": [],
+  "notes": "Following monorepo best practices and development roadmap. Need to ensure proper organization of files and maintain clean project structure."
 }

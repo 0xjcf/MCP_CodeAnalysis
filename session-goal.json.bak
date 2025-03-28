@@ -2,35 +2,36 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Implement XState analyzer for state machine analysis",
+      "description": "Implement Web Components analyzer for component analysis",
       "priority": "high",
       "priority_level": 1,
       "estimated_time": "2-3 hours",
       "status": "pending",
       "details": {
         "implementation_requirements": [
-          "Implement state machine analysis",
-          "Add transition analysis",
-          "Add guard and action analysis",
-          "Implement service integration analysis",
-          "Add performance optimization suggestions"
+          "Implement component lifecycle analysis",
+          "Add shadow DOM usage analysis",
+          "Implement property and event analysis",
+          "Add performance optimization suggestions",
+          "Add accessibility analysis"
         ],
         "implementation_approach": [
-          "Set up XState analyzer package structure",
-          "Implement core analysis functions",
-          "Add test coverage",
+          "Complete Web Components analyzer implementation",
+          "Add comprehensive test coverage",
           "Document API and usage",
-          "Integrate with core analysis framework"
+          "Integrate with core analysis framework",
+          "Add performance monitoring"
         ],
         "guard_rails": {
           "naming_conventions": {
-            "scope": "xstate_analyzer",
+            "scope": "web_components_analyzer",
             "naming_pattern": "Clear, descriptive names for analysis functions",
             "examples": [
-              "analyzeStateMachine",
-              "analyzeTransitions",
-              "analyzeGuards",
-              "analyzeServices"
+              "analyzeComponentLifecycle",
+              "analyzeShadowDOM",
+              "analyzeProperties",
+              "analyzeEvents",
+              "analyzePerformance"
             ]
           },
           "code_standards": {
@@ -43,26 +44,26 @@
               "Document analysis methods"
             ],
             "constraints": [
-              "Must handle invalid state machines gracefully",
+              "Must handle invalid components gracefully",
               "Output must be consistently formatted",
               "Changes must not break existing functionality",
               "Must maintain backward compatibility"
             ]
           },
           "technical_requirements": {
-            "dependencies": ["typescript", "node", "@xstate/inspect", "@xstate/fsm"],
+            "dependencies": ["typescript", "node", "@webcomponents/webcomponentsjs"],
             "versions": "Node.js 18+, TypeScript 5.0+",
-            "compatibility": "Must work with XState v4+"
+            "compatibility": "Must work with Web Components v1+"
           }
         },
         "verification_steps": [
           {
             "step": "Core Analysis",
             "checks": [
-              "State machine structure is correctly analyzed",
-              "Transitions are properly identified",
-              "Guards and actions are correctly parsed",
-              "Services are properly analyzed"
+              "Component lifecycle is correctly analyzed",
+              "Shadow DOM usage is properly identified",
+              "Properties and events are correctly parsed",
+              "Performance metrics are accurate"
             ]
           },
           {
@@ -85,7 +86,7 @@
           }
         ],
         "success_criteria": [
-          "XState analyzer is fully implemented",
+          "Web Components analyzer is fully implemented",
           "All core analysis features work",
           "Test coverage is comprehensive",
           "Documentation is complete",
@@ -98,30 +99,29 @@
   "session_metadata": {
     "start_date": "2024-03-27",
     "expected_duration": "2-3 hours",
-    "focus_area": "XState Analyzer Implementation",
+    "focus_area": "Web Components Analyzer Implementation",
     "status": "pending"
   },
   "context": {
-    "prior_work": "Session continuation script improvements and package setup",
+    "prior_work": "Completed XState analyzer implementation",
     "dependencies": [
       "Node.js environment",
       "TypeScript toolchain",
-      "@xstate/inspect",
-      "@xstate/fsm"
+      "@webcomponents/webcomponentsjs"
     ],
     "resources": [
-      "packages/xstate/package.json",
-      "packages/xstate/src/analyzer.ts",
-      "packages/xstate/tests/analyzer.test.ts",
+      "packages/web-components/package.json",
+      "packages/web-components/src/analyzer.ts",
+      "packages/web-components/tests/analyzer.test.ts",
       "packages/core/src/interfaces.ts",
       "packages/core/src/analyzer.ts"
     ]
   },
   "metrics": {
     "baseline": {
-      "implementation_status": "none",
-      "test_coverage": "none",
-      "documentation": "none"
+      "implementation_status": "partial",
+      "test_coverage": "basic",
+      "documentation": "basic"
     },
     "target": {
       "implementation_status": "complete",
@@ -130,7 +130,7 @@
     }
   },
   "completion_criteria": [
-    "XState analyzer is fully implemented",
+    "Web Components analyzer is fully implemented",
     "All core analysis features work",
     "Test coverage is comprehensive",
     "Documentation is complete",
@@ -142,5 +142,70 @@
     "Document analysis methods thoroughly",
     "Consider future extensibility",
     "Maintain backward compatibility"
+  ],
+  "goal_id": "web-components-restructure-2024-03-28",
+  "title": "Restructure Web Components Test Fixtures",
+  "status": "in_progress",
+  "start_date": "2024-03-28",
+  "target_completion": "2024-03-28",
+  "dependencies": [],
+  "subtasks": [
+    {
+      "id": "move-task-manager",
+      "title": "Move Task Manager Example",
+      "description": "Move task-manager example to packages/examples/task-manager",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "reorganize-fixtures",
+      "title": "Reorganize Test Fixtures",
+      "description": "Organize test fixtures by feature/analysis type",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "update-dependencies",
+      "title": "Update Dependencies",
+      "description": "Update package.json files to properly handle dependencies in monorepo structure",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "cleanup-directories",
+      "title": "Clean Up Directories",
+      "description": "Remove empty directories and clean up structure",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": "update-tests",
+      "title": "Update Test References",
+      "description": "Update test references to new structure",
+      "status": "pending",
+      "priority": "high"
+    }
+  ],
+  "success_criteria": [
+    "Task manager example successfully moved to packages/examples",
+    "Test fixtures organized by feature/analysis type",
+    "Dependencies properly managed in monorepo structure",
+    "No empty directories remain",
+    "All tests pass with new structure"
+  ],
+  "risks": [
+    {
+      "description": "Breaking changes in test references",
+      "mitigation": "Update all test files to use new paths"
+    },
+    {
+      "description": "Dependency conflicts in monorepo",
+      "mitigation": "Carefully manage package.json dependencies"
+    }
+  ],
+  "resources": [
+    "packages/web-components/package.json",
+    "test/fixtures/web-components/*",
+    "packages/examples/task-manager/*"
   ]
 }

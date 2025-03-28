@@ -14,7 +14,8 @@
     "@mcp/core": "workspace:*",
     "@xstate/inspect": "^0.7.0",
     "ioredis": "^5.0.0",
-    "xstate": "^5.0.0"
+    "xstate": "^5.0.0",
+    "typescript": "^5.0.0"
   },
   "devDependencies": {
     "@mcp/eslint-config": "workspace:*",
@@ -23,7 +24,10 @@
     "@types/ioredis": "^5.0.0",
     "@types/node": "^20.0.0",
     "@types/uuid": "^9.0.0",
-    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "rimraf": "^5.0.0",
+    "tsup": "^8.0.0",
     "vitest": "^1.0.0"
   }
 }

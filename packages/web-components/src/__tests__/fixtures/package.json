@@ -1,0 +1,15 @@
+{
+  "name": "@mcp/web-components-test-fixtures",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "lit": "^3.1.0",
+    "xstate": "^5.0.0",
+    "@ignite/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
