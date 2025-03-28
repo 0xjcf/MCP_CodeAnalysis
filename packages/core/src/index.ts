@@ -3,24 +3,22 @@
  * @module @mcp/core
  */
 
-export interface IAnalyzer {
-  analyze(source: string): Promise<IAnalysisResult>;
+export interface Analyzer {
+  analyze(source: string): Promise<AnalysisResult>;
 }
 
-export interface IAnalysisResult {
+export interface AnalysisResult {
   success: boolean;
   data: unknown;
   errors?: Error[];
   warnings?: string[];
 }
 
-export interface IAnalysisOptions {
+export interface AnalysisOptions {
   strict?: boolean;
   verbose?: boolean;
   timeout?: number;
 }
-
-export * from './redisSessionStore';
 
 // Export types that will be used across packages
 export // Add more type exports as needed

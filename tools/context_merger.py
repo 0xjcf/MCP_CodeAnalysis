@@ -17,6 +17,7 @@ Usage:
 import argparse
 import json
 import sys
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -28,95 +29,205 @@ class ContextMerger:
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
         self.template_path = Path(__file__).parent / "templates" / "session_prompt_template.md"
+        self.context = {}
     
-    def load_json_file(self, file_path: str) -> Dict[str, Any]:
+    def load_json_file(self, file_path: str) -> Optional[Dict]:
         """Load and parse a JSON file."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as f:
                 return json.load(f)
+            return None
+        except json.JSONDecodeError:
+            print(f"Error: Invalid JSON in {file_path}")
+            return None
         except Exception as e:
-            print(f"Error loading {file_path}: {e}", file=sys.stderr)
-            return {}
+            print(f"Error loading {file_path}: {str(e)}")
+            return None
     
-    def extract_knowledge_graph_context(self, graph_data: Dict[str, Any], active_component: str) -> Dict[str, Any]:
-        """Extract relevant context from knowledge graph."""
+    def extract_knowledge_graph_context(self, knowledge_graph: Dict) -> Dict:
+        """Extract relevant context from the knowledge graph."""
         context = {
             'components': [],
             'relationships': [],
-            'decisions': []
+            'decisions': [],
+            'active_component': None
         }
         
-        if not graph_data:
+        if not knowledge_graph or 'nodes' not in knowledge_graph:
             return context
         
-        # Extract components related to active component
-        for comp in graph_data.get('components', []):
-            if comp.get('name') == active_component or any(rel.get('target') == active_component for rel in graph_data.get('relationships', [])):
-                context['components'].append(comp)
-        
-        # Extract relationships involving active component
-        for rel in graph_data.get('relationships', []):
-            if rel.get('source') == active_component or rel.get('target') == active_component:
-                context['relationships'].append(rel)
-        
-        # Extract relevant technical decisions
-        for dec in graph_data.get('decisions', []):
-            if any(comp.get('name') == active_component for comp in dec.get('components', [])):
-                context['decisions'].append(dec)
+        # Extract components and their relationships
+        for node in knowledge_graph.get('nodes', []):
+            if node.get('type') == 'component':
+                component = {
+                    'name': node.get('name', ''),
+                    'path': node.get('path', ''),
+                    'files': []
+                }
+                context['components'].append(component)
+
+        # Extract relationships
+        for edge in knowledge_graph.get('edges', []):
+            if edge.get('type') == 'depends_on':
+                relationship = {
+                    'source': edge.get('source', ''),
+                    'target': edge.get('target', ''),
+                    'type': edge.get('type', ''),
+                    'description': edge.get('description', '')
+                }
+                context['relationships'].append(relationship)
+
+        # Extract technical decisions
+        for node in knowledge_graph.get('nodes', []):
+            if node.get('type') == 'decision':
+                decision = {
+                    'id': node.get('id', ''),
+                    'description': node.get('description', ''),
+                    'rationale': node.get('rationale', ''),
+                    'impact': node.get('impact', ''),
+                    'related_components': node.get('related_components', [])
+                }
+                context['decisions'].append(decision)
         
         return context
     
-    def extract_monetization_features(self, monetization_data: Dict[str, Any]) -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
-        """Extract monetization features from analysis data."""
-        features = defaultdict(lambda: defaultdict(list))
-        
-        if not monetization_data or not isinstance(monetization_data, dict):
+    def extract_monetization_features(self, monetization_data: Dict) -> Dict:
+        """Extract monetization features from the analysis."""
+        features = {
+            'tiers': {},
+            'opportunities': []
+        }
+
+        if not monetization_data:
             return features
         
-        for tier, tier_data in monetization_data.items():
-            if not tier_data or not isinstance(tier_data, (dict, list)):
-                continue
+        # Handle new monetization data structure with explicit tiers
+        if 'tiers' in monetization_data:
+            for tier_name, tier_data in monetization_data['tiers'].items():
+                features['tiers'][tier_name] = {
+                    'features': {},
+                    'implementations': []
+                }
                 
-            # Handle both dictionary and list formats
             if isinstance(tier_data, dict):
-                for feature_name, feature_data in tier_data.items():
-                    if isinstance(feature_data, (list, dict)):
-                        features[tier][feature_name].extend(feature_data if isinstance(feature_data, list) else [feature_data])
+                    if 'features' in tier_data:
+                        features['tiers'][tier_name]['features'] = tier_data['features']
+                    if 'implementations' in tier_data:
+                        features['tiers'][tier_name]['implementations'] = tier_data['implementations']
             elif isinstance(tier_data, list):
-                for feature in tier_data:
-                    if isinstance(feature, dict):
-                        feature_name = feature.get('name', 'unnamed_feature')
-                        features[tier][feature_name].append(feature)
+                    features['tiers'][tier_name]['implementations'] = tier_data
+
+        # Handle legacy format
+        elif isinstance(monetization_data, dict):
+            for key, value in monetization_data.items():
+                if key.startswith('tier_'):
+                    tier_name = key.replace('tier_', '')
+                    features['tiers'][tier_name] = {
+                        'features': {},
+                        'implementations': []
+                    }
+                    if isinstance(value, dict):
+                        features['tiers'][tier_name]['features'] = value
+                    elif isinstance(value, list):
+                        features['tiers'][tier_name]['implementations'] = value
+
+        # Extract opportunities
+        if 'opportunities' in monetization_data:
+            features['opportunities'] = monetization_data['opportunities']
         
         return features
 
-    def extract_ai_context(self, ai_context: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract relevant information from AI context."""
+    def extract_ai_context(self, ai_context: Dict) -> Dict:
+        """Extract relevant context from the AI analysis."""
         context = {
-            'codebase_analysis': {},
-            'project_context': {}
+            'codebase_analysis': {
+                'structure': {},
+                'dependencies': {},
+                'patterns': {},
+                'metrics': {},
+                'recommendations': []
+            },
+            'project_context': {
+                'architecture': {},
+                'patterns': {},
+                'metrics': {},
+                'recommendations': []
+            }
         }
-        
-        if not ai_context or not isinstance(ai_context, dict):
+
+        if not ai_context:
             return context
             
         # Extract codebase analysis
-        codebase = ai_context.get('codebase_analysis', {})
-        if codebase:
-            context['codebase_analysis'] = {
-                'structure': codebase.get('structure', {}),
-                'dependencies': codebase.get('dependencies', {}),
-                'patterns': codebase.get('patterns', {})
-            }
+        if 'codebase_analysis' in ai_context:
+            analysis = ai_context['codebase_analysis']
+            
+            # Structure analysis
+            if 'structure' in analysis:
+                context['codebase_analysis']['structure'] = {
+                    'complexity': analysis['structure'].get('complexity', []),
+                    'organization': analysis['structure'].get('organization', {}),
+                    'patterns': analysis['structure'].get('patterns', [])
+                }
+
+            # Dependencies
+            if 'dependencies' in analysis:
+                context['codebase_analysis']['dependencies'] = {
+                    'external': analysis['dependencies'].get('external', []),
+                    'internal': analysis['dependencies'].get('internal', []),
+                    'circular': analysis['dependencies'].get('circular', [])
+                }
+
+            # Patterns
+            if 'patterns' in analysis:
+                context['codebase_analysis']['patterns'] = {
+                    'identified': analysis['patterns'].get('identified', []),
+                    'recommended': analysis['patterns'].get('recommended', [])
+                }
+
+            # Metrics
+            if 'metrics' in analysis:
+                context['codebase_analysis']['metrics'] = {
+                    'complexity': analysis['metrics'].get('complexity', {}),
+                    'coverage': analysis['metrics'].get('coverage', {}),
+                    'maintainability': analysis['metrics'].get('maintainability', {})
+                }
+
+            # Recommendations
+            if 'recommendations' in analysis:
+                context['codebase_analysis']['recommendations'] = analysis['recommendations']
             
         # Extract project context
-        project = ai_context.get('project_context', {})
-        if project:
-            context['project_context'] = {
-                'goals': project.get('goals', {}),
-                'constraints': project.get('constraints', {}),
-                'requirements': project.get('requirements', {})
-            }
+        if 'project_context' in ai_context:
+            project = ai_context['project_context']
+            
+            # Architecture
+            if 'architecture' in project:
+                context['project_context']['architecture'] = {
+                    'components': project['architecture'].get('components', []),
+                    'relationships': project['architecture'].get('relationships', []),
+                    'decisions': project['architecture'].get('decisions', [])
+                }
+
+            # Patterns
+            if 'patterns' in project:
+                context['project_context']['patterns'] = {
+                    'identified': project['patterns'].get('identified', []),
+                    'recommended': project['patterns'].get('recommended', [])
+                }
+
+            # Metrics
+            if 'metrics' in project:
+                context['project_context']['metrics'] = {
+                    'complexity': project['metrics'].get('complexity', {}),
+                    'coverage': project['metrics'].get('coverage', {}),
+                    'maintainability': project['metrics'].get('maintainability', {})
+                }
+
+            # Recommendations
+            if 'recommendations' in project:
+                context['project_context']['recommendations'] = project['recommendations']
             
         return context
     
@@ -156,133 +267,179 @@ class ContextMerger:
         
         return '\n'.join(sections)
     
-    def format_codebase_analysis(self, analysis: Dict[str, Any]) -> str:
-        """Format codebase analysis section."""
+    def format_codebase_analysis(self, analysis: Dict) -> str:
+        """Format the codebase analysis section."""
+        if not analysis:
+            return ""
+
         sections = []
         
-        # Format structure analysis
-        structure = analysis.get('structure', {})
-        if structure:
-            sections.append("### Structure Analysis")
+        # Structure Analysis
+        if 'structure' in analysis:
+            structure = analysis['structure']
+            sections.append("## Structure Analysis")
+            
             if 'complexity' in structure:
-                sections.append("\n#### Complexity Metrics")
-                complexity = structure['complexity']
-                if isinstance(complexity, dict):
-                    for metric, value in complexity.items():
-                        sections.append(f"- {metric}: {value}")
+                sections.append("### Complexity Metrics")
+                for metric in structure['complexity']:
+                    if isinstance(metric, dict):
+                        sections.append(f"- File: {metric.get('path', 'Unknown')}")
+                        if 'total_metrics' in metric:
+                            metrics = metric['total_metrics']
+                            sections.append(f"  - Cognitive Complexity: {metrics.get('cognitive', 0)}")
+                            sections.append(f"  - Cyclomatic Complexity: {metrics.get('cyclomatic', 0)}")
+                            sections.append(f"  - Lines of Code: {metrics.get('loc', 0)}")
+
+            if 'organization' in structure:
+                sections.append("### Organization")
+                org = structure['organization']
+                if isinstance(org, dict):
+                    for key, value in org.items():
+                        sections.append(f"- {key}: {value}")
+
+            if 'patterns' in structure:
+                sections.append("### Identified Issues")
+                for pattern in structure['patterns']:
+                    if isinstance(pattern, dict):
+                        sections.append(f"- {pattern.get('description', 'Unknown issue')}")
+
+        # Dependencies
+        if 'dependencies' in analysis:
+            deps = analysis['dependencies']
+            sections.append("## Dependencies")
             
-        # Format dependencies
-        deps = analysis.get('dependencies', {})
-        if deps:
-            sections.append("\n### Dependencies")
-            if 'dependencies' in deps:
-                sections.append("\n#### Runtime Dependencies")
-                for dep, version in deps['dependencies'].items():
-                    sections.append(f"- {dep}: {version}")
-            if 'devDependencies' in deps:
-                sections.append("\n#### Development Dependencies")
-                for dep, version in deps['devDependencies'].items():
-                    sections.append(f"- {dep}: {version}")
+            if isinstance(deps, dict):
+                for dep_type, items in deps.items():
+                    if isinstance(items, list):
+                        sections.append(f"### {dep_type.title()}")
+                        for item in items:
+                            if isinstance(item, dict):
+                                sections.append(f"- {item.get('name', 'Unknown')}: {item.get('description', '')}")
+
+        # Patterns
+        if 'patterns' in analysis:
+            patterns = analysis['patterns']
+            sections.append("## Code Patterns")
             
-        # Format patterns
-        patterns = analysis.get('patterns', {})
-        if patterns:
-            sections.append("\n### Code Patterns")
-            if 'knowledge_graph' in patterns:
-                sections.append("\n#### Knowledge Graph")
-                kg = patterns['knowledge_graph']
-                if isinstance(kg, dict):
-                    for key, value in kg.items():
+            if isinstance(patterns, dict):
+                for pattern_type, items in patterns.items():
+                    if isinstance(items, list):
+                        sections.append(f"### {pattern_type.title()}")
+                        for item in items:
+                            if isinstance(item, dict):
+                                sections.append(f"- {item.get('name', 'Unknown')}: {item.get('description', '')}")
+
+        # Metrics
+        if 'metrics' in analysis:
+            metrics = analysis['metrics']
+            sections.append("## Metrics")
+            
+            if isinstance(metrics, dict):
+                for metric_type, data in metrics.items():
+                    if isinstance(data, dict):
+                        sections.append(f"### {metric_type.title()}")
+                        for key, value in data.items():
                         sections.append(f"- {key}: {value}")
         
-        return '\n'.join(sections)
+        # Recommendations
+        if 'recommendations' in analysis:
+            sections.append("## Recommendations")
+            for rec in analysis['recommendations']:
+                if isinstance(rec, dict):
+                    sections.append(f"- {rec.get('description', 'Unknown recommendation')}")
+
+        return "\n".join(sections)
     
-    def generate_prompt(self, 
-                       session_context: Dict[str, Any],
-                       knowledge_context: Dict[str, Any],
-                       monetization_features: Dict[str, Dict[str, List[Dict[str, Any]]]],
-                       ai_context: Dict[str, Any]) -> str:
+    def generate_prompt(self, session_context: Dict, knowledge_graph: Dict, 
+                       monetization_data: Dict, ai_context: Dict) -> str:
         """Generate the session continuation prompt."""
-        try:
-            with open(self.template_path, 'r', encoding='utf-8') as f:
-                template = f.read()
-        except FileNotFoundError:
-            template = self.get_default_template()
-        
-        # Format the knowledge graph section
-        knowledge_section = []
-        if knowledge_context['components']:
-            knowledge_section.append("### Components")
-            for comp in knowledge_context['components']:
-                knowledge_section.append(f"- {comp['name']}: {comp.get('description', 'No description available')}")
-        if knowledge_context['relationships']:
-            knowledge_section.append("\n### Relationships")
-            for rel in knowledge_context['relationships']:
-                knowledge_section.append(f"- {rel['source']} {rel['type']} {rel['target']}")
-        if knowledge_context['decisions']:
-            knowledge_section.append("\n### Technical Decisions")
-            for dec in knowledge_context['decisions']:
-                knowledge_section.append(f"- {dec.get('description', 'No description available')}")
-        
-        # Format the monetization section
-        monetization_section = []
-        for tier, features in monetization_features.items():
-            if features:
-                monetization_section.append(f"\n### {tier.title()} Tier Features")
-                for feature_name, implementations in features.items():
-                    monetization_section.append(f"\n#### {feature_name.replace('_', ' ').title()}")
-                    for impl in implementations:
-                        desc = impl.get('description', 'No description available')
-                        context = impl.get('context', '')
-                        type_info = impl.get('type', '')
-                        monetization_section.append(f"- {desc}")
-                        if context and context != desc:
-                            monetization_section.append(f"  - Context: {context}")
-                        if type_info:
-                            monetization_section.append(f"  - Type: {type_info}")
-        
-        # Format development and documentation status
-        development_status = self.format_development_status(session_context)
-        documentation_status = self.format_documentation_status(session_context)
-        
-        # Format codebase analysis
-        codebase_analysis = self.format_codebase_analysis(ai_context.get('codebase_analysis', {}))
-        
-        # Get active component info, handling both singular and plural formats
-        technical_context = session_context.get('technical_context', {})
-        active_component = None
-        
-        # Try plural format first
-        if 'active_components' in technical_context and technical_context['active_components']:
-            active_component = technical_context['active_components'][0]
-        # Fall back to singular format
-        elif 'active_component' in technical_context:
-            active_component = technical_context['active_component']
-        
-        if not active_component:
-            print("Warning: No active component found in technical context", file=sys.stderr)
-            active_component = {
-                'name': 'Unknown',
-                'status': 'Unknown',
-                'completion_percentage': 0
-            }
-        
-        # Replace placeholders in template
-        prompt = template.format(
-            last_session_date=session_context['session_metadata']['last_session_date'],
-            project_phase=session_context['session_metadata']['project_phase'],
-            current_focus=session_context['session_metadata']['current_focus'],
-            active_component=active_component['name'],
-            component_status=active_component['status'],
-            completion_percentage=active_component['completion_percentage'],
-            knowledge_graph_context='\n'.join(knowledge_section),
-            monetization_status='\n'.join(monetization_section),
-            development_status=development_status,
-            documentation_status=documentation_status,
-            codebase_analysis=codebase_analysis
-        )
-        
-        return prompt
+        # Extract contexts
+        kg_context = self.extract_knowledge_graph_context(knowledge_graph)
+        monetization_context = self.extract_monetization_features(monetization_data)
+        ai_context_data = self.extract_ai_context(ai_context)
+
+        # Format the prompt
+        prompt = [
+            "# Session Continuation Prompt",
+            "",
+            "## Project Context",
+            f"Last Session Date: {session_context.get('last_session_date', 'Unknown')}",
+            f"Current Phase: {session_context.get('project_phase', 'Unknown')}",
+            f"Focus Area: {session_context.get('current_focus', 'Unknown')}",
+            "",
+            "## Development Status",
+            "### Active Components",
+        ]
+
+        # Add active components
+        for component in kg_context['components']:
+            if component['name']:
+                prompt.append(f"- {component['name']}")
+
+        # Add relationships
+        if kg_context['relationships']:
+            prompt.extend([
+                "",
+                "### Component Relationships",
+            ])
+            for rel in kg_context['relationships']:
+                if rel['source'] and rel['target']:
+                    prompt.append(f"- {rel['source']} → {rel['target']}: {rel['description']}")
+
+        # Add technical decisions
+        if kg_context['decisions']:
+            prompt.extend([
+                "",
+                "### Technical Decisions",
+            ])
+            for decision in kg_context['decisions']:
+                if decision['description']:
+                    prompt.extend([
+                        f"- {decision['description']}",
+                        f"  Rationale: {decision['rationale']}",
+                        f"  Impact: {decision['impact']}",
+                        f"  Related Components: {', '.join(decision['related_components'])}"
+                    ])
+
+        # Add monetization features
+        if monetization_context['tiers']:
+            prompt.extend([
+                "",
+                "## Monetization Features",
+            ])
+            for tier_name, tier_data in sorted(monetization_context['tiers'].items()):
+                prompt.append(f"### {tier_name.title()} Tier")
+                if isinstance(tier_data, dict):
+                    if 'features' in tier_data:
+                        prompt.append("#### Features")
+                        for feature_name, feature_desc in sorted(tier_data['features'].items()):
+                            prompt.append(f"- {feature_name}: {feature_desc}")
+                    
+                    if 'implementations' in tier_data:
+                        prompt.append("#### Implementations")
+                        for impl in tier_data['implementations']:
+                            if isinstance(impl, dict):
+                                prompt.append(f"- {impl.get('type', 'Unknown')}: {impl.get('description', '')}")
+
+        # Add codebase analysis
+        if ai_context_data['codebase_analysis']:
+            prompt.extend([
+                "",
+                "## Codebase Analysis",
+            ])
+            prompt.append(self.format_codebase_analysis(ai_context_data['codebase_analysis']))
+
+        # Add project recommendations
+        if ai_context_data['project_context']['recommendations']:
+            prompt.extend([
+                "",
+                "## Project Recommendations",
+            ])
+            for rec in ai_context_data['project_context']['recommendations']:
+                if isinstance(rec, dict):
+                    prompt.append(f"- {rec.get('description', 'Unknown recommendation')}")
+
+        return "\n".join(prompt)
 
     def get_default_template(self) -> str:
         """Return the default prompt template if template file is not found."""
@@ -319,39 +476,40 @@ Currently working on:
 Please help me continue development, taking into account the previous session's context and maintaining consistency with the established architecture and monetization strategy.
 '''
 
-    def merge_and_generate(self,
-                          session_context_path: str,
-                          knowledge_graph_path: str,
-                          monetization_status_path: str,
-                          ai_context_path: str,
-                          output_path: str) -> bool:
-        """Merge contexts and generate the prompt file."""
-        # Load data
-        session_data = self.load_json_file(session_context_path)
-        graph_data = self.load_json_file(knowledge_graph_path)
-        monetization_data = self.load_json_file(monetization_status_path)
-        ai_context_data = self.load_json_file(ai_context_path)
-        
-        # Extract contexts
-        knowledge_context = self.extract_knowledge_graph_context(graph_data, session_data.get('technical_context', {}).get('active_component', ''))
-        monetization_features = self.extract_monetization_features(monetization_data)
-        ai_context = self.extract_ai_context(ai_context_data)
-        
-        # Generate prompt
-        prompt = self.generate_prompt(
-            session_data,
-            knowledge_context,
-            monetization_features,
-            ai_context
-        )
-        
-        # Write to output file
+    def merge_and_generate(self, session_context_path: str, knowledge_graph_path: str,
+                          monetization_path: str, ai_context_path: str, output_path: str) -> bool:
+        """Merge contexts and generate the session prompt."""
         try:
-            with open(output_path, 'w', encoding='utf-8') as f:
+            # Load all context files
+            session_context = self.load_json_file(session_context_path)
+            knowledge_graph = self.load_json_file(knowledge_graph_path)
+            monetization_data = self.load_json_file(monetization_path)
+            ai_context = self.load_json_file(ai_context_path)
+
+            # Validate session context
+            if not session_context:
+                print("Error: Invalid or empty session context", file=sys.stderr)
+                return False
+
+            # Generate the prompt
+        prompt = self.generate_prompt(
+                session_context,
+                knowledge_graph or {},
+                monetization_data or {},
+                ai_context or {}
+            )
+
+            # Write the prompt to the output file
+            try:
+                with open(output_path, 'w') as f:
                 f.write(prompt)
             return True
+            except Exception as e:
+                print(f"Error writing prompt to {output_path}: {str(e)}", file=sys.stderr)
+                return False
+
         except Exception as e:
-            print(f"Error writing prompt to {output_path}: {e}", file=sys.stderr)
+            print(f"Error generating prompt: {str(e)}", file=sys.stderr)
             return False
 
 def main():

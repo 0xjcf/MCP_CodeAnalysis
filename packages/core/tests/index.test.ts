@@ -1,14 +1,14 @@
-import { describe, it, expect } from "vitest";
-import type { IAnalyzer, IAnalysisResult, IAnalysisOptions } from "../src";
+import { describe, it, expect } from 'vitest';
+import type { Analyzer, AnalysisResult, AnalysisOptions } from '../src';
 
-describe("@mcp/core", () => {
-  it("should export required types", () => {
+describe('@mcp/core', () => {
+  it('should export required types', () => {
     // This is a placeholder test to verify our type exports
-    const analyzer: IAnalyzer = {
+    const analyzer: Analyzer = {
       analyze: async () => ({ success: true, data: {} }),
     };
-    const result: IAnalysisResult = { success: true, data: {} };
-    const options: IAnalysisOptions = { strict: true };
+    const result: AnalysisResult = { success: true, data: {} };
+    const options: AnalysisOptions = { strict: true };
 
     expect(analyzer).toBeDefined();
     expect(result).toBeDefined();

@@ -347,20 +347,6 @@
       "component": "services"
     },
     {
-      "id": "file:state/services/redisToolExecutionService.ts",
-      "type": "file",
-      "name": "redisToolExecutionService.ts",
-      "path": "state/services/redisToolExecutionService.ts",
-      "component": "services"
-    },
-    {
-      "id": "file:state/services/redisSessionStore.ts",
-      "type": "file",
-      "name": "redisSessionStore.ts",
-      "path": "state/services/redisSessionStore.ts",
-      "component": "services"
-    },
-    {
       "id": "file:state/services/sessionStoreFactory.ts",
       "type": "file",
       "name": "sessionStoreFactory.ts",
@@ -1626,106 +1612,6 @@
       "type": "contains"
     },
     {
-      "source": "file:server/startServer.ts",
-      "target": "file:express\";",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/basic-analysis/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/code-metrics/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/dependency-analysis/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/basic-analysis/ide-analyzer.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/code-quality/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/knowledge-graph/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/visualization/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/memory/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/socio-technical/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/multi-repo/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/evolution/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/session-manager/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../features/dev-tools/index.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/registerRedisBackedServices.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/startServer.ts",
-      "target": "file:server/../utils/tool-discovery.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/registerRedisBackedServices.ts",
-      "target": "file:server/../state/services/redisToolExecutionService.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/registerRedisBackedServices.ts",
-      "target": "file:server/../state/store/redisCacheStore.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/registerRedisBackedServices.ts",
-      "target": "file:server/../state/services/sessionStoreFactory.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:server/registerRedisBackedServices.ts",
-      "target": "file:server/../state/services/types.ts",
-      "type": "imports"
-    },
-    {
       "source": "file:tools/codeAnalysis/fileMetricsAnalyzer.ts",
       "target": "file:fs\";",
       "type": "imports"
@@ -1766,58 +1652,8 @@
       "type": "imports"
     },
     {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:{",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:uuid\";",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:xstate\";",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:{",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:ioredis\";",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisToolExecutionService.ts",
-      "target": "file:{",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisSessionStore.ts",
-      "target": "file:state/services/types.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisSessionStore.ts",
-      "target": "file:uuid\";",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/redisSessionStore.ts",
-      "target": "file:state/services/../utils/logger.ts",
-      "type": "imports"
-    },
-    {
       "source": "file:state/services/sessionStoreFactory.ts",
       "target": "file:state/services/types.ts",
-      "type": "imports"
-    },
-    {
-      "source": "file:state/services/sessionStoreFactory.ts",
-      "target": "file:state/services/redisSessionStore.ts",
       "type": "imports"
     },
     {
@@ -2568,7 +2404,7 @@
   ],
   "metadata": {
     "version": "1.0",
-    "generated_at": "2025-03-27T10:18:57.721921",
+    "generated_at": "2025-03-28T11:09:37.991853",
     "base_directory": "/home/jose/Dev/MCP_CodeAnalysis"
   }
 }

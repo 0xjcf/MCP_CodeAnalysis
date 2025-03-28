@@ -2,219 +2,145 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Prepare packages for PWA project with Web Components and XState",
+      "description": "Fix session continuation script to properly format and merge data from various sources",
       "priority": "high",
       "priority_level": 1,
       "estimated_time": "2-3 hours",
-      "status": "pending",
+      "status": "in_progress",
       "details": {
         "implementation_requirements": [
-          "Complete Web Components analyzer implementation",
-          "Create XState analyzer package",
-          "Add PWA compliance checking",
-          "Ensure compatibility with ignite-element and lit-html",
-          "Set up shared development tools"
+          "Fix data formatting in session prompt generation",
+          "Properly merge data from end-of-session.json",
+          "Correctly integrate complexity analysis results",
+          "Format knowledge graph data appropriately",
+          "Clean up monetization analysis output",
+          "Ensure proper handling of AI context",
+          "Add validation for generated session prompt"
         ],
         "implementation_approach": [
-          "Review and complete Web Components analyzer",
-          "Create XState analyzer package structure",
-          "Configure XState analysis capabilities",
-          "Add PWA compliance checks",
-          "Update documentation and examples"
+          "Review current session continuation script",
+          "Identify formatting issues in data merging",
+          "Implement proper data transformation for each source",
+          "Add validation checks for output format",
+          "Update documentation with new format requirements",
+          "Test with various data scenarios"
         ],
         "guard_rails": {
           "naming_conventions": {
             "scope": "project_scope",
-            "naming_pattern": "@mcp/* for all packages",
-            "examples": [
-              "@mcp/core",
-              "@mcp/web-components",
-              "@mcp/xstate",
-              "@mcp/eslint-config"
-            ]
+            "naming_pattern": "Clear, descriptive names for functions and variables",
+            "examples": ["formatSessionData", "mergeAnalysisResults", "validatePromptFormat"]
           },
           "code_standards": {
-            "style_guide": "TypeScript and ESLint best practices",
+            "style_guide": "TypeScript and shell script best practices",
             "best_practices": [
               "Use strict TypeScript mode",
-              "Follow ESLint recommended rules",
-              "Maintain consistent code style",
-              "Document all configurations"
+              "Implement proper error handling",
+              "Add input validation",
+              "Maintain clear data flow",
+              "Document data transformations"
             ],
             "constraints": [
-              "Rules must be compatible with all packages",
-              "Configurations must be maintainable",
-              "Documentation must be clear and complete",
-              "Examples must demonstrate usage"
+              "Must handle missing or malformed data gracefully",
+              "Output must be consistently formatted",
+              "Changes must not break existing functionality",
+              "Must maintain backward compatibility"
             ]
           },
           "technical_requirements": {
-            "dependencies": {
-              "web-components": [
-                "lit-html",
-                "ignite-element",
-                "web-components-analyzer"
-              ],
-              "xstate": [
-                "xstate",
-                "@xstate/inspect",
-                "xstate-analyzer"
-              ],
-              "pwa": [
-                "workbox",
-                "lighthouse"
-              ]
-            },
-            "versions": "Node.js 18+, pnpm 8+, TypeScript 5.0+",
-            "compatibility": "Must work with all packages in the monorepo"
+            "dependencies": ["typescript", "node", "jq", "python3"],
+            "versions": "Node.js 18+, Python 3.8+",
+            "compatibility": "Must work with all existing data formats"
           }
         },
         "verification_steps": [
           {
-            "step": "Web Components Analyzer",
+            "step": "Data Formatting",
             "checks": [
-              "Component lifecycle analysis",
-              "Shadow DOM usage analysis",
-              "Property and event analysis",
-              "Performance optimization suggestions",
-              "Lit-html and ignite-element support"
-            ],
-            "status": "in_progress"
+              "Session prompt follows correct structure",
+              "No raw data or code snippets in output",
+              "All sections are properly formatted",
+              "No duplicate or redundant information"
+            ]
           },
           {
-            "step": "XState Analyzer",
+            "step": "Data Merging",
             "checks": [
-              "State machine analysis",
-              "Transition analysis",
-              "Guard and action analysis",
-              "Service integration analysis",
-              "Performance optimization suggestions"
-            ],
-            "status": "pending"
+              "All sources are properly integrated",
+              "No data is lost in merging",
+              "Conflicts are handled appropriately",
+              "Data relationships are preserved"
+            ]
           },
           {
-            "step": "PWA Compliance",
+            "step": "Output Validation",
             "checks": [
-              "Manifest validation",
-              "Service worker analysis",
-              "Offline capability checks",
-              "Performance metrics",
-              "Security compliance"
-            ],
-            "status": "pending"
+              "Generated prompt is valid markdown",
+              "All required sections are present",
+              "No formatting errors",
+              "Content is properly organized"
+            ]
           }
         ],
         "success_criteria": [
-          "Web Components analyzer supports lit-html and ignite-element",
-          "XState analyzer provides comprehensive state management analysis",
-          "PWA compliance checks are implemented",
-          "All packages build successfully",
-          "Documentation is complete and clear",
-          "Examples demonstrate proper usage",
-          "Tests pass with coverage"
-        ],
-        "progress": {
-          "completed": [
-            "Base ESLint configuration",
-            "TypeScript integration",
-            "Prettier integration",
-            "Initial Web Components analyzer"
-          ],
-          "in_progress": [
-            "Web Components analyzer completion",
-            "Documentation"
-          ],
-          "pending": [
-            "XState analyzer creation",
-            "PWA compliance checks",
-            "Test coverage",
-            "Final documentation review"
-          ]
-        },
-        "test_fixtures": {
-          "task_manager_app": {
-            "location": "test/fixtures/web-components/task-manager",
-            "purpose": "Development and testing environment for analyzers",
-            "features": [
-              "Web Components with lit-html",
-              "XState state machines",
-              "PWA capabilities",
-              "Component lifecycle examples",
-              "State management patterns"
-            ],
-            "usage": [
-              "Test Web Components analyzer",
-              "Test XState analyzer",
-              "Test PWA compliance checks",
-              "Validate analysis results",
-              "Demonstrate analyzer capabilities"
-            ]
-          }
-        }
+          "Session prompt is properly formatted and complete",
+          "All data sources are correctly merged",
+          "No raw data or code snippets in output",
+          "Validation checks pass",
+          "Documentation is updated",
+          "Script handles edge cases gracefully"
+        ]
       }
     }
   ],
   "session_metadata": {
-    "start_date": "2024-03-19",
+    "start_date": "2024-03-27",
     "expected_duration": "2-3 hours",
-    "focus_area": "PWA Project Package Preparation",
-    "status": "pending"
+    "focus_area": "Session Continuation Script Improvement",
+    "status": "in_progress"
   },
   "context": {
-    "prior_work": "Monorepo setup and initial packages",
+    "prior_work": "Initial session continuation script implementation",
     "dependencies": [
       "Node.js environment",
-      "pnpm package manager",
-      "TypeScript toolchain",
-      "ESLint and Prettier",
-      "Lit-html and ignite-element",
-      "XState",
-      "Workbox"
+      "Python 3.8+",
+      "jq for JSON processing",
+      "TypeScript toolchain"
     ],
     "resources": [
-      "pnpm-workspace.yaml",
-      "package.json",
-      "tsconfig.json",
-      "packages/*",
-      "docs/archive/development_roadmap.md",
-      "test/fixtures/web-components/task-manager/*"
+      "tools/session_continuation.sh",
+      "session-goal.json",
+      "end-of-session.json",
+      "complexity_analysis.json",
+      "knowledge_graph.json",
+      "monetization_analysis.json",
+      "ai-context.json"
     ]
   },
   "metrics": {
     "baseline": {
-      "package_count": "3",
-      "test_coverage": "0%",
-      "build_success": "100%"
+      "prompt_quality": "poor",
+      "data_integration": "partial",
+      "error_handling": "basic"
     },
     "target": {
-      "package_count": "4",
-      "test_coverage": ">80%",
-      "build_success": "100%"
-    },
-    "current": {
-      "package_count": "3",
-      "test_coverage": "0%",
-      "build_success": "100%"
+      "prompt_quality": "excellent",
+      "data_integration": "complete",
+      "error_handling": "robust"
     }
   },
   "completion_criteria": [
-    "Web Components analyzer supports lit-html and ignite-element",
-    "XState analyzer package is created and functional",
-    "PWA compliance checks are implemented",
-    "Documentation is complete",
-    "Examples demonstrate proper usage",
-    "Tests pass with coverage"
+    "Session prompt is properly formatted and complete",
+    "All data sources are correctly merged",
+    "Validation checks pass",
+    "Documentation is updated",
+    "Edge cases are handled"
   ],
   "notes": [
-    "Ensure Web Components analyzer supports lit-html and ignite-element",
-    "Focus on XState state machine analysis capabilities",
-    "Implement comprehensive PWA compliance checks",
-    "Document configuration options thoroughly",
-    "Provide clear examples for common use cases",
-    "Consider future package needs in configuration",
-    "TypeScript version compatibility warning needs attention",
-    "React package warning can be ignored as we're using Lit",
-    "Use task-manager app for testing and validation",
-    "Document task-manager app usage in development workflow"
+    "Focus on clean, maintainable data transformation",
+    "Ensure proper error handling and validation",
+    "Document all data formats and transformations",
+    "Consider future extensibility",
+    "Maintain backward compatibility"
   ]
 }

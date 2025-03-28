@@ -6,10 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run --reporter verbose",
-    "test:watch": "vitest --reporter verbose",
-    "test:coverage": "vitest run --coverage --reporter verbose",
-    "test:ui": "vitest --ui",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\""
   },
@@ -20,7 +18,6 @@
     "xstate": "^5.19.2"
   },
   "devDependencies": {
-    "@mcp/eslint-config": "workspace:*",
     "@types/node": "^20.0.0",
     "typescript": "^5.0.0",
     "vitest": "^1.0.0",
@@ -30,4 +27,4 @@
   "peerDependencies": {
     "typescript": "^5.0.0"
   }
-} 
+}

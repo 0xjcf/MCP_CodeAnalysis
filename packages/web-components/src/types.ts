@@ -1,126 +1,88 @@
-import type { AnalysisResult, AnalysisOptions } from "@mcp/core";
+import type { Analyzer, AnalysisResult, AnalysisOptions } from '@mcp/core';
 
-// Analysis result specific to web components
-export interface IWebComponentAnalysisResult extends AnalysisResult {
-  components: IWebComponent[];
-  totalComponents: number;
-  totalCustomElements: number;
-  totalShadowRoots: number;
-  totalSlots: number;
-  totalEvents: number;
-  totalProperties: number;
-  performanceMetrics: IPerformanceMetrics;
-  type: "web-component";
-  name: string;
-  complexity: "low" | "medium" | "high";
-  dependencies: string[];
-  issues: AnalysisIssue[];
-  recommendations: string[];
-  metadata: ComponentMetadata;
+export interface WebComponentAnalysisResult extends AnalysisResult {
+  data: {
+    components: WebComponent[];
+    lifecycleHooks: LifecycleHook[];
+    shadowDOMUsage: ShadowDOMUsage[];
+    properties: Property[];
+    events: Event[];
+    performance: PerformanceMetrics;
+  };
 }
 
-// Represents a single web component
-export interface IWebComponent {
-  tagName: string;
-  className: string;
+export interface WebComponent {
+  name: string;
   extends?: string;
-  lifecycleHooks: ILifecycleHook[];
-  shadowDOM?: IShadowDOMUsage;
-  slots: string[];
-  properties: IProperty[];
-  events: IEvent[];
-  metrics: IPerformanceMetrics;
+  lifecycleHooks: string[];
+  properties: Property[];
+  events: Event[];
+  shadowDOM: boolean;
+  location: {
+    file: string;
+    line: number;
+    column: number;
+  };
 }
 
-// Lifecycle hooks used in the component
-export interface ILifecycleHook {
+export interface LifecycleHook {
   name: string;
-  used: boolean;
-  hasAsyncLogic: boolean;
-  dependencies: string[];
-  callbackCount: number;
+  component: string;
+  location: {
+    file: string;
+    line: number;
+    column: number;
+  };
 }
 
-// Shadow DOM configuration
-export interface IShadowDOMUsage {
-  mode: "open" | "closed";
-  delegatesFocus: boolean;
-  adoptedStyleSheets: boolean;
+export interface ShadowDOMUsage {
+  component: string;
+  mode: 'open' | 'closed';
+  location: {
+    file: string;
+    line: number;
+    column: number;
+  };
 }
 
-// Component property definition
-export interface IProperty {
+export interface Property {
   name: string;
   type: string;
-  defaultValue?: unknown;
-  attribute?: string;
-  reflect: boolean;
-  observed: boolean;
-  hasGetter: boolean;
-  hasSetter: boolean;
+  required: boolean;
+  component: string;
+  location: {
+    file: string;
+    line: number;
+    column: number;
+  };
 }
 
-// Component event definition
-export interface IEvent {
+export interface Event {
   name: string;
-  bubbles: boolean;
-  composed: boolean;
-  cancelable: boolean;
-  detail?: unknown;
-  listeners: number;
+  component: string;
+  location: {
+    file: string;
+    line: number;
+    column: number;
+  };
 }
 
-// Performance metrics for the component
-export interface IPerformanceMetrics {
-  constructorTime: number;
+export interface PerformanceMetrics {
   renderTime: number;
-  updateTime: number;
   memoryUsage: number;
+  reflowCount: number;
+  repaintCount: number;
 }
 
-// Options for the analyzer
-export interface IWebComponentsAnalyzerOptions extends AnalysisOptions {
-  includeMetrics?: boolean;
-  deepAnalysis?: boolean;
+export interface WebComponentsAnalyzerOptions extends AnalysisOptions {
+  analyzePerformance?: boolean;
+  analyzeShadowDOM?: boolean;
+  analyzeLifecycle?: boolean;
 }
 
-// Main analyzer interface
-export interface IWebComponentsAnalyzer {
+export interface WebComponentsAnalyzer extends Analyzer {
   analyze(
-    source: string,
-    options?: IWebComponentsAnalyzerOptions
-  ): Promise<IWebComponentAnalysisResult>;
-}
-
-export interface AnalysisIssue {
-  type: "info" | "warning" | "error";
-  message: string;
-  severity: "low" | "medium" | "high";
-}
-
-export interface ComponentMetadata {
-  name: string;
-  description: string;
-  version: string;
-  properties: IProperty[];
-  events: IEvent[];
-  methods: ILifecycleHook[];
-  styling: string[];
-  dependencies: string[];
-  tags: string[];
-  performance: {
-    renderTime: number;
-    memoryUsage: number;
-    eventHandling: number;
-  };
-  accessibility: {
-    keyboardSupport: boolean;
-    screenReaderSupport: boolean;
-    ariaAttributes: string[];
-  };
-  security: {
-    xssPrevention: boolean;
-    eventHandlerSecurity: boolean;
-    propertyValidation: boolean;
-  };
+    sourceCode: string,
+    options?: WebComponentsAnalyzerOptions,
+  ): Promise<WebComponentAnalysisResult>;
 }

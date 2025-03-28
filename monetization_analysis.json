@@ -8025,726 +8025,788 @@
       "file": "src/server/startServer.ts",
       "line": 4,
       "match": "pro",
-      "context": "/**\n * Server Initialization\n *\n * This module provides a factory function to start an MCP server with\n * automatic detection of storage backends. It ",
+      "context": "// /**\n//  * Server Initialization\n//  *\n//  * This module provides a factory function to start an MCP server with\n//  * automatic detection of storage backends. ",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "module provides a factory function to start an MCP server"
+      "description": "/**\n//  * Server Initialization\n//  *\n//  * This module provides a factory function to start an MCP server with\n//  * automatic detection of storage backends."
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 10,
       "match": "pro",
-      "context": "in-memory implementations when Redis is not available.\n */\n\nimport { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/std",
+      "context": "ory implementations when Redis is not available.\n//  */\n\n// import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\n// import { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "not available. */ import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\"; import"
+      "description": "*/\n\n// import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\n// import { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/"
+    },
+    {
+      "type": "freemium",
+      "file": "src/server/startServer.ts",
+      "line": 11,
+      "match": "pro",
+      "context": "om \"@modelcontextprotocol/sdk/server/mcp.js\";\n// import { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\n// import { SSEServerTransport } from \"@modelcontextprotocol/sdk/server/",
+      "priority": "medium",
+      "features": {
+        "integration": "Third-party service integration"
+      },
+      "description": "import { StdioServerTransport } from \"@modelcontextprotocol/sdk/server/stdio.js\";\n// import { SSEServerTransport } from \"@modelcontextprotocol/sdk/server/"
+    },
+    {
+      "type": "freemium",
+      "file": "src/server/startServer.ts",
+      "line": 12,
+      "match": "pro",
+      "context": "om \"@modelcontextprotocol/sdk/server/stdio.js\";\n// import { SSEServerTransport } from \"@modelcontextprotocol/sdk/server/sse.js\";\n// import express from \"express\";\n\n// import { registerAnalysisTools } fro",
+      "priority": "medium",
+      "features": {
+        "authentication": "User authentication and account management",
+        "integration": "Third-party service integration",
+        "analysis": "Data analysis and reporting"
+      },
+      "description": "import { SSEServerTransport } from \"@modelcontextprotocol/sdk/server/sse.js\";\n// import express from \"express\";\n\n// import { registerAnalysisTools } fro"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 15,
       "match": "basic",
-      "context": "/server/sse.js\";\nimport express from \"express\";\n\nimport { registerAnalysisTools } from \"../features/basic-analysis/index.js\";\nimport { registerCodeMetricsTools } from \"../features/code-metrics/index.js\";\ni",
+      "context": "r/sse.js\";\n// import express from \"express\";\n\n// import { registerAnalysisTools } from \"../features/basic-analysis/index.js\";\n// import { registerCodeMetricsTools } from \"../features/code-metrics/index.js\"",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management",
         "integration": "Third-party service integration",
         "analysis": "Data analysis and reporting"
       },
-      "description": "\"express\"; import { registerAnalysisTools } from \"../features/basic-analysis/index.js\"; import { registerCodeMetricsTools"
+      "description": "import express from \"express\";\n\n// import { registerAnalysisTools } from \"../features/basic-analysis/index.js\";\n// import { registerCodeMetricsTools } from \"../features/code-metrics/index.js\""
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 18,
       "match": "basic",
-      "context": "ls } from \"../features/dependency-analysis/index.js\";\nimport { registerIdeTools } from \"../features/basic-analysis/ide-analyzer.js\";\nimport { registerCodeQualityTools } from \"../features/code-quality/index",
+      "context": "} from \"../features/dependency-analysis/index.js\";\n// import { registerIdeTools } from \"../features/basic-analysis/ide-analyzer.js\";\n// import { registerCodeQualityTools } from \"../features/code-quality/in",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management",
         "integration": "Third-party service integration",
         "analysis": "Data analysis and reporting"
       },
-      "description": "\"../features/dependency-analysis/index.js\"; import { registerIdeTools } from \"../features/basic-analysis/ide-analyzer.js\"; import { registerCodeQualityTools"
+      "description": "import { registerIdeTools } from \"../features/basic-analysis/ide-analyzer.js\";\n// import { registerCodeQualityTools } from \"../features/code-quality/in"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 84,
       "match": "pro",
-      "context": " back to in-memory implementations.\n *\n * @param options Server configuration options\n * @returns A promise that resolves when the server is ready\n */\nexport async function startServer(options: ServerOpt",
+      "context": "in-memory implementations.\n//  *\n//  * @param options Server configuration options\n//  * @returns A promise that resolves when the server is ready\n//  */\n// export async function startServer(options: Ser",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "configuration options * @returns A promise that resolves when the"
+      "description": "*\n//  * @param options Server configuration options\n//  * @returns A promise that resolves when the server is ready\n//  */\n// export async function startServer(options: Ser"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 86,
       "match": "Pro",
-      "context": "solves when the server is ready\n */\nexport async function startServer(options: ServerOptions = {}): Promise<{\n  server: McpServer;\n}> {\n  const {\n    name = \"codeanalysis-mcp\",\n    version = \"1.0.0\",\n   ",
+      "context": " when the server is ready\n//  */\n// export async function startServer(options: ServerOptions = {}): Promise<{\n//   server: McpServer;\n// }> {\n//   const {\n//     name = \"codeanalysis-mcp\",\n//     version",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration",
         "analysis": "Data analysis and reporting"
       },
-      "description": "async function startServer(options: ServerOptions = {}): Promise<{ server: McpServer; }>"
+      "description": "*/\n// export async function startServer(options: ServerOptions = {}): Promise<{\n//   server: McpServer;\n// }> {\n//   const {\n//     name = \"codeanalysis-mcp\",\n//     version"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 92,
       "match": "pro",
-      "context": "ver: McpServer;\n}> {\n  const {\n    name = \"codeanalysis-mcp\",\n    version = \"1.0.0\",\n    useStdio = process.env.STDIO_TRANSPORT === \"true\",\n    port = process.env.PORT ? parseInt(process.env.PORT, 10) : ",
+      "context": "\n// }> {\n//   const {\n//     name = \"codeanalysis-mcp\",\n//     version = \"1.0.0\",\n//     useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10)",
       "priority": "medium",
       "features": {
         "analysis": "Data analysis and reporting"
       },
-      "description": "= \"codeanalysis-mcp\", version = \"1.0.0\", useStdio = process.env.STDIO_TRANSPORT === \"true\","
+      "description": "}> {\n//   const {\n//     name = \"codeanalysis-mcp\",\n//     version = \"1.0.0\",\n//     useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10)"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 93,
       "match": "pro",
-      "context": "ysis-mcp\",\n    version = \"1.0.0\",\n    useStdio = process.env.STDIO_TRANSPORT === \"true\",\n    port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n    redisUrl = process.env.REDIS_URL || \"redi",
+      "context": ",\n//     version = \"1.0.0\",\n//     useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"r",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "process.env.STDIO_TRANSPORT === \"true\", port = process.env.PORT ? parseInt(process.env.PORT, 10) :"
+      "description": "version = \"1.0.0\",\n//     useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"r"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 93,
       "match": "pro",
-      "context": "0.0\",\n    useStdio = process.env.STDIO_TRANSPORT === \"true\",\n    port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n    redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n    for",
+      "context": "//     useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//  ",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "localhost:6379\",\n    for"
+      "description": "useStdio = process.env.STDIO_TRANSPORT === \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 94,
       "match": "pro",
-      "context": "ORT === \"true\",\n    port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n    redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMO",
+      "context": "= \"true\",\n//     port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_M",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMO"
+      "description": "port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,\n//     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_M"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 95,
       "match": "pro",
-      "context": "00,\n    redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n    useMemoryCache = true,\n    verbose = false,\n  } = opti",
+      "context": "     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n//     useMemoryCache = true,\n//     verbose = false,\n//  ",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n    useMemoryCache = true,\n    verbose = false,\n  } = opti"
+      "description": "localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n//     useMemoryCache = true,\n//     verbose = false,\n//"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 155,
       "match": "pro",
-      "context": "      // Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly typed arguments\n        return (originalToolMethod as any)(id, ...(args as [any, any]));\n     ",
+      "context": "// Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with properly typed arguments\n//         return (originalToolMethod as any)(id, ...(args as [any, any]));\n//",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly typed arguments\n        return (originalToolMethod as any)(id, ...(args as [any, any]));"
+      "description": "Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with properly typed arguments\n//         return (originalToolMethod as any)(id, ...(args as [any, any]));\n//"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 205,
       "match": "pro",
-      "context": "ning: Could not initialize Redis-backed services: ${error}`\n    );\n  }\n\n  // Connect server using appropriate transport\n  if (useStdio) {\n    // For stdio transport\n    if (verbose) {\n      console.log(\"",
+      "context": "ld not initialize Redis-backed services: ${error}`\n//     );\n//   }\n\n//   // Connect server using appropriate transport\n//   if (useStdio) {\n//     // For stdio transport\n//     if (verbose) {\n//       c",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "Connect server using appropriate transport\n  if (useStdio) {\n    // For stdio transport\n    if (verbose) {\n      console.log(\""
+      "description": ");\n//   }\n\n//   // Connect server using appropriate transport\n//   if (useStdio) {\n//     // For stdio transport\n//     if (verbose) {\n//       c"
     },
     {
       "type": "freemium",
       "file": "src/server/startServer.ts",
       "line": 272,
       "match": "Pro",
-      "context": "rsion,\n        transport: \"HTTP+SSE\",\n      });\n    });\n\n    // Start the HTTP server\n    await new Promise<void>((resolve) => {\n      app.listen(port, () => {\n        console.log(`\u2713 Server listening on ",
+      "context": "   transport: \"HTTP+SSE\",\n//       });\n//     });\n\n//     // Start the HTTP server\n//     await new Promise<void>((resolve) => {\n//       app.listen(port, () => {\n//         console.log(`\u2713 Server listeni",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "Start the HTTP server\n    await new Promise<void>((resolve) => {\n      app.listen(port, () => {\n        console.log(`\u2713 Server listening on"
+      "description": "});\n//     });\n\n//     // Start the HTTP server\n//     await new Promise<void>((resolve) => {\n//       app.listen(port, () => {\n//         console.log(`\u2713 Server listeni"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 61,
       "match": "store",
-      "context": "g., \"redis://localhost:6379\")\n   */\n  redisUrl?: string;\n\n  /**\n   * Force use of in-memory session store instead of Redis\n   */\n  forceMemorySessionStore?: boolean;\n\n  /**\n   * Enable memory caching layer",
+      "context": "/localhost:6379\")\n//    */\n//   redisUrl?: string;\n\n//   /**\n//    * Force use of in-memory session store instead of Redis\n//    */\n//   forceMemorySessionStore?: boolean;\n\n//   /**\n//    * Enable memory c",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "* Force use of in-memory session store instead of Redis"
+      "description": "//    * Force use of in-memory session store instead of Redis\n//"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 95,
       "match": "Store",
-      "context": "10) : 3000,\n    redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n    useMemoryCache = true,\n    verbose = false,\n  } ",
+      "context": "3000,\n//     redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n//     useMemoryCache = true,\n//     verbose = false",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "localhost:6379\",\n    forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n    useMemoryCache = true,\n    verbose = false,\n  }"
+      "description": "redisUrl = process.env.REDIS_URL || \"redis://localhost:6379\",\n//     forceMemorySessionStore = process.env.FORCE_MEMORY_SESSION === \"true\",\n//     useMemoryCache = true,\n//     verbose = false"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 162,
       "match": "store",
-      "context": ".(args as [any, any]));\n      };\n\n      // Register the tools\n      registerFn(server);\n\n      // Restore original method\n      server.tool = originalToolMethod;\n\n      if (verbose) {\n        console.log(`",
+      "context": "ny, any]));\n//       };\n\n//       // Register the tools\n//       registerFn(server);\n\n//       // Restore original method\n//       server.tool = originalToolMethod;\n\n//       if (verbose) {\n//         cons",
       "priority": "high",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "Register the tools\n      registerFn(server);\n\n      // Restore original method\n      server.tool = originalToolMethod;\n\n      if (verbose) {\n        console.log(`"
+      "description": "};\n\n//       // Register the tools\n//       registerFn(server);\n\n//       // Restore original method\n//       server.tool = originalToolMethod;\n\n//       if (verbose) {\n//         cons"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 185,
       "match": "Store",
-      "context": "disUrl,\n      prefix: \"mcp:\",\n      defaultTtl: 3600,\n      useMemoryCache,\n      forceMemorySessionStore,\n      verbose,\n    });\n\n    if (verbose) {\n      console.log(`\u2713 Services initialized successfully`",
+      "context": "     prefix: \"mcp:\",\n//       defaultTtl: 3600,\n//       useMemoryCache,\n//       forceMemorySessionStore,\n//       verbose,\n//     });\n\n//     if (verbose) {\n//       console.log(`\u2713 Services initialized s",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "defaultTtl: 3600, useMemoryCache, forceMemorySessionStore, verbose, }); if (verbose) { console.log(`\u2713"
+      "description": "defaultTtl: 3600,\n//       useMemoryCache,\n//       forceMemorySessionStore,\n//       verbose,\n//     });\n\n//     if (verbose) {\n//       console.log(`\u2713 Services initialized s"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 192,
       "match": "store",
-      "context": "{\n      console.log(`\u2713 Services initialized successfully`);\n      console.log(\n        `  - Session store: ${services.sessionStore.constructor.name}`\n      );\n      console.log(`  - Cache store: ${services",
+      "context": "  console.log(`\u2713 Services initialized successfully`);\n//       console.log(\n//         `  - Session store: ${services.sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${se",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "initialized successfully`); console.log( ` - Session store: ${services.sessionStore.constructor.name}` ); console.log(`"
+      "description": "console.log(\n//         `  - Session store: ${services.sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${se"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 192,
       "match": "Store",
-      "context": "rvices initialized successfully`);\n      console.log(\n        `  - Session store: ${services.sessionStore.constructor.name}`\n      );\n      console.log(`  - Cache store: ${services.cacheStore.constructor.n",
+      "context": " initialized successfully`);\n//       console.log(\n//         `  - Session store: ${services.sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${services.cacheStore.constru",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "successfully`); console.log( ` - Session store: ${services.sessionStore.constructor.name}` ); console.log(` -"
+      "description": "console.log(\n//         `  - Session store: ${services.sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${services.cacheStore.constru"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 194,
       "match": "store",
-      "context": "  - Session store: ${services.sessionStore.constructor.name}`\n      );\n      console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n      console.log(\n        `  - Tool execution service:",
+      "context": "ssion store: ${services.sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n//       console.log(\n//         `  - Tool execution se",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "${services.sessionStore.constructor.name}` ); console.log(` - Cache store: ${services.cacheStore.constructor.name}`); console.log( ` -"
+      "description": ");\n//       console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n//       console.log(\n//         `  - Tool execution se"
     },
     {
       "type": "marketplace",
       "file": "src/server/startServer.ts",
       "line": 194,
       "match": "Store",
-      "context": "rvices.sessionStore.constructor.name}`\n      );\n      console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n      console.log(\n        `  - Tool execution service: ${services.toolService",
+      "context": ".sessionStore.constructor.name}`\n//       );\n//       console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n//       console.log(\n//         `  - Tool execution service: ${services.toolS",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "console.log(` - Cache store: ${services.cacheStore.constructor.name}`); console.log( ` - Tool execution"
+      "description": ");\n//       console.log(`  - Cache store: ${services.cacheStore.constructor.name}`);\n//       console.log(\n//         `  - Tool execution service: ${services.toolS"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 46,
       "match": "ad",
-      "context": ": string;\n\n  /**\n   * Server version\n   */\n  version?: string;\n\n  /**\n   * Use stdio transport instead of HTTP+SSE\n   */\n  useStdio?: boolean;\n\n  /**\n   * HTTP port for server (when not using stdio)\n   ",
+      "context": "*\n//    * Server version\n//    */\n//   version?: string;\n\n//   /**\n//    * Use stdio transport instead of HTTP+SSE\n//    */\n//   useStdio?: boolean;\n\n//   /**\n//    * HTTP port for server (when not usin",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "* Server version"
+      "description": "//    * Use stdio transport instead of HTTP+SSE\n//"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 61,
       "match": "ad",
-      "context": "//localhost:6379\")\n   */\n  redisUrl?: string;\n\n  /**\n   * Force use of in-memory session store instead of Redis\n   */\n  forceMemorySessionStore?: boolean;\n\n  /**\n   * Enable memory caching layer (defaul",
+      "context": "6379\")\n//    */\n//   redisUrl?: string;\n\n//   /**\n//    * Force use of in-memory session store instead of Redis\n//    */\n//   forceMemorySessionStore?: boolean;\n\n//   /**\n//    * Enable memory caching l",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "* Force use of in-memory session store instead of Redis"
+      "description": "//    * Force use of in-memory session store instead of Redis\n//"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 84,
       "match": "ad",
-      "context": "param options Server configuration options\n * @returns A promise that resolves when the server is ready\n */\nexport async function startServer(options: ServerOptions = {}): Promise<{\n  server: McpServer;",
+      "context": "am options Server configuration options\n//  * @returns A promise that resolves when the server is ready\n//  */\n// export async function startServer(options: ServerOptions = {}): Promise<{\n//   server: M",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "promise that resolves when the server is ready */ export"
+      "description": "* @returns A promise that resolves when the server is ready\n//  */\n// export async function startServer(options: ServerOptions = {}): Promise<{\n//   server: M"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 146,
       "match": "ad",
-      "context": "s.has(id)) {\n          if (verbose) {\n            console.log(\n              `  - Tool ${id} is already registered, skipping duplicate registration`\n            );\n          }\n          return this;\n   ",
+      "context": ") {\n//           if (verbose) {\n//             console.log(\n//               `  - Tool ${id} is already registered, skipping duplicate registration`\n//             );\n//           }\n//           return ",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "console.log( ` - Tool ${id} is already registered, skipping duplicate"
+      "description": "if (verbose) {\n//             console.log(\n//               `  - Tool ${id} is already registered, skipping duplicate registration`\n//             );\n//           }\n//           return"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 152,
       "match": "Ad",
-      "context": "ing duplicate registration`\n            );\n          }\n          return this;\n        }\n\n        // Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly ty",
+      "context": "egistration`\n//             );\n//           }\n//           return this;\n//         }\n\n//         // Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with prope",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly ty"
+      "description": ");\n//           }\n//           return this;\n//         }\n\n//         // Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with prope"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 153,
       "match": "ad",
-      "context": "         }\n          return this;\n        }\n\n        // Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly typed arguments\n        return (originalToolMe",
+      "context": "/           return this;\n//         }\n\n//         // Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with properly typed arguments\n//         return (original",
       "priority": "medium",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "Add to tracking set\n        registeredTools.add(id);\n\n        // Call original method with properly typed arguments\n        return (originalToolMe"
+      "description": "}\n\n//         // Add to tracking set\n//         registeredTools.add(id);\n\n//         // Call original method with properly typed arguments\n//         return (original"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 218,
       "match": "ad",
-      "context": " server\n      .connect(transport)\n      .then(() => {\n        console.log(\"\u2713 Server connected and ready to handle stdio requests\");\n      })\n      .catch((err) => {\n        console.error(\"Failed to star",
+      "context": "/       .connect(transport)\n//       .then(() => {\n//         console.log(\"\u2713 Server connected and ready to handle stdio requests\");\n//       })\n//       .catch((err) => {\n//         console.error(\"Faile",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "console.log(\"\u2713 Server connected and ready to handle stdio requests\"); })"
+      "description": ".then(() => {\n//         console.log(\"\u2713 Server connected and ready to handle stdio requests\");\n//       })\n//       .catch((err) => {\n//         console.error(\"Faile"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 236,
       "match": "ad",
-      "context": "   // Set up SSE endpoint for client connections\n    app.get(\"/mcp\", (req, res) => {\n      res.setHeader(\"Content-Type\", \"text/event-stream\");\n      res.setHeader(\"Cache-Control\", \"no-cache\");\n      res",
+      "context": "Set up SSE endpoint for client connections\n//     app.get(\"/mcp\", (req, res) => {\n//       res.setHeader(\"Content-Type\", \"text/event-stream\");\n//       res.setHeader(\"Cache-Control\", \"no-cache\");\n//    ",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "Set up SSE endpoint for client connections\n    app.get(\"/mcp\", (req, res) => {\n      res.setHeader(\"Content-Type\", \"text/event-stream\");\n      res.setHeader(\"Cache-Control\", \"no-cache\");\n      res"
+      "description": "app.get(\"/mcp\", (req, res) => {\n//       res.setHeader(\"Content-Type\", \"text/event-stream\");\n//       res.setHeader(\"Cache-Control\", \"no-cache\");\n//"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 237,
       "match": "ad",
-      "context": "et(\"/mcp\", (req, res) => {\n      res.setHeader(\"Content-Type\", \"text/event-stream\");\n      res.setHeader(\"Cache-Control\", \"no-cache\");\n      res.setHeader(\"Connection\", \"keep-alive\");\n\n      const trans",
+      "context": "cp\", (req, res) => {\n//       res.setHeader(\"Content-Type\", \"text/event-stream\");\n//       res.setHeader(\"Cache-Control\", \"no-cache\");\n//       res.setHeader(\"Connection\", \"keep-alive\");\n\n//       const",
       "priority": "medium",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "(req, res) => { res.setHeader(\"Content-Type\", \"text/event-stream\"); res.setHeader(\"Cache-Control\", \"no-cache\"); res.setHeader(\"Connection\", \"keep-alive\");"
+      "description": "res.setHeader(\"Content-Type\", \"text/event-stream\");\n//       res.setHeader(\"Cache-Control\", \"no-cache\");\n//       res.setHeader(\"Connection\", \"keep-alive\");\n\n//       const"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 238,
       "match": "ad",
-      "context": "ntent-Type\", \"text/event-stream\");\n      res.setHeader(\"Cache-Control\", \"no-cache\");\n      res.setHeader(\"Connection\", \"keep-alive\");\n\n      const transport = new SSEServerTransport(\"/messages\", res);\n\n",
+      "context": "Type\", \"text/event-stream\");\n//       res.setHeader(\"Cache-Control\", \"no-cache\");\n//       res.setHeader(\"Connection\", \"keep-alive\");\n\n//       const transport = new SSEServerTransport(\"/messages\", res)",
       "priority": "medium",
       "features": {
         "notification": "User notifications and alerts",
         "integration": "Third-party service integration"
       },
-      "description": "\"text/event-stream\"); res.setHeader(\"Cache-Control\", \"no-cache\"); res.setHeader(\"Connection\", \"keep-alive\"); const transport = new SSEServerTransport(\"/messages\","
+      "description": "res.setHeader(\"Cache-Control\", \"no-cache\");\n//       res.setHeader(\"Connection\", \"keep-alive\");\n\n//       const transport = new SSEServerTransport(\"/messages\", res)"
     },
     {
       "type": "ads",
       "file": "src/server/startServer.ts",
       "line": 275,
       "match": "ad",
-      "context": "=> {\n        console.log(`\u2713 Server listening on port ${port}`);\n        console.log(\"\u2713 MCP server ready to handle HTTP requests\");\n        resolve();\n      });\n    });\n  }\n\n  return { server };\n}\n",
+      "context": "/         console.log(`\u2713 Server listening on port ${port}`);\n//         console.log(\"\u2713 MCP server ready to handle HTTP requests\");\n//         resolve();\n//       });\n//     });\n//   }\n\n//   return { ser",
       "priority": "medium",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "${port}`); console.log(\"\u2713 MCP server ready to handle HTTP requests\"); resolve();"
+      "description": "console.log(\"\u2713 MCP server ready to handle HTTP requests\");\n//         resolve();\n//       });\n//     });\n//   }\n\n//   return { ser"
     },
     {
       "type": "freemium",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 1,
       "match": "pro",
-      "context": "import { McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\";\nimport { RedisToolExecutionService } from \"../state/services/redisToolExec",
-      "priority": "medium",
+      "context": "// import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheSt",
+      "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "{ McpServer } from \"@modelcontextprotocol/sdk/server/mcp.js\"; import { RedisToolExecutionService } from"
+      "description": "import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheSt"
     },
     {
       "type": "freemium",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 54,
+      "line": 55,
       "match": "Pro",
-      "context": "function registerRedisBackedServices(\n  server: McpServer,\n  options: RedisBackedServicesOptions\n): Promise<{\n  sessionStore: SessionStore;\n  cacheStore: RedisCacheStore;\n  toolService: RedisToolExecutio",
+      "context": "egisterRedisBackedServices(\n//   server: McpServer,\n//   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExec",
       "priority": "high",
       "features": {
-        "authentication": "User authentication and account management"
+        "unknown": "Feature could not be automatically identified"
       },
-      "description": "server: McpServer, options: RedisBackedServicesOptions ): Promise<{ sessionStore: SessionStore; cacheStore: RedisCacheStore;"
+      "description": "server: McpServer,\n//   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExec"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 2,
+      "match": "Store",
+      "context": "// import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// impo",
+      "priority": "high",
+      "features": {
+        "integration": "Third-party service integration"
+      },
+      "description": "import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// impo"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 3,
       "match": "Store",
-      "context": "disToolExecutionService } from \"../state/services/redisToolExecutionService.js\";\nimport { RedisCacheStore } from \"../state/store/redisCacheStore.js\";\nimport { createSessionStore } from \"../state/services/s",
+      "context": "rotocol/sdk/server/mcp.js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/service",
       "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "\"../state/services/redisToolExecutionService.js\"; import { RedisCacheStore } from \"../state/store/redisCacheStore.js\"; import { createSessionStore"
+      "description": "import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/service"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 3,
+      "match": "store",
+      "context": "js';\n// import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.j",
+      "priority": "high",
+      "features": {
+        "integration": "Third-party service integration"
+      },
+      "description": "import { RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.j"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 3,
       "match": "Store",
-      "context": "e/services/redisToolExecutionService.js\";\nimport { RedisCacheStore } from \"../state/store/redisCacheStore.js\";\nimport { createSessionStore } from \"../state/services/sessionStoreFactory.js\";\nimport { Sessio",
+      "context": " RedisSessionStore } from '@mcp/core';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { ",
       "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "RedisCacheStore } from \"../state/store/redisCacheStore.js\"; import { createSessionStore } from \"../state/services/sessionStoreFactory.js\";"
+      "description": "import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import {"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 4,
       "match": "Store",
-      "context": "ice.js\";\nimport { RedisCacheStore } from \"../state/store/redisCacheStore.js\";\nimport { createSessionStore } from \"../state/services/sessionStoreFactory.js\";\nimport { SessionStore } from \"../state/services/",
+      "context": "';\n// import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { SessionStore } from '../state/servic",
       "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "} from \"../state/store/redisCacheStore.js\"; import { createSessionStore } from \"../state/services/sessionStoreFactory.js\"; import"
+      "description": "import { RedisCacheStore } from '../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { SessionStore } from '../state/servic"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 4,
       "match": "Store",
-      "context": "m \"../state/store/redisCacheStore.js\";\nimport { createSessionStore } from \"../state/services/sessionStoreFactory.js\";\nimport { SessionStore } from \"../state/services/types.js\";\n\nexport interface RedisBacke",
+      "context": "../state/store/redisCacheStore.js';\n// import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { SessionStore } from '../state/services/types.js';\n// import { ToolExecution",
       "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "{ createSessionStore } from \"../state/services/sessionStoreFactory.js\"; import { SessionStore } from"
+      "description": "import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { SessionStore } from '../state/services/types.js';\n// import { ToolExecution"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 5,
       "match": "Store",
-      "context": "js\";\nimport { createSessionStore } from \"../state/services/sessionStoreFactory.js\";\nimport { SessionStore } from \"../state/services/types.js\";\n\nexport interface RedisBackedServicesOptions {\n  /**\n   * Redi",
+      "context": "/ import { createSessionStore } from '../state/services/sessionStoreFactory.js';\n// import { SessionStore } from '../state/services/types.js';\n// import { ToolExecutionService } from '../state/services/too",
       "priority": "high",
       "features": {
         "integration": "Third-party service integration"
       },
-      "description": "from \"../state/services/sessionStoreFactory.js\"; import { SessionStore } from \"../state/services/types.js\"; export interface"
+      "description": "import { SessionStore } from '../state/services/types.js';\n// import { ToolExecutionService } from '../state/services/too"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 31,
-      "match": "Store",
-      "context": "oolean;\n\n  /**\n   * Force use of in-memory session store instead of Redis\n   */\n  forceMemorySessionStore?: boolean;\n\n  /**\n   * Whether to show verbose logs\n   */\n  verbose?: boolean;\n}\n\n/**\n * Registers ",
-      "priority": "high",
-      "features": {
-        "authentication": "User authentication and account management"
-      },
-      "description": "* Force use of in-memory session store instead of Redis"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 43,
+      "line": 44,
       "match": "store",
-      "context": "sters storage and execution services with the MCP server\n *\n * This function sets up:\n * 1. Session store (Redis if available, otherwise in-memory)\n * 2. Redis cache store for performance optimization\n * 3",
+      "context": "rage and execution services with the MCP server\n//  *\n//  * This function sets up:\n//  * 1. Session store (Redis if available, otherwise in-memory)\n//  * 2. Redis cache store for performance optimization\n/",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "sets up: * 1. Session store (Redis if available, otherwise"
+      "description": "*\n//  * This function sets up:\n//  * 1. Session store (Redis if available, otherwise in-memory)\n//  * 2. Redis cache store for performance optimization\n/"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 55,
-      "match": "Store",
-      "context": "disBackedServices(\n  server: McpServer,\n  options: RedisBackedServicesOptions\n): Promise<{\n  sessionStore: SessionStore;\n  cacheStore: RedisCacheStore;\n  toolService: RedisToolExecutionService;\n}> {\n  if (",
+      "line": 45,
+      "match": "store",
+      "context": "tion sets up:\n//  * 1. Session store (Redis if available, otherwise in-memory)\n//  * 2. Redis cache store for performance optimization\n//  * 3. Redis-backed tool execution service\n//  *\n//  * @param server",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "options: RedisBackedServicesOptions ): Promise<{ sessionStore: SessionStore; cacheStore: RedisCacheStore; toolService: RedisToolExecutionService;"
+      "description": "* 1. Session store (Redis if available, otherwise in-memory)\n//  * 2. Redis cache store for performance optimization\n//  * 3. Redis-backed tool execution service\n//  *\n//  * @param server"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 56,
       "match": "Store",
-      "context": " McpServer,\n  options: RedisBackedServicesOptions\n): Promise<{\n  sessionStore: SessionStore;\n  cacheStore: RedisCacheStore;\n  toolService: RedisToolExecutionService;\n}> {\n  if (options.verbose) {\n    conso",
+      "context": "ices(\n//   server: McpServer,\n//   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "): Promise<{ sessionStore: SessionStore; cacheStore: RedisCacheStore; toolService: RedisToolExecutionService; }> {"
+      "description": "server: McpServer,\n//   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 56,
       "match": "Store",
-      "context": "ions: RedisBackedServicesOptions\n): Promise<{\n  sessionStore: SessionStore;\n  cacheStore: RedisCacheStore;\n  toolService: RedisToolExecutionService;\n}> {\n  if (options.verbose) {\n    console.log(\"Registeri",
+      "context": "ver: McpServer,\n//   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 57,
+      "match": "Store",
+      "context": "/   options: RedisBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options.verbose) {\n//   ",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options.verbose) {\n//"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 57,
+      "match": "Store",
+      "context": "sBackedServicesOptions,\n// ): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options.verbose) {\n//     console.log('Re",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "): Promise<{\n//   sessionStore: SessionStore;\n//   cacheStore: RedisCacheStore;\n//   toolService: ToolExecutionService;\n// }> {\n//   if (options.verbose) {\n//     console.log('Re"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 66,
+      "match": "store",
+      "context": "cution services...');\n//   }\n\n//   const prefix = options.prefix || 'mcp:';\n\n//   // Create session store with auto-detection of backends\n//   const sessionStore = await createSessionStore({\n//     redisUr",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "}\n\n//   const prefix = options.prefix || 'mcp:';\n\n//   // Create session store with auto-detection of backends\n//   const sessionStore = await createSessionStore({\n//     redisUr"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 67,
+      "match": "Store",
+      "context": "s.prefix || 'mcp:';\n\n//   // Create session store with auto-detection of backends\n//   const sessionStore = await createSessionStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}session:`,",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "// Create session store with auto-detection of backends\n//   const sessionStore = await createSessionStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}session:`,"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 67,
+      "match": "Store",
+      "context": "/ Create session store with auto-detection of backends\n//   const sessionStore = await createSessionStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}session:`,\n//     defaultTtl: options",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "const sessionStore = await createSessionStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}session:`,\n//     defaultTtl: options"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 71,
+      "match": "Store",
+      "context": "on:`,\n//     defaultTtl: options.defaultTtl || 3600,\n//     preferMemory: options.forceMemorySessionStore,\n//     verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore ",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "defaultTtl: options.defaultTtl || 3600,\n//     preferMemory: options.forceMemorySessionStore,\n//     verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 75,
+      "match": "store",
+      "context": "ions.forceMemorySessionStore,\n//     verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 76,
+      "match": "Store",
+      "context": "nStore,\n//     verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}cache:`,\n//    ",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "verbose: options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}cache:`,\n//"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 76,
+      "match": "Store",
+      "context": ": options.verbose,\n//   });\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}cache:`,\n//     defaultTtl: options.d",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "});\n\n//   // Create Redis cache store\n//   const cacheStore = new RedisCacheStore({\n//     redisUrl: options.redisUrl,\n//     prefix: `${prefix}cache:`,\n//     defaultTtl: options.d"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 87,
+      "match": "store",
+      "context": "f the codebase\n//   const toolService = new ToolExecutionService();\n\n//   // Attempt to set session store on server (using type assertion for compatibility)\n//   try {\n//     const serverAny = server as an",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "const toolService = new ToolExecutionService();\n\n//   // Attempt to set session store on server (using type assertion for compatibility)\n//   try {\n//     const serverAny = server as an"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 90,
+      "match": "Store",
+      "context": "atibility)\n//   try {\n//     const serverAny = server as any;\n//     if (typeof serverAny.setSessionStore === 'function') {\n//       serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {",
+      "priority": "high",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "try {\n//     const serverAny = server as any;\n//     if (typeof serverAny.setSessionStore === 'function') {\n//       serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {"
+    },
+    {
+      "type": "marketplace",
+      "file": "src/server/registerRedisBackedServices.ts",
+      "line": 91,
+      "match": "Store",
+      "context": " as any;\n//     if (typeof serverAny.setSessionStore === 'function') {\n//       serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {\n//         console.log('Session store registered wit",
       "priority": "high",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "Promise<{ sessionStore: SessionStore; cacheStore: RedisCacheStore; toolService: RedisToolExecutionService; }> { if"
+      "description": "if (typeof serverAny.setSessionStore === 'function') {\n//       serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {\n//         console.log('Session store registered wit"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 65,
-      "match": "store",
-      "context": "e and execution services...\");\n  }\n\n  const prefix = options.prefix || \"mcp:\";\n\n  // Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: opt",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: opt"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 66,
+      "line": 91,
       "match": "Store",
-      "context": "options.prefix || \"mcp:\";\n\n  // Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}session:`,\n    d",
+      "context": "   if (typeof serverAny.setSessionStore === 'function') {\n//       serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {\n//         console.log('Session store registered with server');\n/",
       "priority": "high",
       "features": {
-        "unknown": "Feature could not be automatically identified"
+        "authentication": "User authentication and account management"
       },
-      "description": "Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}session:`,\n    d"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 66,
-      "match": "Store",
-      "context": "  // Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}session:`,\n    defaultTtl: options.defaultT",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create session store with auto-detection of backends\n  const sessionStore = await createSessionStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}session:`,\n    defaultTtl: options.defaultT"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 70,
-      "match": "Store",
-      "context": "}session:`,\n    defaultTtl: options.defaultTtl || 3600,\n    preferMemory: options.forceMemorySessionStore,\n    verbose: options.verbose,\n  });\n\n  // Create Redis cache store\n  const cacheStore = new RedisC",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create Redis cache store\n  const cacheStore = new RedisC"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 74,
-      "match": "store",
-      "context": "mory: options.forceMemorySessionStore,\n    verbose: options.verbose,\n  });\n\n  // Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}ca",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}ca"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 75,
-      "match": "Store",
-      "context": "MemorySessionStore,\n    verbose: options.verbose,\n  });\n\n  // Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}cache:`,\n    defaultT",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}cache:`,\n    defaultT"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 75,
-      "match": "Store",
-      "context": "  verbose: options.verbose,\n  });\n\n  // Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}cache:`,\n    defaultTtl: options.defaultTtl",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create Redis cache store\n  const cacheStore = new RedisCacheStore({\n    redisUrl: options.redisUrl,\n    prefix: `${prefix}cache:`,\n    defaultTtl: options.defaultTtl"
+      "description": "serverAny.setSessionStore(sessionStore);\n//       if (options.verbose) {\n//         console.log('Session store registered with server');\n/"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 93,
       "match": "store",
-      "context": ", // Empty tools map\n    serviceId: `mcp-service-${Date.now()}`,\n  });\n\n  // Attempt to set session store on server (using type assertion for compatibility)\n  try {\n    const serverAny = server as any;\n   ",
+      "context": "rAny.setSessionStore(sessionStore);\n//       if (options.verbose) {\n//         console.log('Session store registered with server');\n//       }\n//     } else {\n//       console.warn(\n//         'Server does",
       "priority": "high",
       "features": {
-        "unknown": "Feature could not be automatically identified"
+        "authentication": "User authentication and account management"
       },
-      "description": "Empty tools map\n    serviceId: `mcp-service-${Date.now()}`,\n  });\n\n  // Attempt to set session store on server (using type assertion for compatibility)\n  try {\n    const serverAny = server as any;"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 96,
-      "match": "Store",
-      "context": " for compatibility)\n  try {\n    const serverAny = server as any;\n    if (typeof serverAny.setSessionStore === \"function\") {\n      serverAny.setSessionStore(sessionStore);\n      if (options.verbose) {\n     ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "serverAny = server as any; if (typeof serverAny.setSessionStore === \"function\")"
+      "description": "if (options.verbose) {\n//         console.log('Session store registered with server');\n//       }\n//     } else {\n//       console.warn(\n//         'Server does"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
       "line": 97,
       "match": "Store",
-      "context": "server as any;\n    if (typeof serverAny.setSessionStore === \"function\") {\n      serverAny.setSessionStore(sessionStore);\n      if (options.verbose) {\n        console.log(\"Session store registered with serv",
-      "priority": "high",
-      "features": {
-        "authentication": "User authentication and account management"
-      },
-      "description": "(typeof serverAny.setSessionStore === \"function\") { serverAny.setSessionStore(sessionStore); if (options.verbose) { console.log(\"Session"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 97,
-      "match": "Store",
-      "context": ";\n    if (typeof serverAny.setSessionStore === \"function\") {\n      serverAny.setSessionStore(sessionStore);\n      if (options.verbose) {\n        console.log(\"Session store registered with server\");\n      }",
-      "priority": "high",
-      "features": {
-        "authentication": "User authentication and account management"
-      },
-      "description": "serverAny.setSessionStore === \"function\") { serverAny.setSessionStore(sessionStore); if (options.verbose) { console.log(\"Session store"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 99,
-      "match": "store",
-      "context": " serverAny.setSessionStore(sessionStore);\n      if (options.verbose) {\n        console.log(\"Session store registered with server\");\n      }\n    } else {\n      console.warn(\n        \"Server does not support",
-      "priority": "high",
-      "features": {
-        "authentication": "User authentication and account management"
-      },
-      "description": "serverAny.setSessionStore(sessionStore); if (options.verbose) { console.log(\"Session store registered with server\"); }"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/server/registerRedisBackedServices.ts",
-      "line": 103,
-      "match": "Store",
-      "context": " with server\");\n      }\n    } else {\n      console.warn(\n        \"Server does not support setSessionStore method - using alternative session management\"\n      );\n    }\n  } catch (error) {\n    console.warn(",
+      "context": "');\n//       }\n//     } else {\n//       console.warn(\n//         'Server does not support setSessionStore method - using alternative session management',\n//       );\n//     }\n//   } catch (error) {\n//     ",
       "priority": "high",
       "features": {
         "unknown": "Feature could not be automatically identified"
       },
-      "description": "\"Server does not support setSessionStore method - using alternative session"
+      "description": "}\n//     } else {\n//       console.warn(\n//         'Server does not support setSessionStore method - using alternative session management',\n//       );\n//     }\n//   } catch (error) {\n//"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 107,
+      "line": 101,
       "match": "store",
-      "context": "tive session management\"\n      );\n    }\n  } catch (error) {\n    console.warn(`Could not set session store: ${error}`);\n  }\n\n  if (options.verbose) {\n    console.log(\"Storage and execution services register",
+      "context": "management',\n//       );\n//     }\n//   } catch (error) {\n//     console.warn(`Could not set session store: ${error}`);\n//   }\n\n//   if (options.verbose) {\n//     console.log('Storage and execution services",
       "priority": "high",
       "features": {
-        "authentication": "User authentication and account management"
+        "unknown": "Feature could not be automatically identified"
       },
-      "description": "(error) { console.warn(`Could not set session store: ${error}`); } if"
+      "description": ");\n//     }\n//   } catch (error) {\n//     console.warn(`Could not set session store: ${error}`);\n//   }\n\n//   if (options.verbose) {\n//     console.log('Storage and execution services"
     },
     {
       "type": "marketplace",
       "file": "src/server/registerRedisBackedServices.ts",
-      "line": 115,
+      "line": 109,
       "match": "Store",
-      "context": "  console.log(\"Storage and execution services registered successfully\");\n  }\n\n  return {\n    sessionStore,\n    cacheStore,\n    toolService,\n  };\n}\n",
+      "context": ".log('Storage and execution services registered successfully');\n//   }\n\n//   return {\n//     sessionStore,\n//     cacheStore,\n//     toolService,\n//   };\n// }\n",
       "priority": "high",
       "features": {
         "authentication": "User authentication and account management"
       },
-      "description": "execution services registered successfully\"); } return { sessionStore, cacheStore, toolService,"
+      "description": "}\n\n//   return {\n//     sessionStore,\n//     cacheStore,\n//     toolService,\n//   };\n// }"
     },
     {
       "type": "freemium",
@@ -9973,1689 +10035,6 @@
         "unknown": "Feature could not be automatically identified"
       },
       "description": "if it doesn't exist already * * @param sessionId ID"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 210,
-      "match": "subscribe",
-      "context": "this.actor.start();\n\n      // Set up state change handler to persist state changes\n      this.actor.subscribe((state: any) => {\n        this.persistState(state);\n      });\n    } catch (error) {\n      console.e",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up state change handler to persist state changes\n      this.actor.subscribe((state: any) => {\n        this.persistState(state);\n      });\n    } catch (error) {\n      console.e"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 403,
-      "match": "subscribe",
-      "context": "      (resolve, reject) => {\n          // Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n            ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 403,
-      "match": "subscribe",
-      "context": " => {\n          // Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();\n      ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 405,
-      "match": "subscribe",
-      "context": "his.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();\n              resolve(state.context.result);\n            } else if (state.matches(\"failed\")) {\n ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "=> { if (state.matches(\"succeeded\")) { unsubscribe(); resolve(state.context.result); } else if"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 408,
-      "match": "subscribe",
-      "context": "   resolve(state.context.result);\n            } else if (state.matches(\"failed\")) {\n              unsubscribe();\n\n              // Create an error response\n              const errorResponse = createErrorRespon",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create an error response\n              const errorResponse = createErrorRespon"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 481,
-      "match": "subscribe",
-      "context": "    this.actor.start();\n\n    // Set up state change handler to persist state changes\n    this.actor.subscribe((state: any) => {\n      this.persistState(state);\n    });\n  }\n\n  /**\n   * Disposes of the service a",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up state change handler to persist state changes\n    this.actor.subscribe((state: any) => {\n      this.persistState(state);\n    });\n  }\n\n  /**\n   * Disposes of the service a"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 4,
-      "match": "pro",
-      "context": "/**\n * Redis-based Tool Execution Service for MCP SDK\n *\n * This module provides a Redis-backed implementation of the Tool Execution Service for MCP SDK tools.\n * It extends t",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "* This module provides a Redis-backed implementation of the Tool"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 126,
-      "match": "pro",
-      "context": "distributed MCP deployments.\n * This implementation synchronizes state between memory and Redis,\n * providing both high performance and persistence.\n */\nexport class RedisToolExecutionService implements ",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "state between memory and Redis, * providing both high performance"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 173,
-      "match": "Pro",
-      "context": " the state from Redis or creates a new state if none exists\n   */\n  public async initializeState(): Promise<void> {\n    try {\n      // Get or initialize the state in Redis\n      const persistedState = aw",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Get or initialize the state in Redis\n      const persistedState = aw"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 230,
-      "match": "Pro",
-      "context": "te to Redis\n   * @param state Current machine state\n   */\n  private async persistState(state: any): Promise<void> {\n    try {\n      await this.sessionStore.setSession(this.serviceId, {\n        state: { v",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "machine state */ private async persistState(state: any): Promise<void> { try"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 246,
-      "match": "Pro",
-      "context": "oken if acquired\n   * @throws Error if lock cannot be acquired\n   */\n  private async acquireLock(): Promise<string> {\n    const lockToken = await this.sessionStore.acquireLock(this.serviceId);\n\n    if (!",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "lock cannot be acquired */ private async acquireLock(): Promise<string> {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 260,
-      "match": "Pro",
-      "context": " * @param lockToken The lock token to release\n   */\n  private async releaseLock(lockToken: string): Promise<void> {\n    await this.sessionStore.releaseLock(this.serviceId, lockToken);\n  }\n\n  /**\n   * Ext",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "to release */ private async releaseLock(lockToken: string): Promise<void> { await"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 267,
-      "match": "Pro",
-      "context": "kToken);\n  }\n\n  /**\n   * Extends the TTL for the current session\n   */\n  private async extendTtl(): Promise<void> {\n    await this.sessionStore.extendSessionTtl(this.serviceId, this.defaultTtl);\n  }\n\n  /",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Extends the TTL for the current session"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 277,
-      "match": "Pro",
-      "context": "ns Result of the operation\n   */\n  private async withLock<T>(\n    operation: (lockToken: string) => Promise<T>\n  ): Promise<T> {\n    const lockToken = await this.acquireLock();\n\n    try {\n      const res",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "withLock<T>( operation: (lockToken: string) => Promise<T> ): Promise<T> { const"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 278,
-      "match": "Pro",
-      "context": " operation\n   */\n  private async withLock<T>(\n    operation: (lockToken: string) => Promise<T>\n  ): Promise<T> {\n    const lockToken = await this.acquireLock();\n\n    try {\n      const result = await oper",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "string) => Promise<T> ): Promise<T> { const lockToken = await"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 301,
-      "match": "Pro",
-      "context": "tool for execution\n   * @param tool The tool to select\n   */\n  public async selectTool(tool: Tool): Promise<void> {\n    return this.withLock(async () => {\n      const event: ToolSelectEvent = {\n        t",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "select */ public async selectTool(tool: Tool): Promise<void> { return this.withLock(async"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 308,
-      "match": "pro",
-      "context": "   toolName: tool.name,\n      };\n\n      // Update the context manually since the event might not be properly processed\n      const snapshot = this.actor.getSnapshot();\n      const updatedContext = {\n    ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Update the context manually since the event might not be properly processed\n      const snapshot = this.actor.getSnapshot();\n      const updatedContext = {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 308,
-      "match": "pro",
-      "context": "me: tool.name,\n      };\n\n      // Update the context manually since the event might not be properly processed\n      const snapshot = this.actor.getSnapshot();\n      const updatedContext = {\n        ...sn",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Update the context manually since the event might not be properly processed\n      const snapshot = this.actor.getSnapshot();\n      const updatedContext = {\n        ...sn"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 336,
-      "match": "Pro",
-      "context": "eters for the tool\n   */\n  public async setParameters(\n    parameters: Record<string, unknown>\n  ): Promise<void> {\n    return this.withLock(async () => {\n      const event: SetParametersEvent = {\n      ",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "setParameters( parameters: Record<string, unknown> ): Promise<void> { return this.withLock(async ()"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 367,
-      "match": "Pro",
-      "context": "ram options Execution options\n   */\n  public async execute(\n    options?: ToolExecutionOptions\n  ): Promise<ToolExecutionResponse> {\n    return this.withLock(async () => {\n      const context = this.getC",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "async execute( options?: ToolExecutionOptions ): Promise<ToolExecutionResponse> { return this.withLock(async ()"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 400,
-      "match": "Pro",
-      "context": "chema validation in this fix\n      // We'll assume parameters are valid for now\n\n      const executePromise = new Promise<ToolExecutionResponse>(\n        (resolve, reject) => {\n          // Set up a list",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "We'll assume parameters are valid for now\n\n      const executePromise = new Promise<ToolExecutionResponse>(\n        (resolve, reject) => {\n          // Set up a list"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 400,
-      "match": "Pro",
-      "context": "on in this fix\n      // We'll assume parameters are valid for now\n\n      const executePromise = new Promise<ToolExecutionResponse>(\n        (resolve, reject) => {\n          // Set up a listener for compl",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "We'll assume parameters are valid for now\n\n      const executePromise = new Promise<ToolExecutionResponse>(\n        (resolve, reject) => {\n          // Set up a listener for compl"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 434,
-      "match": "Pro",
-      "context": "         type: \"EXECUTE\",\n          });\n        }\n      );\n\n      try {\n        return await executePromise;\n      } catch (error) {\n        // Create standardized error response\n        const errorRespo",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create standardized error response\n        const errorRespo"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 463,
-      "match": "Pro",
-      "context": "ponse;\n      }\n    });\n  }\n\n  /**\n   * Cancels the current execution\n   */\n  public async cancel(): Promise<void> {\n    return this.withLock(async () => {\n      this.actor.send({ type: \"CANCEL\" });\n    }",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Cancels the current execution"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 472,
-      "match": "Pro",
-      "context": "{ type: \"CANCEL\" });\n    });\n  }\n\n  /**\n   * Resets the service state\n   */\n  public async reset(): Promise<void> {\n    await this.sessionStore.clearSession(this.serviceId);\n\n    // Stop and restart the ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Resets the service state"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 489,
-      "match": "Pro",
-      "context": ";\n    });\n  }\n\n  /**\n   * Disposes of the service and its resources\n   */\n  public async dispose(): Promise<void> {\n    this.actor.stop();\n    await this.sessionStore.disconnect();\n    await this.cacheSt",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Disposes of the service and its resources"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 509,
-      "match": "Pro",
-      "context": "ol(\n    toolId: string,\n    params: any,\n    sessionId?: string,\n    useCached: boolean = true\n  ): Promise<ToolExecutionResult> {\n    // Generate execution ID for tracking\n    const executionId = uuidv4",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Generate execution ID for tracking\n    const executionId = uuidv4"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 608,
-      "match": "Pro",
-      "context": "ool state object\n   */\n  private async getToolState(\n    sessionId: string,\n    toolId: string\n  ): Promise<ToolState> {\n    const sessionState = await this.sessionStore.getSession<\n      Record<string, ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "async getToolState( sessionId: string, toolId: string ): Promise<ToolState> { const"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 633,
-      "match": "Pro",
-      "context": "\n  private async setToolState(\n    sessionId: string,\n    toolId: string,\n    state: ToolState\n  ): Promise<void> {\n    // Get current session state\n    const sessionState =\n      (await this.sessionStor",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Get current session state\n    const sessionState =\n      (await this.sessionStor"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 703,
-      "match": "Pro",
-      "context": "alidation\n   */\n  public async invalidateToolCache(\n    toolId: string,\n    sessionId?: string\n  ): Promise<void> {\n    if (sessionId) {\n      // Invalidate tool cache for specific session\n      await th",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Invalidate tool cache for specific session\n      await th"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 718,
-      "match": "Pro",
-      "context": "  *\n   * @param sessionId Session ID to clear\n   */\n  public async clearSession(sessionId: string): Promise<void> {\n    await this.sessionStore.clearSession(sessionId);\n    await this.cacheStore.invalida",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Session ID to clear */ public async clearSession(sessionId: string): Promise<void>"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 728,
-      "match": "Pro",
-      "context": "/**\n   * Gets cache statistics\n   *\n   * @returns Cache statistics\n   */\n  public async getStats(): Promise<any> {\n    return {\n      cache: this.cacheStore.getStats(),\n    };\n  }\n}\n",
-      "priority": "high",
-      "features": {
-        "dashboard": "Data visualization and reporting interface",
-        "integration": "Third-party service integration"
-      },
-      "description": "* Gets cache statistics\n   *\n   * @returns Cache statistics"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 210,
-      "match": "subscribe",
-      "context": "this.actor.start();\n\n      // Set up state change handler to persist state changes\n      this.actor.subscribe((state: any) => {\n        this.persistState(state);\n      });\n    } catch (error) {\n      console.e",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up state change handler to persist state changes\n      this.actor.subscribe((state: any) => {\n        this.persistState(state);\n      });\n    } catch (error) {\n      console.e"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 403,
-      "match": "subscribe",
-      "context": "      (resolve, reject) => {\n          // Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n            ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 403,
-      "match": "subscribe",
-      "context": " => {\n          // Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();\n      ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up a listener for completion events\n          const unsubscribe = this.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 405,
-      "match": "subscribe",
-      "context": "his.actor.subscribe((state: any) => {\n            if (state.matches(\"succeeded\")) {\n              unsubscribe();\n              resolve(state.context.result);\n            } else if (state.matches(\"failed\")) {\n ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "=> { if (state.matches(\"succeeded\")) { unsubscribe(); resolve(state.context.result); } else if"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 408,
-      "match": "subscribe",
-      "context": "   resolve(state.context.result);\n            } else if (state.matches(\"failed\")) {\n              unsubscribe();\n\n              // Create an error response\n              const errorResponse = createErrorRespon",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Create an error response\n              const errorResponse = createErrorRespon"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 481,
-      "match": "subscribe",
-      "context": "    this.actor.start();\n\n    // Set up state change handler to persist state changes\n    this.actor.subscribe((state: any) => {\n      this.persistState(state);\n    });\n  }\n\n  /**\n   * Disposes of the service a",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up state change handler to persist state changes\n    this.actor.subscribe((state: any) => {\n      this.persistState(state);\n    });\n  }\n\n  /**\n   * Disposes of the service a"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 5,
-      "match": "extend",
-      "context": "odule provides a Redis-backed implementation of the Tool Execution Service for MCP SDK tools.\n * It extends the standard ToolExecutionService with persistent state storage to enable:\n *\n * - Stateful tool i",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "MCP SDK tools. * It extends the standard ToolExecutionService with"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 123,
-      "match": "Extend",
-      "context": "service\n   */\n  serviceId?: string;\n}\n\n/**\n * Redis-backed tool execution service for MCP SDK\n *\n * Extends the regular tool execution service with Redis persistence,\n * enabling stateful tool executions in",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "service for MCP SDK * * Extends the regular tool"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 265,
-      "match": "Extend",
-      "context": "Promise<void> {\n    await this.sessionStore.releaseLock(this.serviceId, lockToken);\n  }\n\n  /**\n   * Extends the TTL for the current session\n   */\n  private async extendTtl(): Promise<void> {\n    await this.",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Extends the TTL for the current session"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 268,
-      "match": "extend",
-      "context": " the current session\n   */\n  private async extendTtl(): Promise<void> {\n    await this.sessionStore.extendSessionTtl(this.serviceId, this.defaultTtl);\n  }\n\n  /**\n   * Performs an operation with a lock\n   * ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "extendTtl(): Promise<void> { await this.sessionStore.extendSessionTtl(this.serviceId, this.defaultTtl); } /** * Performs"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 283,
-      "match": "extend",
-      "context": "it this.acquireLock();\n\n    try {\n      const result = await operation(lockToken);\n      await this.extendTtl();\n      return result;\n    } finally {\n      await this.releaseLock(lockToken);\n    }\n  }\n\n  /*",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "result = await operation(lockToken); await this.extendTtl(); return result; } finally"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 461,
-      "match": "Cancel",
-      "context": "context: updatedContext,\n        });\n\n        return errorResponse;\n      }\n    });\n  }\n\n  /**\n   * Cancels the current execution\n   */\n  public async cancel(): Promise<void> {\n    return this.withLock(asyn",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Cancels the current execution"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 465,
-      "match": "CANCEL",
-      "context": "ync cancel(): Promise<void> {\n    return this.withLock(async () => {\n      this.actor.send({ type: \"CANCEL\" });\n    });\n  }\n\n  /**\n   * Resets the service state\n   */\n  public async reset(): Promise<void> {",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Resets the service state"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 19,
-      "match": "Store",
-      "context": "g Redis as the backend storage.\n *\n * @module redisToolExecutionService\n */\n\nimport {\n  RedisSessionStore,\n  type RedisSessionStoreOptions,\n} from \"./redisSessionStore\";\nimport { v4 as uuidv4 } from \"uuid\"",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "@module redisToolExecutionService */ import { RedisSessionStore, type RedisSessionStoreOptions, } from"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 20,
-      "match": "Store",
-      "context": "rage.\n *\n * @module redisToolExecutionService\n */\n\nimport {\n  RedisSessionStore,\n  type RedisSessionStoreOptions,\n} from \"./redisSessionStore\";\nimport { v4 as uuidv4 } from \"uuid\";\nimport { createMachine, ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "{ RedisSessionStore, type RedisSessionStoreOptions, } from \"./redisSessionStore\"; import { v4"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 21,
-      "match": "Store",
-      "context": "onService\n */\n\nimport {\n  RedisSessionStore,\n  type RedisSessionStoreOptions,\n} from \"./redisSessionStore\";\nimport { v4 as uuidv4 } from \"uuid\";\nimport { createMachine, createActor } from \"xstate\";\nimport ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "from \"./redisSessionStore\"; import { v4 as uuidv4 } from \"uuid\";"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 42,
-      "match": "Store",
-      "context": "tionResult,\n  ToolExecutionService,\n} from \"../interfaces/toolExecutionService\";\nimport { RedisCacheStore } from \"../store/redisCacheStore\";\nimport { Tool } from \"../../tools/interfaces\";\n\n// Define our ow",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Define our ow"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 42,
-      "match": "store",
-      "context": "lExecutionService,\n} from \"../interfaces/toolExecutionService\";\nimport { RedisCacheStore } from \"../store/redisCacheStore\";\nimport { Tool } from \"../../tools/interfaces\";\n\n// Define our own interface to av",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Define our own interface to av"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 42,
-      "match": "Store",
-      "context": "e,\n} from \"../interfaces/toolExecutionService\";\nimport { RedisCacheStore } from \"../store/redisCacheStore\";\nimport { Tool } from \"../../tools/interfaces\";\n\n// Define our own interface to avoid direct depen",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Define our own interface to avoid direct depen"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 129,
-      "match": "Store",
-      "context": "ence.\n */\nexport class RedisToolExecutionService implements ToolExecutionService {\n  private sessionStore: RedisSessionStore;\n  private cacheStore: RedisCacheStore;\n  private tools: Map<string, Tool>;\n  pr",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "RedisToolExecutionService implements ToolExecutionService { private sessionStore: RedisSessionStore; private cacheStore: RedisCacheStore;"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 129,
-      "match": "Store",
-      "context": "ass RedisToolExecutionService implements ToolExecutionService {\n  private sessionStore: RedisSessionStore;\n  private cacheStore: RedisCacheStore;\n  private tools: Map<string, Tool>;\n  private prefix: strin",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "{ private sessionStore: RedisSessionStore; private cacheStore: RedisCacheStore; private tools: Map<string,"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 130,
-      "match": "Store",
-      "context": "Service implements ToolExecutionService {\n  private sessionStore: RedisSessionStore;\n  private cacheStore: RedisCacheStore;\n  private tools: Map<string, Tool>;\n  private prefix: string;\n  private defaultTt",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "private sessionStore: RedisSessionStore; private cacheStore: RedisCacheStore; private tools: Map<string, Tool>;"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 130,
-      "match": "Store",
-      "context": "s ToolExecutionService {\n  private sessionStore: RedisSessionStore;\n  private cacheStore: RedisCacheStore;\n  private tools: Map<string, Tool>;\n  private prefix: string;\n  private defaultTtl: number;\n  priv",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "RedisSessionStore; private cacheStore: RedisCacheStore; private tools: Map<string, Tool>; private prefix:"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 150,
-      "match": "store",
-      "context": "Timeout = options.operationTimeout || 30000; // 30 seconds default\n\n    // Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redis",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "30 seconds default\n\n    // Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redis"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 151,
-      "match": "Store",
-      "context": " // 30 seconds default\n\n    // Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}state:`,\n ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "30 seconds default\n\n    // Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}state:`,"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 151,
-      "match": "Store",
-      "context": "    // Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}state:`,\n      defaultTtl: this.de",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Initialize Redis session store for state persistence\n    this.sessionStore = new RedisSessionStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}state:`,\n      defaultTtl: this.de"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 157,
-      "match": "store",
-      "context": ": `${this.prefix}state:`,\n      defaultTtl: this.defaultTtl,\n    });\n\n    // Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,\n  ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 158,
-      "match": "Store",
-      "context": "Ttl: this.defaultTtl,\n    });\n\n    // Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}cache:`,\n   ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}cache:`,"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 158,
-      "match": "Store",
-      "context": "    });\n\n    // Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}cache:`,\n      defaultTtl: this.de",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Initialize Redis cache store for result caching\n    this.cacheStore = new RedisCacheStore({\n      redisUrl: options.redisUrl,\n      prefix: `${this.prefix}cache:`,\n      defaultTtl: this.de"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 176,
-      "match": "Store",
-      "context": " try {\n      // Get or initialize the state in Redis\n      const persistedState = await this.sessionStore.createSessionIfNotExists(\n        this.serviceId,\n        {\n          state: { value: \"idle\" },\n   ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Get or initialize the state in Redis\n      const persistedState = await this.sessionStore.createSessionIfNotExists(\n        this.serviceId,\n        {\n          state: { value: \"idle\" },"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 232,
-      "match": "Store",
-      "context": "e\n   */\n  private async persistState(state: any): Promise<void> {\n    try {\n      await this.sessionStore.setSession(this.serviceId, {\n        state: { value: state.value },\n        context: state.context,",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "any): Promise<void> { try { await this.sessionStore.setSession(this.serviceId, { state: {"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 247,
-      "match": "Store",
-      "context": "ired\n   */\n  private async acquireLock(): Promise<string> {\n    const lockToken = await this.sessionStore.acquireLock(this.serviceId);\n\n    if (!lockToken) {\n      throw new Error(\"Could not acquire lock f",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "{ const lockToken = await this.sessionStore.acquireLock(this.serviceId); if (!lockToken) { throw"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 261,
-      "match": "Store",
-      "context": "release\n   */\n  private async releaseLock(lockToken: string): Promise<void> {\n    await this.sessionStore.releaseLock(this.serviceId, lockToken);\n  }\n\n  /**\n   * Extends the TTL for the current session\n   ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "string): Promise<void> { await this.sessionStore.releaseLock(this.serviceId, lockToken); } /** * Extends"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 268,
-      "match": "Store",
-      "context": "TL for the current session\n   */\n  private async extendTtl(): Promise<void> {\n    await this.sessionStore.extendSessionTtl(this.serviceId, this.defaultTtl);\n  }\n\n  /**\n   * Performs an operation with a loc",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "private async extendTtl(): Promise<void> { await this.sessionStore.extendSessionTtl(this.serviceId, this.defaultTtl); } /**"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 473,
-      "match": "Store",
-      "context": "*\n   * Resets the service state\n   */\n  public async reset(): Promise<void> {\n    await this.sessionStore.clearSession(this.serviceId);\n\n    // Stop and restart the actor\n    this.actor.stop();\n    this.ac",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Stop and restart the actor\n    this.actor.stop();\n    this.ac"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 491,
-      "match": "Store",
-      "context": "ources\n   */\n  public async dispose(): Promise<void> {\n    this.actor.stop();\n    await this.sessionStore.disconnect();\n    await this.cacheStore.disconnect();\n  }\n\n  /**\n   * Executes a tool with the give",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Promise<void> { this.actor.stop(); await this.sessionStore.disconnect(); await this.cacheStore.disconnect(); } /** *"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 492,
-      "match": "Store",
-      "context": "romise<void> {\n    this.actor.stop();\n    await this.sessionStore.disconnect();\n    await this.cacheStore.disconnect();\n  }\n\n  /**\n   * Executes a tool with the given parameters and session ID\n   *\n   * @p",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "this.cacheStore.disconnect(); } /** * Executes a tool with the given"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 531,
-      "match": "Store",
-      "context": " const cacheKey = this.createCacheKey(toolId, params);\n        const cachedResult = await this.cacheStore.get<ToolExecutionResult>(\n          cacheKey,\n          actualSessionId\n        );\n\n        if (cac",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "= this.createCacheKey(toolId, params); const cachedResult = await this.cacheStore.get<ToolExecutionResult>( cacheKey, actualSessionId"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 579,
-      "match": "Store",
-      "context": " useCached) {\n        const cacheKey = this.createCacheKey(toolId, params);\n        await this.cacheStore.set<ToolExecutionResult>(\n          cacheKey,\n          finalResult,\n          tool.cacheTtl || thi",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "const cacheKey = this.createCacheKey(toolId, params); await this.cacheStore.set<ToolExecutionResult>( cacheKey, finalResult, tool.cacheTtl"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 609,
-      "match": "Store",
-      "context": "Id: string,\n    toolId: string\n  ): Promise<ToolState> {\n    const sessionState = await this.sessionStore.getSession<\n      Record<string, ToolState>\n    >(sessionId);\n    if (!sessionState) {\n      // Cre",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Promise<ToolState> { const sessionState = await this.sessionStore.getSession< Record<string, ToolState> >(sessionId);"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 615,
-      "match": "Store",
-      "context": "ial session state\n      const initialState: Record<string, ToolState> = {};\n      await this.sessionStore.setSession(sessionId, initialState);\n      return {};\n    }\n\n    return sessionState[toolId] || {};",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "initialState: Record<string, ToolState> = {}; await this.sessionStore.setSession(sessionId, initialState); return {};"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 636,
-      "match": "Store",
-      "context": " Promise<void> {\n    // Get current session state\n    const sessionState =\n      (await this.sessionStore.getSession<Record<string, ToolState>>(\n        sessionId\n      )) || {};\n\n    // Update tool state\n",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Get current session state\n    const sessionState =\n      (await this.sessionStore.getSession<Record<string, ToolState>>(\n        sessionId\n      )) || {};\n\n    // Update tool state"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 644,
-      "match": "Store",
-      "context": "ol state\n    sessionState[toolId] = state;\n\n    // Save updated session state\n    await this.sessionStore.setSession(sessionId, sessionState);\n  }\n\n  /**\n   * Retrieves all available tools\n   *\n   * @retur",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Save updated session state\n    await this.sessionStore.setSession(sessionId, sessionState);\n  }\n\n  /**\n   * Retrieves all available tools\n   *\n   * @retur"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 706,
-      "match": "Store",
-      "context": "d> {\n    if (sessionId) {\n      // Invalidate tool cache for specific session\n      await this.cacheStore.invalidateNamespace(sessionId);\n    } else {\n      // Invalidate tool cache across all sessions\n   ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Invalidate tool cache for specific session\n      await this.cacheStore.invalidateNamespace(sessionId);\n    } else {\n      // Invalidate tool cache across all sessions"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 709,
-      "match": "Store",
-      "context": "e(sessionId);\n    } else {\n      // Invalidate tool cache across all sessions\n      await this.cacheStore.invalidateNamespace(toolId);\n    }\n  }\n\n  /**\n   * Clears all state and cached results for a sessio",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Invalidate tool cache across all sessions\n      await this.cacheStore.invalidateNamespace(toolId);\n    }\n  }\n\n  /**\n   * Clears all state and cached results for a sessio"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 719,
-      "match": "Store",
-      "context": "o clear\n   */\n  public async clearSession(sessionId: string): Promise<void> {\n    await this.sessionStore.clearSession(sessionId);\n    await this.cacheStore.invalidateNamespace(sessionId);\n  }\n\n  /**\n   * ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "public async clearSession(sessionId: string): Promise<void> { await this.sessionStore.clearSession(sessionId); await this.cacheStore.invalidateNamespace(sessionId);"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 720,
-      "match": "Store",
-      "context": ": string): Promise<void> {\n    await this.sessionStore.clearSession(sessionId);\n    await this.cacheStore.invalidateNamespace(sessionId);\n  }\n\n  /**\n   * Gets cache statistics\n   *\n   * @returns Cache stat",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "await this.sessionStore.clearSession(sessionId); await this.cacheStore.invalidateNamespace(sessionId); } /** * Gets cache statistics"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisToolExecutionService.ts",
-      "line": 730,
-      "match": "Store",
-      "context": "ache statistics\n   */\n  public async getStats(): Promise<any> {\n    return {\n      cache: this.cacheStore.getStats(),\n    };\n  }\n}\n",
-      "priority": "high",
-      "features": {
-        "dashboard": "Data visualization and reporting interface",
-        "integration": "Third-party service integration"
-      },
-      "description": "*/ public async getStats(): Promise<any> { return { cache: this.cacheStore.getStats(),"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 4,
-      "match": "pro",
-      "context": "/**\n * Redis Session Store for MCP SDK Tools\n *\n * This module provides a Redis-based persistent storage implementation for MCP SDK tool sessions.\n * It allows for di",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "* * This module provides a Redis-based persistent storage implementation"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 27,
-      "match": "Pro",
-      "context": "y[]) => void): void;\n  once(event: string, listener: (...args: any[]) => void): void;\n  connect?(): Promise<void>;\n  quit(): Promise<void>;\n  disconnect?(): Promise<void>;\n  get(key: string): Promise<str",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "string, listener: (...args: any[]) => void): void; connect?(): Promise<void>; quit():"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 28,
-      "match": "Pro",
-      "context": "ce(event: string, listener: (...args: any[]) => void): void;\n  connect?(): Promise<void>;\n  quit(): Promise<void>;\n  disconnect?(): Promise<void>;\n  get(key: string): Promise<string | null>;\n  set(key: s",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "=> void): void; connect?(): Promise<void>; quit(): Promise<void>; disconnect?(): Promise<void>; get(key:"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 29,
-      "match": "Pro",
-      "context": "args: any[]) => void): void;\n  connect?(): Promise<void>;\n  quit(): Promise<void>;\n  disconnect?(): Promise<void>;\n  get(key: string): Promise<string | null>;\n  set(key: string, value: string, ...args: a",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Promise<void>; quit(): Promise<void>; disconnect?(): Promise<void>; get(key: string): Promise<string | null>;"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 30,
-      "match": "Pro",
-      "context": "ect?(): Promise<void>;\n  quit(): Promise<void>;\n  disconnect?(): Promise<void>;\n  get(key: string): Promise<string | null>;\n  set(key: string, value: string, ...args: any[]): Promise<any>;\n  setEx?(key: ",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "disconnect?(): Promise<void>; get(key: string): Promise<string | null>; set(key: string, value:"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 31,
-      "match": "Pro",
-      "context": "id>;\n  get(key: string): Promise<string | null>;\n  set(key: string, value: string, ...args: any[]): Promise<any>;\n  setEx?(key: string, seconds: number, value: string): Promise<any>;\n  del(key: string): ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "set(key: string, value: string, ...args: any[]): Promise<any>; setEx?(key: string, seconds:"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 32,
-      "match": "Pro",
-      "context": "alue: string, ...args: any[]): Promise<any>;\n  setEx?(key: string, seconds: number, value: string): Promise<any>;\n  del(key: string): Promise<number>;\n  keys(pattern: string): Promise<string[]>;\n  exists",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Promise<any>; setEx?(key: string, seconds: number, value: string): Promise<any>; del(key: string):"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 33,
-      "match": "Pro",
-      "context": "mise<any>;\n  setEx?(key: string, seconds: number, value: string): Promise<any>;\n  del(key: string): Promise<number>;\n  keys(pattern: string): Promise<string[]>;\n  exists(key: string): Promise<number>;\n  ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "seconds: number, value: string): Promise<any>; del(key: string): Promise<number>; keys(pattern: string):"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 34,
-      "match": "Pro",
-      "context": "number, value: string): Promise<any>;\n  del(key: string): Promise<number>;\n  keys(pattern: string): Promise<string[]>;\n  exists(key: string): Promise<number>;\n  expire(key: string, seconds: number): Prom",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "del(key: string): Promise<number>; keys(pattern: string): Promise<string[]>; exists(key: string): Promise<number>; expire(key:"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 35,
-      "match": "Pro",
-      "context": "l(key: string): Promise<number>;\n  keys(pattern: string): Promise<string[]>;\n  exists(key: string): Promise<number>;\n  expire(key: string, seconds: number): Promise<number>;\n  ttl(key: string): Promise<n",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "keys(pattern: string): Promise<string[]>; exists(key: string): Promise<number>; expire(key: string, seconds: number):"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 36,
-      "match": "Pro",
-      "context": " Promise<string[]>;\n  exists(key: string): Promise<number>;\n  expire(key: string, seconds: number): Promise<number>;\n  ttl(key: string): Promise<number>;\n  removeAllListeners?(event?: string): void;\n}\n\n/",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Promise<number>; expire(key: string, seconds: number): Promise<number>; ttl(key: string): Promise<number>; removeAllListeners?(event?:"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 37,
-      "match": "Pro",
-      "context": "ing): Promise<number>;\n  expire(key: string, seconds: number): Promise<number>;\n  ttl(key: string): Promise<number>;\n  removeAllListeners?(event?: string): void;\n}\n\n// Factory function to create Redis cl",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Factory function to create Redis cl"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 42,
-      "match": "Pro",
-      "context": " void;\n}\n\n// Factory function to create Redis client\nasync function createRedisClient(url: string): Promise<RedisClient> {\n  // Attempt to dynamically load redis client libraries\n  try {\n    // This will",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Factory function to create Redis client\nasync function createRedisClient(url: string): Promise<RedisClient> {\n  // Attempt to dynamically load redis client libraries\n  try {\n    // This will"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 56,
-      "match": "Pro",
-      "context": "\"ready\") {\n          setTimeout(() => listener(), 0);\n        }\n      },\n      connect: async () => Promise.resolve(),\n      quit: async () => Promise.resolve(),\n      get: async (key) => null,\n      set",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "}, connect: async () => Promise.resolve(), quit: async () =>"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 57,
-      "match": "Pro",
-      "context": "ner(), 0);\n        }\n      },\n      connect: async () => Promise.resolve(),\n      quit: async () => Promise.resolve(),\n      get: async (key) => null,\n      set: async (key, value, ...args) => \"OK\",\n    ",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Promise.resolve(), quit: async () => Promise.resolve(), get: async (key) =>"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 101,
-      "match": "Pro",
-      "context": "ult: 30000)\n   */\n  lockTimeout?: number;\n}\n\n/**\n * Redis-backed session store implementation\n *\n * Provides persistent storage of tool sessions using Redis, with\n * support for TTL management, atomic op",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "store implementation * * Provides persistent storage of tool sessions"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 132,
-      "match": "Pro",
-      "context": "dis\n   *\n   * @param redisUrl Redis connection URL\n   */\n  private async connect(redisUrl: string): Promise<void> {\n    try {\n      this.client = await createRedisClient(redisUrl);\n\n      this.client.on(",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "connection URL */ private async connect(redisUrl: string): Promise<void> { try"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 176,
-      "match": "Pro",
-      "context": " /**\n   * Get session data by ID\n   *\n   * @param sessionId Unique session identifier\n   * @returns Promise resolving to session data or null if not found\n   * @throws Error if Redis operation fails or s",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "session identifier * @returns Promise resolving to session data or"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 179,
-      "match": "Pro",
-      "context": "is operation fails or session data cannot be parsed\n   */\n  async getSession<T>(sessionId: string): Promise<T | null> {\n    try {\n      const sessionKey = this.getSessionKey(sessionId);\n      logger.debu",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "be parsed */ async getSession<T>(sessionId: string): Promise<T | null> {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 230,
-      "match": "Pro",
-      "context": "  */\n  async setSession<T = SessionData>(\n    sessionId: string,\n    data: T,\n    ttl?: number\n  ): Promise<void> {\n    try {\n      if (!this.connected || !this.client) {\n        throw new Error(\"Redis c",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "data: T, ttl?: number ): Promise<void> { try { if"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 271,
-      "match": "Pro",
-      "context": "   *\n   * @param sessionId Unique session identifier\n   */\n  async clearSession(sessionId: string): Promise<void> {\n    try {\n      if (!this.connected || !this.client) {\n        console.warn(\"Redis clie",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "identifier */ async clearSession(sessionId: string): Promise<void> { try { if"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 315,
-      "match": "Pro",
-      "context": "  *\n   * @param sessionId Session ID\n   * @param timeout Lock timeout in milliseconds\n   * @returns Promise resolving to lock token if successful, null otherwise\n   */\n  async acquireLock(\n    sessionId:",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Lock timeout in milliseconds * @returns Promise resolving to lock"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 320,
-      "match": "Pro",
-      "context": "cessful, null otherwise\n   */\n  async acquireLock(\n    sessionId: string,\n    timeout?: number\n  ): Promise<string | null> {\n    try {\n      if (!this.connected || !this.client) {\n        console.warn(\"R",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "sessionId: string, timeout?: number ): Promise<string | null> { try"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 362,
-      "match": "Pro",
-      "context": "uccessful, false if token didn't match\n   */\n  async releaseLock(sessionId: string, token: string): Promise<boolean> {\n    try {\n      if (!this.connected || !this.client) {\n        console.warn(\"Redis c",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "*/ async releaseLock(sessionId: string, token: string): Promise<boolean> { try {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 394,
-      "match": "Pro",
-      "context": "ful, false if session doesn't exist\n   */\n  async extendSessionTtl(sessionId: string, ttl: number): Promise<boolean> {\n    try {\n      if (!this.connected || !this.client) {\n        console.warn(\"Redis c",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "*/ async extendSessionTtl(sessionId: string, ttl: number): Promise<boolean> { try {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 424,
-      "match": "Pro",
-      "context": "ng TTL in seconds, or null if session doesn't exist\n   */\n  async getSessionTtl(sessionId: string): Promise<number | null> {\n    try {\n      if (!this.connected || !this.client) {\n        console.warn(\"R",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "doesn't exist */ async getSessionTtl(sessionId: string): Promise<number | null> {"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 453,
-      "match": "Pro",
-      "context": "otExists<T = SessionData>(\n    sessionId: string,\n    initialState: T,\n    ttlSeconds?: number\n  ): Promise<T> {\n    try {\n      // First check if the session already exists\n      const existingSession =",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "First check if the session already exists\n      const existingSession ="
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 477,
-      "match": "Pro",
-      "context": "trieve session: ${error}`);\n    }\n  }\n\n  /**\n   * Disconnect from Redis\n   */\n  async disconnect(): Promise<void> {\n    if (this.connected && this.client) {\n      try {\n        if (typeof this.client.qui",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Disconnect from Redis"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 497,
-      "match": "Pro",
-      "context": "edisUrl Redis connection URL\n   * @param timeoutMs Connection timeout in milliseconds\n   * @returns Promise resolving to true if Redis is available, false otherwise\n   */\n  static async isRedisAvailable(",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "timeout in milliseconds * @returns Promise resolving to true if"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 502,
-      "match": "Pro",
-      "context": "sRedisAvailable(\n    redisUrl: string = \"redis://localhost:6379\",\n    timeoutMs: number = 1000\n  ): Promise<boolean> {\n    const client = await createRedisClient(redisUrl).catch(() => null);\n\n    return ",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "localhost:6379\",\n    timeoutMs: number = 1000\n  ): Promise<boolean> {\n    const client = await createRedisClient(redisUrl).catch(() => null);\n\n    return"
-    },
-    {
-      "type": "freemium",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 505,
-      "match": "Pro",
-      "context": "<boolean> {\n    const client = await createRedisClient(redisUrl).catch(() => null);\n\n    return new Promise<boolean>(async (resolve) => {\n      // Set up a timeout to handle connection hanging\n      cons",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Set up a timeout to handle connection hanging\n      cons"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 13,
-      "match": "extend",
-      "context": "rations for state updates\n * - Error handling for Redis connection issues\n *\n * This implementation extends the in-memory session management from statefulTool\n * to support distributed environments and pers",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "connection issues * * This implementation extends the in-memory session"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 36,
-      "match": "expire",
-      "context": "mise<number>;\n  keys(pattern: string): Promise<string[]>;\n  exists(key: string): Promise<number>;\n  expire(key: string, seconds: number): Promise<number>;\n  ttl(key: string): Promise<number>;\n  removeAllLis",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Promise<string[]>; exists(key: string): Promise<number>; expire(key: string, seconds: number): Promise<number>; ttl(key:"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 63,
-      "match": "expire",
-      "context": "    del: async (key) => 1,\n      keys: async (pattern) => [],\n      exists: async (key) => 0,\n      expire: async (key, seconds) => 1,\n      ttl: async (key) => -2,\n      removeAllListeners: (event) => {},\n",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "exists: async (key) => 0, expire: async (key, seconds) =>"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 388,
-      "match": "Extend",
-      "context": "r(`Error releasing lock for session ${sessionId}:`, err);\n      return false;\n    }\n  }\n\n  /**\n   * Extends the TTL of a session\n   *\n   * @param sessionId ID of the session\n   * @param ttl New TTL in secon",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "* Extends the TTL of a session * * @param"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 394,
-      "match": "extend",
-      "context": "l New TTL in seconds\n   * @returns True if successful, false if session doesn't exist\n   */\n  async extendSessionTtl(sessionId: string, ttl: number): Promise<boolean> {\n    try {\n      if (!this.connected |",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "successful, false if session doesn't exist */ async extendSessionTtl(sessionId: string,"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 397,
-      "match": "extend",
-      "context": "    if (!this.connected || !this.client) {\n        console.warn(\"Redis client not connected, cannot extend TTL\");\n        return false;\n      }\n\n      const key = this.getSessionKey(sessionId);\n\n      // Ch",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "console.warn(\"Redis client not connected, cannot extend TTL\"); return false; }"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 410,
-      "match": "expire",
-      "context": "     if (exists === 0) {\n        return false;\n      }\n\n      // Set expiry\n      await this.client.expire(key, ttl);\n      return true;\n    } catch (err) {\n      console.error(`Error extending TTL for sess",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set expiry\n      await this.client.expire(key, ttl);\n      return true;\n    } catch (err) {\n      console.error(`Error extending TTL for sess"
-    },
-    {
-      "type": "subscription",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 413,
-      "match": "extend",
-      "context": "ait this.client.expire(key, ttl);\n      return true;\n    } catch (err) {\n      console.error(`Error extending TTL for session ${sessionId}:`, err);\n      return false;\n    }\n  }\n\n  /**\n   * Gets the remaini",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "(err) { console.error(`Error extending TTL for session ${sessionId}:`, err); return"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 2,
-      "match": "Store",
-      "context": "/**\n * Redis Session Store for MCP SDK Tools\n *\n * This module provides a Redis-based persistent storage implementation for MC",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "/** * Redis Session Store for MCP SDK Tools"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 6,
-      "match": "store",
-      "context": "K by persisting tool state between invocations\n * and across multiple server instances. The session store handles:\n *\n * - Session data serialization and deserialization\n * - TTL-based session management a",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "multiple server instances. The session store handles: * * -"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 16,
-      "match": "Store",
-      "context": "ol\n * to support distributed environments and persistent session storage.\n *\n * @module redisSessionStore\n */\n\nimport { SessionData, SessionStore } from \"./types.js\";\nimport { v4 as uuidv4 } from \"uuid\";\ni",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* * @module redisSessionStore */ import { SessionData, SessionStore }"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 19,
-      "match": "Store",
-      "context": "s and persistent session storage.\n *\n * @module redisSessionStore\n */\n\nimport { SessionData, SessionStore } from \"./types.js\";\nimport { v4 as uuidv4 } from \"uuid\";\nimport { logger } from \"../utils/logger.j",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "import { SessionData, SessionStore } from \"./types.js\"; import { v4"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 74,
-      "match": "Store",
-      "context": "client:\", error);\n    throw new Error(\"Could not create Redis client\");\n  }\n}\n\n/**\n * Redis Session Store Options\n */\nexport interface RedisSessionStoreOptions {\n  /**\n   * Redis connection URL (e.g., redi",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Redis Session Store Options"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 99,
-      "match": "store",
-      "context": "meout in milliseconds (default: 30000)\n   */\n  lockTimeout?: number;\n}\n\n/**\n * Redis-backed session store implementation\n *\n * Provides persistent storage of tool sessions using Redis, with\n * support for ",
-      "priority": "high",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "} /** * Redis-backed session store implementation * * Provides"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 104,
-      "match": "Store",
-      "context": "s, with\n * support for TTL management, atomic operations, and locking.\n */\nexport class RedisSessionStore implements SessionStore {\n  private client: RedisClient | null = null;\n  private prefix: string;\n  ",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "and locking. */ export class RedisSessionStore implements SessionStore { private"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 104,
-      "match": "Store",
-      "context": "TL management, atomic operations, and locking.\n */\nexport class RedisSessionStore implements SessionStore {\n  private client: RedisClient | null = null;\n  private prefix: string;\n  private defaultTtl: numb",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "class RedisSessionStore implements SessionStore { private client: RedisClient | null"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 112,
-      "match": "store",
-      "context": "e lockTimeout: number;\n  private connected: boolean = false;\n\n  /**\n   * Create a new Redis session store\n   *\n   * @param options Redis connection options\n   */\n  constructor(options: RedisSessionStoreOpt",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Create a new Redis session store\n   *\n   * @param options Redis connection options"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 116,
-      "match": "Store",
-      "context": "on store\n   *\n   * @param options Redis connection options\n   */\n  constructor(options: RedisSessionStoreOptions) {\n    this.prefix = options.prefix || \"mcp:session:\";\n    this.defaultTtl = options.default",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "options Redis connection options */ constructor(options: RedisSessionStoreOptions) { this.prefix ="
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 137,
-      "match": "store",
-      "context": "nt(redisUrl);\n\n      this.client.on(\"error\", (err: Error) => {\n        console.error(\"Redis session store error:\", err);\n      });\n\n      // Connect if the client has a connect method\n      if (this.client",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Connect if the client has a connect method\n      if (this.client"
-    },
-    {
-      "type": "marketplace",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 222,
-      "match": "store",
-      "context": "\n  /**\n   * Set session data\n   *\n   * @param sessionId Session ID\n   * @param data Session data to store\n   * @param ttl Optional TTL in seconds\n   * @throws Error if Redis operations fail\n   */\n  async s",
-      "priority": "high",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "* Set session data\n   *\n   * @param sessionId Session ID\n   * @param data Session data to store\n   * @param ttl Optional TTL in seconds\n   * @throws Error if Redis operations fail"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 43,
-      "match": "ad",
-      "context": "async function createRedisClient(url: string): Promise<RedisClient> {\n  // Attempt to dynamically load redis client libraries\n  try {\n    // This will be a dynamic import in JS\n    return {\n      on(eve",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Attempt to dynamically load redis client libraries\n  try {\n    // This will be a dynamic import in JS\n    return {\n      on(eve"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 52,
-      "match": "ad",
-      "context": "nt, listener) {\n        console.log(`Once listener registered: ${event}`);\n        if (event === \"ready\") {\n          setTimeout(() => listener(), 0);\n        }\n      },\n      connect: async () => Promi",
-      "priority": "medium",
-      "features": {
-        "authentication": "User authentication and account management",
-        "integration": "Third-party service integration"
-      },
-      "description": "${event}`); if (event === \"ready\") { setTimeout(() => listener(), 0);"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 455,
-      "match": "ad",
-      "context": "ate: T,\n    ttlSeconds?: number\n  ): Promise<T> {\n    try {\n      // First check if the session already exists\n      const existingSession = await this.getSession<T>(sessionId);\n      if (existingSessio",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "First check if the session already exists\n      const existingSession = await this.getSession<T>(sessionId);\n      if (existingSessio"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 459,
-      "match": "ad",
-      "context": "(sessionId);\n      if (existingSession) {\n        logger.debug(\n          `Session ${sessionId} already exists, returning existing session`\n        );\n        return existingSession;\n      }\n\n      // I",
-      "priority": "low",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "logger.debug( `Session ${sessionId} already exists, returning existing session` ); return"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 519,
-      "match": "ad",
-      "context": "nection test failed:\", err);\n        cleanup();\n        resolve(false);\n      };\n\n      // Set up ready handler\n      const readyHandler = () => {\n        cleanup();\n        resolve(true);\n      };\n\n   ",
-      "priority": "low",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up ready handler\n      const readyHandler = () => {\n        cleanup();\n        resolve(true);\n      };"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 520,
-      "match": "ad",
-      "context": ");\n        cleanup();\n        resolve(false);\n      };\n\n      // Set up ready handler\n      const readyHandler = () => {\n        cleanup();\n        resolve(true);\n      };\n\n      // Clean up function to",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "Set up ready handler\n      const readyHandler = () => {\n        cleanup();\n        resolve(true);\n      };\n\n      // Clean up function to"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 530,
-      "match": "ad",
-      "context": "  if (client) {\n          if (client.removeAllListeners) {\n            client.removeAllListeners(\"ready\");\n            client.removeAllListeners(\"error\");\n          }\n          if (typeof client.quit ==",
-      "priority": "medium",
-      "features": {
-        "unknown": "Feature could not be automatically identified"
-      },
-      "description": "(client) { if (client.removeAllListeners) { client.removeAllListeners(\"ready\"); client.removeAllListeners(\"error\"); } if (typeof"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 542,
-      "match": "ad",
-      "context": "nt listeners\n      if (client) {\n        client.once(\"error\", errorHandler);\n        client.once(\"ready\", readyHandler);\n      }\n\n      // Connect if the client has a connect method\n      if (typeof cli",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Connect if the client has a connect method\n      if (typeof cli"
-    },
-    {
-      "type": "ads",
-      "file": "src/state/services/redisSessionStore.ts",
-      "line": 542,
-      "match": "ad",
-      "context": "ners\n      if (client) {\n        client.once(\"error\", errorHandler);\n        client.once(\"ready\", readyHandler);\n      }\n\n      // Connect if the client has a connect method\n      if (typeof client?.con",
-      "priority": "medium",
-      "features": {
-        "integration": "Third-party service integration"
-      },
-      "description": "Connect if the client has a connect method\n      if (typeof client?.con"
     },
     {
       "type": "freemium",
@@ -13084,6 +11463,18 @@
         "unknown": "Feature could not be automatically identified"
       },
       "description": "If the error is already a \"Failed to parse session data\" error, just rethrow it\n      if (\n        err instanceof Error &&"
+    },
+    {
+      "type": "ads",
+      "file": "src/state/store/redisSessionStore.ts",
+      "line": 344,
+      "match": "ad",
+      "context": "Id: string,\n    initialState: T\n  ): Promise<T> {\n    try {\n      // First check if the session already exists\n      const existingSession = await this.getSession<T>(sessionId);\n      if (existingSessio",
+      "priority": "medium",
+      "features": {
+        "unknown": "Feature could not be automatically identified"
+      },
+      "description": "First check if the session already exists\n      const existingSession = await this.getSession<T>(sessionId);\n      if (existingSessio"
     },
     {
       "type": "freemium",
@@ -26659,26 +25050,26 @@
     }
   ],
   "summary": {
-    "total_opportunities": 2173,
+    "total_opportunities": 2039,
     "by_type": {
-      "freemium": 954,
-      "ads": 668,
-      "marketplace": 412,
-      "subscription": 80,
+      "freemium": 893,
+      "ads": 660,
+      "marketplace": 368,
+      "subscription": 59,
       "data": 50,
       "api": 9
     },
     "by_priority": {
-      "medium": 1524,
-      "high": 569,
-      "low": 80
+      "medium": 1462,
+      "high": 499,
+      "low": 78
     },
     "by_feature": {
-      "integration": 640,
-      "authentication": 135,
-      "analysis": 436,
-      "dashboard": 42,
-      "unknown": 888,
+      "integration": 569,
+      "authentication": 131,
+      "analysis": 437,
+      "dashboard": 40,
+      "unknown": 829,
       "upload": 298,
       "social": 21,
       "collaboration": 47,
