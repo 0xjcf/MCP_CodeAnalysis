@@ -2,93 +2,95 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Fix session continuation script to properly format and merge data from various sources",
+      "description": "Implement XState analyzer for state machine analysis",
       "priority": "high",
       "priority_level": 1,
       "estimated_time": "2-3 hours",
-      "status": "in_progress",
+      "status": "pending",
       "details": {
         "implementation_requirements": [
-          "Fix data formatting in session prompt generation",
-          "Properly merge data from end-of-session.json",
-          "Correctly integrate complexity analysis results",
-          "Format knowledge graph data appropriately",
-          "Clean up monetization analysis output",
-          "Ensure proper handling of AI context",
-          "Add validation for generated session prompt"
+          "Implement state machine analysis",
+          "Add transition analysis",
+          "Add guard and action analysis",
+          "Implement service integration analysis",
+          "Add performance optimization suggestions"
         ],
         "implementation_approach": [
-          "Review current session continuation script",
-          "Identify formatting issues in data merging",
-          "Implement proper data transformation for each source",
-          "Add validation checks for output format",
-          "Update documentation with new format requirements",
-          "Test with various data scenarios"
+          "Set up XState analyzer package structure",
+          "Implement core analysis functions",
+          "Add test coverage",
+          "Document API and usage",
+          "Integrate with core analysis framework"
         ],
         "guard_rails": {
           "naming_conventions": {
-            "scope": "project_scope",
-            "naming_pattern": "Clear, descriptive names for functions and variables",
-            "examples": ["formatSessionData", "mergeAnalysisResults", "validatePromptFormat"]
+            "scope": "xstate_analyzer",
+            "naming_pattern": "Clear, descriptive names for analysis functions",
+            "examples": [
+              "analyzeStateMachine",
+              "analyzeTransitions",
+              "analyzeGuards",
+              "analyzeServices"
+            ]
           },
           "code_standards": {
-            "style_guide": "TypeScript and shell script best practices",
+            "style_guide": "TypeScript best practices",
             "best_practices": [
               "Use strict TypeScript mode",
               "Implement proper error handling",
               "Add input validation",
               "Maintain clear data flow",
-              "Document data transformations"
+              "Document analysis methods"
             ],
             "constraints": [
-              "Must handle missing or malformed data gracefully",
+              "Must handle invalid state machines gracefully",
               "Output must be consistently formatted",
               "Changes must not break existing functionality",
               "Must maintain backward compatibility"
             ]
           },
           "technical_requirements": {
-            "dependencies": ["typescript", "node", "jq", "python3"],
-            "versions": "Node.js 18+, Python 3.8+",
-            "compatibility": "Must work with all existing data formats"
+            "dependencies": ["typescript", "node", "@xstate/inspect", "@xstate/fsm"],
+            "versions": "Node.js 18+, TypeScript 5.0+",
+            "compatibility": "Must work with XState v4+"
           }
         },
         "verification_steps": [
           {
-            "step": "Data Formatting",
+            "step": "Core Analysis",
             "checks": [
-              "Session prompt follows correct structure",
-              "No raw data or code snippets in output",
-              "All sections are properly formatted",
-              "No duplicate or redundant information"
+              "State machine structure is correctly analyzed",
+              "Transitions are properly identified",
+              "Guards and actions are correctly parsed",
+              "Services are properly analyzed"
             ]
           },
           {
-            "step": "Data Merging",
+            "step": "Integration",
             "checks": [
-              "All sources are properly integrated",
-              "No data is lost in merging",
-              "Conflicts are handled appropriately",
-              "Data relationships are preserved"
+              "Analyzer integrates with core framework",
+              "Results are properly formatted",
+              "Error handling works as expected",
+              "Performance is acceptable"
             ]
           },
           {
-            "step": "Output Validation",
+            "step": "Documentation",
             "checks": [
-              "Generated prompt is valid markdown",
-              "All required sections are present",
-              "No formatting errors",
-              "Content is properly organized"
+              "API is well documented",
+              "Usage examples are provided",
+              "Edge cases are documented",
+              "Integration guide is complete"
             ]
           }
         ],
         "success_criteria": [
-          "Session prompt is properly formatted and complete",
-          "All data sources are correctly merged",
-          "No raw data or code snippets in output",
-          "Validation checks pass",
-          "Documentation is updated",
-          "Script handles edge cases gracefully"
+          "XState analyzer is fully implemented",
+          "All core analysis features work",
+          "Test coverage is comprehensive",
+          "Documentation is complete",
+          "Integration with core framework works",
+          "Performance meets requirements"
         ]
       }
     }
@@ -96,50 +98,48 @@
   "session_metadata": {
     "start_date": "2024-03-27",
     "expected_duration": "2-3 hours",
-    "focus_area": "Session Continuation Script Improvement",
-    "status": "in_progress"
+    "focus_area": "XState Analyzer Implementation",
+    "status": "pending"
   },
   "context": {
-    "prior_work": "Initial session continuation script implementation",
+    "prior_work": "Session continuation script improvements and package setup",
     "dependencies": [
       "Node.js environment",
-      "Python 3.8+",
-      "jq for JSON processing",
-      "TypeScript toolchain"
+      "TypeScript toolchain",
+      "@xstate/inspect",
+      "@xstate/fsm"
     ],
     "resources": [
-      "tools/session_continuation.sh",
-      "session-goal.json",
-      "end-of-session.json",
-      "complexity_analysis.json",
-      "knowledge_graph.json",
-      "monetization_analysis.json",
-      "ai-context.json"
+      "packages/xstate/package.json",
+      "packages/xstate/src/analyzer.ts",
+      "packages/xstate/tests/analyzer.test.ts",
+      "packages/core/src/interfaces.ts",
+      "packages/core/src/analyzer.ts"
     ]
   },
   "metrics": {
     "baseline": {
-      "prompt_quality": "poor",
-      "data_integration": "partial",
-      "error_handling": "basic"
+      "implementation_status": "none",
+      "test_coverage": "none",
+      "documentation": "none"
     },
     "target": {
-      "prompt_quality": "excellent",
-      "data_integration": "complete",
-      "error_handling": "robust"
+      "implementation_status": "complete",
+      "test_coverage": "comprehensive",
+      "documentation": "complete"
     }
   },
   "completion_criteria": [
-    "Session prompt is properly formatted and complete",
-    "All data sources are correctly merged",
-    "Validation checks pass",
-    "Documentation is updated",
-    "Edge cases are handled"
+    "XState analyzer is fully implemented",
+    "All core analysis features work",
+    "Test coverage is comprehensive",
+    "Documentation is complete",
+    "Integration with core framework works"
   ],
   "notes": [
-    "Focus on clean, maintainable data transformation",
-    "Ensure proper error handling and validation",
-    "Document all data formats and transformations",
+    "Focus on clean, maintainable analysis code",
+    "Ensure proper error handling",
+    "Document analysis methods thoroughly",
     "Consider future extensibility",
     "Maintain backward compatibility"
   ]

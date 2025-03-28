@@ -2,185 +2,96 @@
   "session_goals": [
     {
       "id": "goal-1",
-      "description": "Fix session continuation script to properly format and merge data from various sources",
-      "priority": "high",
-      "priority_level": 1,
-      "estimated_time": "2-3 hours",
-      "status": "completed",
-      "details": {
-        "implementation_requirements": [
-          "Fix data formatting in session prompt generation",
-          "Properly merge data from end-of-session.json",
-          "Correctly integrate complexity analysis results",
-          "Format knowledge graph data appropriately",
-          "Clean up monetization analysis output",
-          "Ensure proper handling of AI context",
-          "Add validation for generated session prompt"
-        ],
-        "implementation_approach": [
-          "Review current session continuation script",
-          "Identify formatting issues in data merging",
-          "Implement proper data transformation for each source",
-          "Add validation checks for output format",
-          "Update documentation with new format requirements",
-          "Test with various data scenarios"
-        ],
-        "guard_rails": {
-          "naming_conventions": {
-            "scope": "project_scope",
-            "naming_pattern": "Clear, descriptive names for functions and variables",
-            "examples": ["formatSessionData", "mergeAnalysisResults", "validatePromptFormat"]
-          },
-          "code_standards": {
-            "style_guide": "TypeScript and shell script best practices",
-            "best_practices": [
-              "Use strict TypeScript mode",
-              "Implement proper error handling",
-              "Add input validation",
-              "Maintain clear data flow",
-              "Document data transformations"
-            ],
-            "constraints": [
-              "Must handle missing or malformed data gracefully",
-              "Output must be consistently formatted",
-              "Changes must not break existing functionality",
-              "Must maintain backward compatibility"
-            ]
-          },
-          "technical_requirements": {
-            "dependencies": ["typescript", "node", "jq", "python3"],
-            "versions": "Node.js 18+, Python 3.8+",
-            "compatibility": "Must work with all existing data formats"
-          }
-        },
-        "verification_steps": [
-          {
-            "step": "Data Formatting",
-            "checks": [
-              "Session prompt follows correct structure",
-              "No raw data or code snippets in output",
-              "All sections are properly formatted",
-              "No duplicate or redundant information"
-            ]
-          },
-          {
-            "step": "Data Merging",
-            "checks": [
-              "All sources are properly integrated",
-              "No data is lost in merging",
-              "Conflicts are handled appropriately",
-              "Data relationships are preserved"
-            ]
-          },
-          {
-            "step": "Output Validation",
-            "checks": [
-              "Generated prompt is valid markdown",
-              "All required sections are present",
-              "No formatting errors",
-              "Content is properly organized"
-            ]
-          }
-        ],
-        "success_criteria": [
-          "Session prompt is properly formatted and complete",
-          "All data sources are correctly merged",
-          "No raw data or code snippets in output",
-          "Validation checks pass",
-          "Documentation is updated",
-          "Script handles edge cases gracefully"
-        ]
-      }
-    },
-    {
-      "id": "goal-2",
-      "description": "Implement automated testing for session continuation script",
+      "description": "Implement Web Components analyzer for component analysis",
       "priority": "high",
       "priority_level": 1,
       "estimated_time": "2-3 hours",
       "status": "pending",
       "details": {
         "implementation_requirements": [
-          "Create test suite for session prompt generation",
-          "Add unit tests for data formatting functions",
-          "Implement integration tests for data merging",
-          "Add validation test cases",
-          "Create test data sets for various scenarios"
+          "Implement component lifecycle analysis",
+          "Add shadow DOM usage analysis",
+          "Implement property and event analysis",
+          "Add performance optimization suggestions",
+          "Add accessibility analysis"
         ],
         "implementation_approach": [
-          "Set up testing framework",
-          "Create test utilities and helpers",
-          "Implement test cases for each component",
-          "Add edge case coverage",
-          "Document test requirements"
+          "Complete Web Components analyzer implementation",
+          "Add comprehensive test coverage",
+          "Document API and usage",
+          "Integrate with core analysis framework",
+          "Add performance monitoring"
         ],
         "guard_rails": {
           "naming_conventions": {
-            "scope": "test_scope",
-            "naming_pattern": "Clear, descriptive test names",
+            "scope": "web_components_analyzer",
+            "naming_pattern": "Clear, descriptive names for analysis functions",
             "examples": [
-              "testFormatSessionData",
-              "testMergeAnalysisResults",
-              "testValidatePromptFormat"
+              "analyzeComponentLifecycle",
+              "analyzeShadowDOM",
+              "analyzeProperties",
+              "analyzeEvents",
+              "analyzePerformance"
             ]
           },
           "code_standards": {
-            "style_guide": "Testing best practices",
+            "style_guide": "TypeScript best practices",
             "best_practices": [
-              "Use Jest for testing",
-              "Implement proper test isolation",
-              "Add meaningful test descriptions",
-              "Maintain test data separately",
-              "Document test scenarios"
+              "Use strict TypeScript mode",
+              "Implement proper error handling",
+              "Add input validation",
+              "Maintain clear data flow",
+              "Document analysis methods"
             ],
             "constraints": [
-              "Tests must be independent",
-              "Must cover edge cases",
-              "Must be maintainable",
-              "Must be readable"
+              "Must handle invalid components gracefully",
+              "Output must be consistently formatted",
+              "Changes must not break existing functionality",
+              "Must maintain backward compatibility"
             ]
           },
           "technical_requirements": {
-            "dependencies": ["jest", "typescript", "node"],
-            "versions": "Node.js 18+, Jest 29+",
-            "compatibility": "Must work with existing test infrastructure"
+            "dependencies": ["typescript", "node", "@webcomponents/webcomponentsjs"],
+            "versions": "Node.js 18+, TypeScript 5.0+",
+            "compatibility": "Must work with Web Components v1+"
           }
         },
         "verification_steps": [
           {
-            "step": "Test Coverage",
+            "step": "Core Analysis",
             "checks": [
-              "All components are tested",
-              "Edge cases are covered",
-              "Test data is properly managed",
-              "Tests are independent"
+              "Component lifecycle is correctly analyzed",
+              "Shadow DOM usage is properly identified",
+              "Properties and events are correctly parsed",
+              "Performance metrics are accurate"
             ]
           },
           {
-            "step": "Test Quality",
+            "step": "Integration",
             "checks": [
-              "Tests are readable",
-              "Test descriptions are clear",
-              "Test data is well-organized",
-              "Tests follow best practices"
+              "Analyzer integrates with core framework",
+              "Results are properly formatted",
+              "Error handling works as expected",
+              "Performance is acceptable"
             ]
           },
           {
-            "step": "Test Execution",
+            "step": "Documentation",
             "checks": [
-              "All tests pass",
-              "No flaky tests",
-              "Tests run efficiently",
-              "Test output is clear"
+              "API is well documented",
+              "Usage examples are provided",
+              "Edge cases are documented",
+              "Integration guide is complete"
             ]
           }
         ],
         "success_criteria": [
-          "Test suite covers all components",
-          "Edge cases are properly tested",
-          "Tests are maintainable and readable",
-          "All tests pass consistently",
-          "Test documentation is complete"
+          "Web Components analyzer is fully implemented",
+          "All core analysis features work",
+          "Test coverage is comprehensive",
+          "Documentation is complete",
+          "Integration with core framework works",
+          "Performance meets requirements"
         ]
       }
     }
@@ -188,44 +99,48 @@
   "session_metadata": {
     "start_date": "2024-03-27",
     "expected_duration": "2-3 hours",
-    "focus_area": "Session Continuation Script Testing",
+    "focus_area": "Web Components Analyzer Implementation",
     "status": "pending"
   },
   "context": {
-    "prior_work": "Session continuation script improvements and formatting fixes",
-    "dependencies": ["Node.js environment", "Jest testing framework", "TypeScript toolchain"],
+    "prior_work": "Completed XState analyzer implementation",
+    "dependencies": [
+      "Node.js environment",
+      "TypeScript toolchain",
+      "@webcomponents/webcomponentsjs"
+    ],
     "resources": [
-      "tools/session_continuation.sh",
-      "tools/__tests__/session_continuation.test.ts",
-      "test/fixtures/*",
-      "session-goal.json",
-      "end-of-session.json"
+      "packages/web-components/package.json",
+      "packages/web-components/src/analyzer.ts",
+      "packages/web-components/tests/analyzer.test.ts",
+      "packages/core/src/interfaces.ts",
+      "packages/core/src/analyzer.ts"
     ]
   },
   "metrics": {
     "baseline": {
-      "test_coverage": "none",
-      "test_quality": "poor",
-      "test_maintainability": "basic"
+      "implementation_status": "partial",
+      "test_coverage": "basic",
+      "documentation": "basic"
     },
     "target": {
+      "implementation_status": "complete",
       "test_coverage": "comprehensive",
-      "test_quality": "excellent",
-      "test_maintainability": "high"
+      "documentation": "complete"
     }
   },
   "completion_criteria": [
-    "Test suite covers all components",
-    "Edge cases are properly tested",
-    "Tests are maintainable and readable",
-    "All tests pass consistently",
-    "Test documentation is complete"
+    "Web Components analyzer is fully implemented",
+    "All core analysis features work",
+    "Test coverage is comprehensive",
+    "Documentation is complete",
+    "Integration with core framework works"
   ],
   "notes": [
-    "Focus on test maintainability and readability",
-    "Ensure proper test isolation",
-    "Document test scenarios thoroughly",
-    "Consider future test extensibility",
-    "Maintain test data separately"
+    "Focus on clean, maintainable analysis code",
+    "Ensure proper error handling",
+    "Document analysis methods thoroughly",
+    "Consider future extensibility",
+    "Maintain backward compatibility"
   ]
 }
