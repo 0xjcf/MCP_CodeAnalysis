@@ -11,9 +11,17 @@
  * - Configurable session options
  */
 
-import { SessionStore } from "./types.js";
-import { RedisSessionStore } from "./redisSessionStore.js";
-import { MemorySessionStore } from "./memorySessionStore.js";
+import { SessionStore } from './types.js';
+import { RedisSessionStore } from './redisSessionStore.js';
+import { MemorySessionStore } from './memorySessionStore.js';
+
+/**
+ * Enum defining the available session store types
+ */
+export enum SessionStoreType {
+  Redis = 'redis',
+  Memory = 'memory',
+}
 
 export interface SessionStoreFactoryOptions {
   /**
@@ -77,16 +85,16 @@ export async function isRedisAvailable(redisUrl?: string): Promise<boolean> {
  * @returns Promise resolving to a SessionStore instance
  */
 export async function createSessionStore(
-  options: SessionStoreFactoryOptions = {}
+  options: SessionStoreFactoryOptions = {},
 ): Promise<SessionStore> {
-  const redisUrl = options.redisUrl || "redis://localhost:6379";
+  const redisUrl = options.redisUrl || 'redis://localhost:6379';
   const preferMemory = options.preferMemory || false;
   const verbose = options.verbose || false;
 
   // If memory store is preferred, use it directly
   if (preferMemory) {
     if (verbose) {
-      console.log("Using memory session store (explicitly preferred)");
+      console.log('Using memory session store (explicitly preferred)');
     }
     return createMemorySessionStore(options);
   }
@@ -102,16 +110,14 @@ export async function createSessionStore(
       return createRedisSessionStore(options);
     } else {
       if (verbose) {
-        console.log(
-          `Redis not available at ${redisUrl}, falling back to memory session store`
-        );
+        console.log(`Redis not available at ${redisUrl}, falling back to memory session store`);
       }
       return createMemorySessionStore(options);
     }
   } catch (error) {
     if (verbose) {
       console.warn(
-        `Error checking Redis availability: ${error}, falling back to memory session store`
+        `Error checking Redis availability: ${error}, falling back to memory session store`,
       );
     }
     return createMemorySessionStore(options);
@@ -125,10 +131,10 @@ export async function createSessionStore(
  * @returns A MemorySessionStore instance
  */
 export function createMemorySessionStore(
-  options: SessionStoreFactoryOptions = {}
+  options: SessionStoreFactoryOptions = {},
 ): MemorySessionStore {
   return new MemorySessionStore({
-    prefix: options.prefix || "mcp:session:",
+    prefix: options.prefix || 'mcp:session:',
     defaultTtl: options.defaultTtl || 3600,
     lockTimeout: options.lockTimeout || 30000,
   });
@@ -141,11 +147,11 @@ export function createMemorySessionStore(
  * @returns A RedisSessionStore instance
  */
 export function createRedisSessionStore(
-  options: SessionStoreFactoryOptions = {}
+  options: SessionStoreFactoryOptions = {},
 ): RedisSessionStore {
   return new RedisSessionStore({
-    redisUrl: options.redisUrl || "redis://localhost:6379",
-    prefix: options.prefix || "mcp:session:",
+    redisUrl: options.redisUrl || 'redis://localhost:6379',
+    prefix: options.prefix || 'mcp:session:',
     defaultTtl: options.defaultTtl || 3600,
     lockTimeout: options.lockTimeout || 30000,
   });

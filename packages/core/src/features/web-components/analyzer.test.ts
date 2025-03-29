@@ -3,10 +3,10 @@
  * Tests core functionality and basic component analysis
  */
 
-import { WebComponentsAnalyzer } from "./analyzer";
-import { LitElement } from "lit";
-import { html } from "lit-html";
-import { expect, describe, it, beforeEach } from "@jest/globals";
+import { WebComponentsAnalyzer } from './analyzer.js';
+import { LitElement } from 'lit';
+import { html } from 'lit-html';
+import { describe, it, expect, beforeEach } from 'vitest';
 
 // MEMORY_ANCHOR: {test} test_component_definition
 /**
@@ -18,7 +18,7 @@ class TestComponent extends LitElement {
     count: { type: Number },
   };
 
-  private _name: string = "";
+  private _name: string = '';
   private _count: number = 0;
 
   get name(): string {
@@ -57,7 +57,7 @@ class TestComponent extends LitElement {
 }
 
 // MEMORY_ANCHOR: {test} analyzer_initialization_test
-describe("WebComponentsAnalyzer", () => {
+describe('WebComponentsAnalyzer', () => {
   let analyzer: WebComponentsAnalyzer;
 
   beforeEach(() => {
@@ -65,81 +65,69 @@ describe("WebComponentsAnalyzer", () => {
   });
 
   // MEMORY_ANCHOR: {test} component_analysis_test
-  it("should analyze a basic component", async () => {
+  it('should analyze a basic component', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
-    expect(result.type).toBe("web-component");
-    expect(result.complexity).toBe("medium");
+    expect(result.type).toBe('web-component');
+    expect(result.complexity).toBe('medium');
     expect(Array.isArray(result.dependencies)).toBe(true);
     expect(Array.isArray(result.issues)).toBe(true);
     expect(Array.isArray(result.recommendations)).toBe(true);
   });
 
   // MEMORY_ANCHOR: {test} shadow_dom_analysis_test
-  test("should analyze shadow DOM usage", async () => {
+  it('should analyze shadow DOM usage', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
     // Shadow DOM analysis should be included in the result
     expect(
-      result.issues.some(
-        (issue) => issue.type === "info" && issue.message.includes("shadow DOM")
-      )
+      result.issues.some(issue => issue.type === 'info' && issue.message.includes('shadow DOM')),
     ).toBe(true);
   });
 
   // MEMORY_ANCHOR: {test} property_analysis_test
-  test("should analyze component properties", async () => {
+  it('should analyze component properties', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
     // Property analysis should be included in the result
     expect(
-      result.issues.some(
-        (issue) => issue.type === "info" && issue.message.includes("property")
-      )
+      result.issues.some(issue => issue.type === 'info' && issue.message.includes('property')),
     ).toBe(true);
   });
 
   // MEMORY_ANCHOR: {test} event_analysis_test
-  test("should analyze event handlers", async () => {
+  it('should analyze event handlers', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
     // Event analysis should be included in the result
     expect(
-      result.issues.some(
-        (issue) => issue.type === "info" && issue.message.includes("event")
-      )
+      result.issues.some(issue => issue.type === 'info' && issue.message.includes('event')),
     ).toBe(true);
   });
 
   // MEMORY_ANCHOR: {test} performance_analysis_test
-  test("should analyze performance characteristics", async () => {
+  it('should analyze performance characteristics', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
     // Performance analysis should be included in the result
     expect(
-      result.issues.some(
-        (issue) =>
-          issue.type === "info" && issue.message.includes("performance")
-      )
+      result.issues.some(issue => issue.type === 'info' && issue.message.includes('performance')),
     ).toBe(true);
   });
 
   // MEMORY_ANCHOR: {test} accessibility_analysis_test
-  test("should analyze accessibility features", async () => {
+  it('should analyze accessibility features', async () => {
     const component = new TestComponent();
     const result = await analyzer.analyzeComponent(component);
 
     // Accessibility analysis should be included in the result
     expect(
-      result.issues.some(
-        (issue) =>
-          issue.type === "info" && issue.message.includes("accessibility")
-      )
+      result.issues.some(issue => issue.type === 'info' && issue.message.includes('accessibility')),
     ).toBe(true);
   });
 });

@@ -12,29 +12,91 @@
  * - VERBOSE: Show verbose logs (set to "true")
  */
 
-import { startServer } from "./server/startServer.js";
+import { server, start } from './server.js';
+
+// Register analyzers and tools
+import { registerAnalysisTools } from './features/basic-analysis/index.js';
+import { registerCodeMetricsTools } from './features/code-metrics/index.js';
+import { registerDependencyAnalysisTools } from './features/dependency-analysis/index.js';
+import { registerIdeTools } from './features/basic-analysis/ide-analyzer.js';
+import { registerCodeQualityTools } from './features/code-quality/index.js';
+import { registerKnowledgeGraphFeatures } from './features/knowledge-graph/index.js';
+import { registerVisualizationFeatures } from './features/visualization/index.js';
+import { registerMemoryFeatures } from './features/memory/index.js';
+import { registerSocioTechnicalFeatures } from './features/socio-technical/index.js';
+import { registerMultiRepoFeatures } from './features/multi-repo/index.js';
+import { registerEvolutionFeatures } from './features/evolution/index.js';
+import { registerSessionTools } from './features/session-manager/index.js';
+import { registerDevTools } from './features/dev-tools/index.js';
+import { registerXStateFeatures } from '@mcp/xstate';
+import { getToolRegistry } from './registry/index.js';
+import { XStateAnalyzer } from '@mcp/xstate';
+import { z } from 'zod';
+
+// Register all tools
+registerAnalysisTools(server);
+registerCodeMetricsTools(server);
+registerDependencyAnalysisTools(server);
+registerIdeTools(server);
+registerCodeQualityTools(server);
+registerXStateFeatures(server);
+registerKnowledgeGraphFeatures(server);
+registerVisualizationFeatures(server);
+registerMemoryFeatures(server);
+registerSocioTechnicalFeatures(server);
+registerMultiRepoFeatures(server);
+registerEvolutionFeatures(server);
+registerSessionTools(server);
+registerDevTools(server);
+
+// Register XState analyzer with enhanced features
+const registry = getToolRegistry();
+registry.registerWithServer(
+  server,
+  'analyze-xstate',
+  {
+    sourceCode: z.string().describe('Source code containing XState machine definition'),
+    options: z
+      .object({
+        strict: z.boolean().optional().describe('Enable strict mode for analysis'),
+        verbose: z.boolean().optional().describe('Enable verbose output'),
+        timeout: z.number().optional().describe('Analysis timeout in milliseconds'),
+      })
+      .optional(),
+  },
+  async ({ sourceCode, options }) => {
+    const analyzer = new XStateAnalyzer(options || {});
+    return analyzer.analyze(sourceCode);
+  },
+  'xstate-analyzer',
+  {
+    description: 'Analyzes XState state machines for complexity and structure',
+    category: 'code-analysis',
+    timeout: 30000, // 30 second timeout
+    rateLimit: {
+      maxRequests: 10,
+      windowMs: 60000, // 1 minute window
+    },
+  },
+);
 
 // Parse environment variables
 const options = {
-  useStdio: process.env.STDIO_TRANSPORT === "true",
+  useStdio: process.env.STDIO_TRANSPORT === 'true',
   port: process.env.PORT ? parseInt(process.env.PORT, 10) : 3000,
   redisUrl: process.env.REDIS_URL,
-  forceMemorySessionStore: process.env.FORCE_MEMORY_SESSION === "true",
-  verbose: process.env.VERBOSE === "true",
+  forceMemorySessionStore: process.env.FORCE_MEMORY_SESSION === 'true',
+  verbose: process.env.VERBOSE === 'true',
 };
 
-console.log("Starting MCP server with options:", {
+console.log('Starting MCP server with options:', {
   ...options,
   // Hide sensitive information from logs
-  redisUrl: options.redisUrl ? "[CONFIGURED]" : undefined,
+  redisUrl: options.redisUrl ? '[CONFIGURED]' : undefined,
 });
 
 // Start the server
-startServer(options)
-  .then(({ server }) => {
-    console.log("MCP server started successfully");
-  })
-  .catch((error) => {
-    console.error("Failed to start MCP server:", error);
-    process.exit(1);
-  });
+start().catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
+});

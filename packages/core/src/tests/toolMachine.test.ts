@@ -1,6 +1,6 @@
 /**
  * Tests for Tool Machine
- * 
+ *
  * This file contains tests for the state machine that powers tool execution.
  * It validates the state transitions, context updates, and overall behavior
  * of the tool execution state machine.
@@ -8,14 +8,14 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createActor, Actor } from 'xstate';
-import { 
-  toolMachine, 
-  ToolMachineContext, 
-  getSession, 
-  clearSession, 
-  getSessionIds, 
-  createToolExecutionService 
-} from '../state/machines/toolMachine';
+import {
+  toolMachine,
+  ToolMachineContext,
+  getSession,
+  clearSession,
+  getSessionIds,
+  createToolExecutionService,
+} from '../state/machines/toolMachine.js';
 
 // Define the type for our state machine actor
 type ToolMachineActor = Actor<typeof toolMachine>;
@@ -33,7 +33,12 @@ describe('Tool Machine', () => {
 
     beforeEach(() => {
       // Create and start the actor before each test
-      actor = createActor(toolMachine).start();
+      actor = createActor(toolMachine, {
+        input: {
+          sessionId: 'test-session',
+          toolId: 'test-tool',
+        },
+      }).start();
     });
 
     afterEach(() => {
@@ -47,7 +52,7 @@ describe('Tool Machine', () => {
 
     it('should transition to toolSelected state when SELECT_TOOL event is sent', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
-      
+
       expect(actor.getSnapshot().value).toBe('toolSelected');
       expect(actor.getSnapshot().context.toolName).toBe('testTool');
       expect(actor.getSnapshot().context.selectedTool).toBe('testTool');
@@ -56,7 +61,7 @@ describe('Tool Machine', () => {
     it('should transition from toolSelected to parametersSet when SET_PARAMETERS event is sent', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
-      
+
       expect(actor.getSnapshot().value).toBe('parametersSet');
       expect(actor.getSnapshot().context.parameters).toEqual({ param1: 'value1' });
     });
@@ -65,7 +70,7 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
-      
+
       expect(actor.getSnapshot().value).toBe('executing');
     });
 
@@ -74,7 +79,7 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
       actor.send({ type: 'RECEIVED_RESULT', result: { data: 'testResult' } });
-      
+
       expect(actor.getSnapshot().value).toBe('succeeded');
       expect(actor.getSnapshot().context.result).toEqual({ data: 'testResult' });
     });
@@ -83,10 +88,10 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
-      
+
       const error = new Error('Test error');
       actor.send({ type: 'ERROR', error });
-      
+
       expect(actor.getSnapshot().value).toBe('failed');
       expect(actor.getSnapshot().context.error).toBe(error);
     });
@@ -96,7 +101,7 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
       actor.send({ type: 'CANCEL' });
-      
+
       expect(actor.getSnapshot().value).toBe('cancelled');
     });
 
@@ -104,7 +109,7 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'RESET' });
-      
+
       expect(actor.getSnapshot().value).toBe('idle');
       expect(actor.getSnapshot().context.toolName).toBeNull();
       expect(actor.getSnapshot().context.parameters).toBeNull();
@@ -117,7 +122,12 @@ describe('Tool Machine', () => {
 
     beforeEach(() => {
       // Create and start the actor before each test
-      actor = createActor(toolMachine).start();
+      actor = createActor(toolMachine, {
+        input: {
+          sessionId: 'test-session',
+          toolId: 'test-tool',
+        },
+      }).start();
     });
 
     afterEach(() => {
@@ -127,7 +137,7 @@ describe('Tool Machine', () => {
 
     it('should update context with tool name when SELECT_TOOL event is sent', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.toolName).toBe('testTool');
       expect(context.selectedTool).toBe('testTool');
@@ -139,7 +149,7 @@ describe('Tool Machine', () => {
     it('should update context with parameters when SET_PARAMETERS event is sent', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1', param2: 42 } });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.parameters).toEqual({ param1: 'value1', param2: 42 });
     });
@@ -148,10 +158,10 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
-      
+
       const result = { data: 'testResult', metadata: { executionTime: 100 } };
       actor.send({ type: 'RECEIVED_RESULT', result });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.result).toEqual(result);
     });
@@ -160,10 +170,10 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
-      
+
       const error = new Error('Test error');
       actor.send({ type: 'ERROR', error });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.error).toBe(error);
       expect(context.result).toBeNull();
@@ -173,10 +183,10 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'EXECUTE' });
-      
+
       const result = { data: 'testResult' };
       actor.send({ type: 'RECEIVED_RESULT', result });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.history.length).toBe(2);
       expect(context.history[0].tool).toBe('testTool');
@@ -188,7 +198,7 @@ describe('Tool Machine', () => {
       actor.send({ type: 'SELECT_TOOL', toolName: 'testTool' });
       actor.send({ type: 'SET_PARAMETERS', parameters: { param1: 'value1' } });
       actor.send({ type: 'RESET' });
-      
+
       const context = actor.getSnapshot().context;
       expect(context.toolName).toBeNull();
       expect(context.selectedTool).toBeNull();
@@ -205,7 +215,7 @@ describe('Tool Machine', () => {
       const session = createToolExecutionService();
       expect(session).toBeDefined();
       expect(session.getSessionId()).toBeDefined();
-      
+
       const sessionIds = getSessionIds();
       expect(sessionIds).toContain(session.getSessionId());
     });
@@ -214,7 +224,7 @@ describe('Tool Machine', () => {
       const sessionId = 'test-session-id';
       const session = createToolExecutionService(sessionId);
       expect(session.getSessionId()).toBe(sessionId);
-      
+
       const sessionIds = getSessionIds();
       expect(sessionIds).toContain(sessionId);
     });
@@ -223,7 +233,7 @@ describe('Tool Machine', () => {
       const sessionId = 'test-session-id';
       const session1 = getSession(sessionId);
       const session2 = getSession(sessionId);
-      
+
       expect(session1).toBe(session2);
       expect(session1.getSessionId()).toBe(sessionId);
     });
@@ -231,10 +241,10 @@ describe('Tool Machine', () => {
     it('should clear a session by ID', () => {
       const sessionId = 'test-session-id';
       getSession(sessionId); // Create the session
-      
+
       const result = clearSession(sessionId);
       expect(result).toBe(true);
-      
+
       const sessionIds = getSessionIds();
       expect(sessionIds).not.toContain(sessionId);
     });
@@ -244,4 +254,4 @@ describe('Tool Machine', () => {
       expect(result).toBe(false);
     });
   });
-}); 
+});

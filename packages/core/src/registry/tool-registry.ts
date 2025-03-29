@@ -1,4 +1,5 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
 
 /**
  * Interface for a tool definition
@@ -8,19 +9,28 @@ export interface ToolDefinition {
   schema: Record<string, any>;
   handler: (...args: any[]) => Promise<any>;
   source: string; // The source module that registered this tool
+  description?: string; // Human-readable description
+  category?: string; // Tool category for organization
+  timeout?: number; // Timeout in milliseconds
+  rateLimit?: {
+    maxRequests: number;
+    windowMs: number;
+  };
 }
 
 /**
  * Centralized registry for MCP tools
  *
  * This singleton class tracks all tool registrations across the codebase
- * to ensure tools are only registered once.
+ * to ensure tools are only registered once and provides enhanced tool management
+ * capabilities.
  */
 export class ToolRegistry {
   private static instance: ToolRegistry;
   private tools: Map<string, ToolDefinition> = new Map();
   private verbose: boolean = false;
-  private registrationCounts: Map<string, number> = new Map(); // Track registration counts by source
+  private registrationCounts: Map<string, number> = new Map();
+  private rateLimitTracker: Map<string, { count: number; resetTime: number }> = new Map();
 
   private constructor() {}
 
@@ -35,7 +45,7 @@ export class ToolRegistry {
   }
 
   /**
-   * Set verbosity for logging
+   * Set verbosity level for logging
    */
   public setVerbose(verbose: boolean): void {
     this.verbose = verbose;
@@ -55,16 +65,25 @@ export class ToolRegistry {
     toolId: string,
     schema: Record<string, any>,
     handler: (...args: any[]) => Promise<any>,
-    source: string
+    source: string,
+    options: Partial<Omit<ToolDefinition, 'id' | 'schema' | 'handler' | 'source'>> = {},
   ): boolean {
     if (this.isToolRegistered(toolId)) {
       if (this.verbose) {
         console.log(
           `[Registry] Skipped: Tool '${toolId}' is already registered by '${
             this.tools.get(toolId)?.source
-          }', not registering from '${source}'`
+          }', not registering from '${source}'`,
         );
       }
+      return false;
+    }
+
+    // Validate schema
+    try {
+      z.object(schema);
+    } catch (error) {
+      console.error(`[Registry] Invalid schema for tool '${toolId}':`, error);
       return false;
     }
 
@@ -73,13 +92,11 @@ export class ToolRegistry {
       schema,
       handler,
       source,
+      ...options,
     });
 
     // Update counts for this source
-    this.registrationCounts.set(
-      source,
-      (this.registrationCounts.get(source) || 0) + 1
-    );
+    this.registrationCounts.set(source, (this.registrationCounts.get(source) || 0) + 1);
 
     if (this.verbose) {
       console.log(`[Registry] Registered: Tool '${toolId}' from '${source}'`);
@@ -89,17 +106,15 @@ export class ToolRegistry {
   }
 
   /**
-   * Register a tool with the MCP server
-   *
-   * This is a wrapper around the MCP server's tool method that checks
-   * if the tool is already registered before attempting registration.
+   * Register a tool with the MCP server with enhanced error handling and rate limiting
    */
   public registerWithServer(
     server: McpServer,
     toolId: string,
     schema: Record<string, any>,
     handler: (...args: any[]) => Promise<any>,
-    source: string
+    source: string,
+    options: Partial<Omit<ToolDefinition, 'id' | 'schema' | 'handler' | 'source'>> = {},
   ): boolean {
     // First check our registry
     if (this.isToolRegistered(toolId)) {
@@ -107,28 +122,73 @@ export class ToolRegistry {
         console.log(
           `[Registry] Skipped: Tool '${toolId}' is already registered by '${
             this.tools.get(toolId)?.source
-          }', not registering from '${source}'`
+          }', not registering from '${source}'`,
         );
       }
       return false;
     }
 
+    // Create wrapped handler with timeout and rate limiting
+    const wrappedHandler = async (...args: any[]) => {
+      const toolDef = this.tools.get(toolId);
+      if (!toolDef) throw new Error(`Tool ${toolId} not found`);
+
+      // Check rate limiting
+      if (toolDef.rateLimit) {
+        const now = Date.now();
+        const tracker = this.rateLimitTracker.get(toolId) || { count: 0, resetTime: now };
+
+        if (now > tracker.resetTime + toolDef.rateLimit.windowMs) {
+          tracker.count = 0;
+          tracker.resetTime = now;
+        }
+
+        if (tracker.count >= toolDef.rateLimit.maxRequests) {
+          throw new Error(`Rate limit exceeded for tool ${toolId}`);
+        }
+
+        tracker.count++;
+        this.rateLimitTracker.set(toolId, tracker);
+      }
+
+      // Apply timeout if specified
+      if (toolDef.timeout) {
+        const timeoutId = setTimeout(() => {
+          throw new Error(`Tool ${toolId} timed out after ${toolDef.timeout}ms`);
+        }, toolDef.timeout);
+
+        try {
+          return await Promise.race([
+            handler(...args),
+            new Promise((_, reject) => {
+              setTimeout(
+                () => reject(new Error(`Tool ${toolId} timed out after ${toolDef.timeout}ms`)),
+                toolDef.timeout,
+              );
+            }),
+          ]);
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+
+      return handler(...args);
+    };
+
     // Register with the server
-    server.tool(toolId, schema, handler);
+    server.tool(toolId, schema, wrappedHandler);
 
     // Add to our registry
     this.tools.set(toolId, {
       id: toolId,
       schema,
-      handler,
+      handler: wrappedHandler,
       source,
+      ...options,
     });
 
     // Update counts for this source
-    this.registrationCounts.set(
-      source,
-      (this.registrationCounts.get(source) || 0) + 1
-    );
+    this.registrationCounts.set(source, (this.registrationCounts.get(source) || 0) + 1);
 
     if (this.verbose) {
       console.log(`[Registry] Registered: Tool '${toolId}' from '${source}'`);
@@ -152,6 +212,13 @@ export class ToolRegistry {
   }
 
   /**
+   * Get tools by category
+   */
+  public getToolsByCategory(category: string): ToolDefinition[] {
+    return Array.from(this.tools.values()).filter(tool => tool.category === category);
+  }
+
+  /**
    * Get a summary of registered tools
    */
   public getRegistrationSummary(): string {
@@ -160,9 +227,7 @@ export class ToolRegistry {
     summary += `Total registered tools: ${totalTools}\n\n`;
 
     // Sort sources by number of tools (descending)
-    const sortedSources = Array.from(this.registrationCounts.entries()).sort(
-      (a, b) => b[1] - a[1]
-    );
+    const sortedSources = Array.from(this.registrationCounts.entries()).sort((a, b) => b[1] - a[1]);
 
     if (sortedSources.length > 0) {
       summary += `Tools by module:\n`;
@@ -203,6 +268,7 @@ export class ToolRegistry {
   public clear(): void {
     this.tools.clear();
     this.registrationCounts.clear();
+    this.rateLimitTracker.clear();
   }
 }
 

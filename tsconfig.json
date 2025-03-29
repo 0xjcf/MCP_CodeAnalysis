@@ -2,22 +2,21 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "ESNext",
-    "lib": ["ES2020", "DOM"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "outDir": "dist",
+    "rootDir": ".",
     "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": true,
+    "noImplicitAny": false,
+    "types": ["vitest", "node"]
   },
+  "include": ["packages/**/*.ts", "packages/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
-} 
+}

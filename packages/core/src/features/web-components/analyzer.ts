@@ -13,10 +13,10 @@
  * - Supports educational platform's component analysis needs
  */
 
-import { html } from "lit-html";
-import { LitElement } from "lit";
-import { igniteCore } from "ignite-element";
-import { Analyzer, AnalysisResult, AnalysisIssue } from "../../types/analyzer";
+import { html } from 'lit-html';
+import { LitElement } from 'lit';
+import { igniteCore } from 'ignite-element';
+import { Analyzer, AnalysisResult, AnalysisIssue } from '../../types/analyzer.js';
 import {
   ComponentNode,
   ComponentMetadata,
@@ -26,11 +26,11 @@ import {
   PropertyValidation,
   ValidationRule,
   Parameter,
-} from "../../types/component";
-import { StateMachine } from "../../types/xstate";
+} from '../../types/component.js';
+import { StateMachine } from '../../types/xstate.js';
 
 interface StateManagementAnalysis {
-  type: "xstate";
+  type: 'xstate';
   machine: StateMachine;
   states: any[];
   events: any[];
@@ -111,9 +111,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Event handlers
    * - State management patterns
    */
-  async analyzeComponent(
-    component: LitElement | typeof LitElement
-  ): Promise<AnalysisResult> {
+  async analyzeComponent(component: LitElement | typeof LitElement): Promise<AnalysisResult> {
     const metadata = this.analyzeMetadata(component);
     const issues: AnalysisIssue[] = [];
     const recommendations: string[] = [];
@@ -121,39 +119,36 @@ export class WebComponentsAnalyzer implements Analyzer {
     // Add basic analysis issues
     issues.push(
       {
-        type: "info",
-        message: "Component uses shadow DOM for encapsulation",
-        severity: "low",
+        type: 'info',
+        message: 'Component uses shadow DOM for encapsulation',
+        severity: 'low',
       },
       {
-        type: "info",
-        message: "Component has defined properties",
-        severity: "low",
+        type: 'info',
+        message: 'Component has defined properties',
+        severity: 'low',
       },
       {
-        type: "info",
-        message: "Component has event handlers",
-        severity: "low",
+        type: 'info',
+        message: 'Component has event handlers',
+        severity: 'low',
       },
       {
-        type: "info",
-        message: "Component performance is within acceptable range",
-        severity: "low",
+        type: 'info',
+        message: 'Component performance is within acceptable range',
+        severity: 'low',
       },
       {
-        type: "info",
-        message: "Component has basic accessibility features",
-        severity: "low",
-      }
+        type: 'info',
+        message: 'Component has basic accessibility features',
+        severity: 'low',
+      },
     );
 
     return {
-      type: "web-component",
-      name:
-        typeof component === "function"
-          ? component.name
-          : component.constructor.name,
-      complexity: "medium",
+      type: 'web-component',
+      name: typeof component === 'function' ? component.name : component.constructor.name,
+      complexity: 'medium',
       dependencies: this.analyzeDependencies(component),
       issues,
       recommendations,
@@ -161,16 +156,11 @@ export class WebComponentsAnalyzer implements Analyzer {
     };
   }
 
-  private analyzeMetadata(
-    component: LitElement | typeof LitElement
-  ): ComponentMetadata {
+  private analyzeMetadata(component: LitElement | typeof LitElement): ComponentMetadata {
     return {
-      name:
-        typeof component === "function"
-          ? component.name
-          : component.constructor.name,
-      description: "",
-      version: "1.0.0",
+      name: typeof component === 'function' ? component.name : component.constructor.name,
+      description: '',
+      version: '1.0.0',
       properties: [],
       events: [],
       methods: [],
@@ -195,45 +185,30 @@ export class WebComponentsAnalyzer implements Analyzer {
     };
   }
 
-  private analyzeProperties(
-    component: LitElement | typeof LitElement
-  ): ComponentProperty[] {
+  private analyzeProperties(component: LitElement | typeof LitElement): ComponentProperty[] {
     // Basic property analysis - can be expanded later
     return [];
   }
 
-  private analyzeEvents(
-    component: LitElement | typeof LitElement
-  ): ComponentEvent[] {
+  private analyzeEvents(component: LitElement | typeof LitElement): ComponentEvent[] {
     // Basic event analysis - can be expanded later
     return [];
   }
 
-  private analyzeDependencies(
-    component: LitElement | typeof LitElement
-  ): string[] {
+  private analyzeDependencies(component: LitElement | typeof LitElement): string[] {
     // Basic dependency analysis - can be expanded later
-    return ["lit-html", "lit-element"];
+    return ['lit-html', 'lit-element'];
   }
 
-  private generateComponentId(
-    component: LitElement | typeof LitElement
-  ): string {
-    return typeof component === "function"
-      ? component.name
-      : component.constructor.name;
+  private generateComponentId(component: LitElement | typeof LitElement): string {
+    return typeof component === 'function' ? component.name : component.constructor.name;
   }
 
-  private createComponentNode(
-    component: LitElement | typeof LitElement
-  ): ComponentNode {
+  private createComponentNode(component: LitElement | typeof LitElement): ComponentNode {
     return {
       id: this.generateComponentId(component),
-      name:
-        typeof component === "function"
-          ? component.name
-          : component.constructor.name,
-      type: "web-component",
+      name: typeof component === 'function' ? component.name : component.constructor.name,
+      type: 'web-component',
       properties: [],
       events: [],
       methods: [],
@@ -242,7 +217,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     };
   }
 
-  private calculateComplexity(node: ComponentNode): "low" | "medium" | "high" {
+  private calculateComplexity(node: ComponentNode): 'low' | 'medium' | 'high' {
     let score = 0;
 
     // Properties complexity
@@ -270,9 +245,9 @@ export class WebComponentsAnalyzer implements Analyzer {
     }
 
     // Map score to complexity level
-    if (score <= 10) return "low";
-    if (score <= 20) return "medium";
-    return "high";
+    if (score <= 10) return 'low';
+    if (score <= 20) return 'medium';
+    return 'high';
   }
 
   private extractDependencies(node: ComponentNode): string[] {
@@ -280,18 +255,18 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Add direct dependencies from relationships
     node.relationships
-      .filter((rel) => rel.type === "dependency")
-      .forEach((rel) => dependencies.add(rel.target));
+      .filter(rel => rel.type === 'dependency')
+      .forEach(rel => dependencies.add(rel.target));
 
     // Add parent components
     node.relationships
-      .filter((rel) => rel.type === "parent-child")
-      .forEach((rel) => dependencies.add(rel.target));
+      .filter(rel => rel.type === 'parent-child')
+      .forEach(rel => dependencies.add(rel.target));
 
     // Add composed components
     node.relationships
-      .filter((rel) => rel.type === "composition")
-      .forEach((rel) => dependencies.add(rel.target));
+      .filter(rel => rel.type === 'composition')
+      .forEach(rel => dependencies.add(rel.target));
 
     return Array.from(dependencies);
   }
@@ -302,18 +277,18 @@ export class WebComponentsAnalyzer implements Analyzer {
     // Check properties
     if (node.properties.length === 0) {
       issues.push({
-        type: "warning",
-        message: "Component has no defined properties",
-        severity: "low",
+        type: 'warning',
+        message: 'Component has no defined properties',
+        severity: 'low',
       });
     }
 
     // Check events
     if (node.events.length === 0) {
       issues.push({
-        type: "info",
-        message: "Component has no custom events defined",
-        severity: "low",
+        type: 'info',
+        message: 'Component has no custom events defined',
+        severity: 'low',
       });
     }
 
@@ -321,17 +296,17 @@ export class WebComponentsAnalyzer implements Analyzer {
     if (node.metadata.accessibility) {
       if (!node.metadata.accessibility.keyboardSupport) {
         issues.push({
-          type: "warning",
-          message: "Component lacks keyboard support",
-          severity: "high",
+          type: 'warning',
+          message: 'Component lacks keyboard support',
+          severity: 'high',
         });
       }
 
       if (!node.metadata.accessibility.screenReaderSupport) {
         issues.push({
-          type: "warning",
-          message: "Component lacks screen reader support",
-          severity: "high",
+          type: 'warning',
+          message: 'Component lacks screen reader support',
+          severity: 'high',
         });
       }
     }
@@ -340,17 +315,17 @@ export class WebComponentsAnalyzer implements Analyzer {
     if (node.metadata.security) {
       if (!node.metadata.security.xssPrevention) {
         issues.push({
-          type: "warning",
-          message: "Component may be vulnerable to XSS attacks",
-          severity: "high",
+          type: 'warning',
+          message: 'Component may be vulnerable to XSS attacks',
+          severity: 'high',
         });
       }
 
       if (!node.metadata.security.propertyValidation) {
         issues.push({
-          type: "warning",
-          message: "Component lacks property validation",
-          severity: "medium",
+          type: 'warning',
+          message: 'Component lacks property validation',
+          severity: 'medium',
         });
       }
     }
@@ -363,43 +338,33 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Property recommendations
     if (node.properties.length === 0) {
-      recommendations.push(
-        "Consider adding properties to make the component more configurable"
-      );
+      recommendations.push('Consider adding properties to make the component more configurable');
     }
 
     // Event recommendations
     if (node.events.length === 0) {
-      recommendations.push(
-        "Consider adding custom events to improve component interactivity"
-      );
+      recommendations.push('Consider adding custom events to improve component interactivity');
     }
 
     // Accessibility recommendations
     if (node.metadata.accessibility) {
       if (!node.metadata.accessibility.keyboardSupport) {
-        recommendations.push("Add keyboard support for better accessibility");
+        recommendations.push('Add keyboard support for better accessibility');
       }
 
       if (!node.metadata.accessibility.screenReaderSupport) {
-        recommendations.push(
-          "Add ARIA attributes and ensure screen reader compatibility"
-        );
+        recommendations.push('Add ARIA attributes and ensure screen reader compatibility');
       }
     }
 
     // Security recommendations
     if (node.metadata.security) {
       if (!node.metadata.security.xssPrevention) {
-        recommendations.push(
-          "Implement XSS prevention measures for user input"
-        );
+        recommendations.push('Implement XSS prevention measures for user input');
       }
 
       if (!node.metadata.security.propertyValidation) {
-        recommendations.push(
-          "Add property validation to improve component reliability"
-        );
+        recommendations.push('Add property validation to improve component reliability');
       }
     }
 
@@ -409,7 +374,7 @@ export class WebComponentsAnalyzer implements Analyzer {
       node.metadata.performance.renderTime &&
       node.metadata.performance.renderTime > 100
     ) {
-      recommendations.push("Consider optimizing component render performance");
+      recommendations.push('Consider optimizing component render performance');
     }
 
     return recommendations;
@@ -428,9 +393,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    */
   private analyzeShadowDOM(component: LitElement): void {
     const shadowRoot = component.shadowRoot;
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     if (!shadowRoot) {
@@ -447,7 +410,7 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Check shadow root mode
     const mode = shadowRoot.mode;
-    if (mode === "closed") {
+    if (mode === 'closed') {
       if (!componentNode.metadata.security) {
         componentNode.metadata.security = {
           xssPrevention: false,
@@ -459,18 +422,18 @@ export class WebComponentsAnalyzer implements Analyzer {
     }
 
     // Check slot usage
-    const slots = shadowRoot.querySelectorAll("slot");
+    const slots = shadowRoot.querySelectorAll('slot');
     if (slots.length > 0) {
       componentNode.relationships.push({
-        type: "composition",
+        type: 'composition',
         source: component.constructor.name,
-        target: "slot",
+        target: 'slot',
         description: `Uses ${slots.length} slots for content projection`,
       });
     }
 
     // Check style encapsulation
-    const styles = shadowRoot.querySelectorAll("style");
+    const styles = shadowRoot.querySelectorAll('style');
     if (styles.length > 0) {
       if (!componentNode.metadata.performance) {
         componentNode.metadata.performance = {
@@ -479,21 +442,20 @@ export class WebComponentsAnalyzer implements Analyzer {
           eventHandling: 0,
         };
       }
-      componentNode.metadata.performance.renderTime =
-        styles.length > 3 ? 150 : 50; // Rough estimate based on style count
+      componentNode.metadata.performance.renderTime = styles.length > 3 ? 150 : 50; // Rough estimate based on style count
     }
 
     // Check event delegation
     const eventListeners = this.getEventListeners(shadowRoot);
     if (eventListeners.length > 0) {
       componentNode.events.push(
-        ...eventListeners.map((listener) => ({
+        ...eventListeners.map(listener => ({
           name: listener.type,
-          type: "DOM",
+          type: 'DOM',
           bubbles: true,
           composed: true,
-          description: "Shadow DOM event listener",
-        }))
+          description: 'Shadow DOM event listener',
+        })),
       );
     }
   }
@@ -507,14 +469,14 @@ export class WebComponentsAnalyzer implements Analyzer {
     if (element instanceof Element) {
       const attributes = element.getAttributeNames();
       attributes.forEach((attr: string) => {
-        if (attr.startsWith("on")) {
+        if (attr.startsWith('on')) {
           listeners.push({ type: attr.slice(2) });
         }
       });
     }
 
     // Recursively check children
-    element.childNodes.forEach((child) => {
+    element.childNodes.forEach(child => {
       if (child instanceof Element) {
         listeners.push(...this.getEventListeners(child));
       }
@@ -534,9 +496,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - State synchronization
    */
   private analyzeStateManagement(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     // Analyze reactive properties
@@ -553,12 +513,9 @@ export class WebComponentsAnalyzer implements Analyzer {
     this.analyzeStateSynchronization(component, componentNode);
   }
 
-  private analyzeReactiveProperties(
-    component: LitElement
-  ): ComponentProperty[] {
+  private analyzeReactiveProperties(component: LitElement): ComponentProperty[] {
     const properties: ComponentProperty[] = [];
-    const staticProps =
-      (component.constructor as typeof LitElement).properties || {};
+    const staticProps = (component.constructor as typeof LitElement).properties || {};
 
     Object.entries(staticProps).forEach(([name, config]) => {
       if (this.isReactiveProperty(config)) {
@@ -566,7 +523,7 @@ export class WebComponentsAnalyzer implements Analyzer {
           name,
           type: this.getPropertyType(config),
           defaultValue: this.getDefaultValue(config),
-          description: "Reactive property with state management",
+          description: 'Reactive property with state management',
           validation: {
             type: this.getPropertyType(config) as any,
             required: !this.hasDefaultValue(config),
@@ -580,10 +537,7 @@ export class WebComponentsAnalyzer implements Analyzer {
   }
 
   private isReactiveProperty(config: any): boolean {
-    return (
-      config &&
-      (config.state || config.reflect || config.hasChanged || config.converter)
-    );
+    return config && (config.state || config.reflect || config.hasChanged || config.converter);
   }
 
   private getReactivePropertyRules(config: any): ValidationRule[] {
@@ -591,16 +545,16 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     if (config.hasChanged) {
       rules.push({
-        type: "custom",
-        message: "Custom change detection function",
+        type: 'custom',
+        message: 'Custom change detection function',
         value: config.hasChanged.toString(),
       });
     }
 
     if (config.converter) {
       rules.push({
-        type: "converter",
-        message: "Custom type converter",
+        type: 'converter',
+        message: 'Custom type converter',
         value: config.converter.toString(),
       });
     }
@@ -608,92 +562,62 @@ export class WebComponentsAnalyzer implements Analyzer {
     return rules;
   }
 
-  private analyzeStateUpdateMethods(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeStateUpdateMethods(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
-    const updateMethods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => {
-        const method = prototype[name];
-        if (typeof method !== "function") return false;
-        const methodStr = method.toString().toLowerCase();
-        return (
-          name.includes("update") ||
-          name.includes("change") ||
-          name.includes("set") ||
-          methodStr.includes("this.requestupdate") ||
-          methodStr.includes("this.update")
-        );
-      }
-    );
+    const updateMethods = Object.getOwnPropertyNames(prototype).filter(name => {
+      const method = prototype[name];
+      if (typeof method !== 'function') return false;
+      const methodStr = method.toString().toLowerCase();
+      return (
+        name.includes('update') ||
+        name.includes('change') ||
+        name.includes('set') ||
+        methodStr.includes('this.requestupdate') ||
+        methodStr.includes('this.update')
+      );
+    });
 
-    updateMethods.forEach((method) => {
+    updateMethods.forEach(method => {
       componentNode.methods.push({
         name: method,
         parameters: this.getMethodParameters(prototype[method]),
-        returnType: "void",
-        description: "State update method",
-        isPrivate: method.startsWith("_"),
+        returnType: 'void',
+        description: 'State update method',
+        isPrivate: method.startsWith('_'),
       });
     });
   }
 
-  private analyzeStatePersistence(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeStatePersistence(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for storage usage
-    const storagePatterns = [
-      "localStorage",
-      "sessionStorage",
-      "indexedDB",
-      "window.storage",
-    ];
+    const storagePatterns = ['localStorage', 'sessionStorage', 'indexedDB', 'window.storage'];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (
-        storagePatterns.some((pattern) =>
-          methodStr.includes(pattern.toLowerCase())
-        )
-      ) {
-        componentNode.metadata.tags.push("persistent-state");
+      if (storagePatterns.some(pattern => methodStr.includes(pattern.toLowerCase()))) {
+        componentNode.metadata.tags.push('persistent-state');
       }
     });
   }
 
-  private analyzeStateSynchronization(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeStateSynchronization(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for state synchronization patterns
-    const syncPatterns = [
-      "subscribe",
-      "observe",
-      "dispatch",
-      "emit",
-      "broadcast",
-    ];
+    const syncPatterns = ['subscribe', 'observe', 'dispatch', 'emit', 'broadcast'];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (
-        syncPatterns.some((pattern) =>
-          methodStr.includes(pattern.toLowerCase())
-        )
-      ) {
-        componentNode.metadata.tags.push("synchronized-state");
+      if (syncPatterns.some(pattern => methodStr.includes(pattern.toLowerCase()))) {
+        componentNode.metadata.tags.push('synchronized-state');
       }
     });
   }
@@ -708,19 +632,12 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Event communication
    * - State sharing
    */
-  private analyzeRelationships(
-    component: LitElement | typeof LitElement
-  ): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+  private analyzeRelationships(component: LitElement | typeof LitElement): void {
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     // Analyze parent-child relationships
-    this.analyzeParentChildRelationships(
-      component as LitElement,
-      componentNode
-    );
+    this.analyzeParentChildRelationships(component as LitElement, componentNode);
 
     // Analyze component composition
     this.analyzeComponentComposition(component as LitElement, componentNode);
@@ -734,14 +651,14 @@ export class WebComponentsAnalyzer implements Analyzer {
 
   private analyzeParentChildRelationships(
     component: LitElement,
-    componentNode: ComponentNode
+    componentNode: ComponentNode,
   ): void {
     if (component.parentElement instanceof HTMLElement) {
       componentNode.relationships.push({
-        type: "parent-child",
+        type: 'parent-child',
         source: component.constructor.name,
         target: component.parentElement.tagName.toLowerCase(),
-        description: "Parent element relationship",
+        description: 'Parent element relationship',
       });
     }
 
@@ -749,23 +666,20 @@ export class WebComponentsAnalyzer implements Analyzer {
     const shadowRoot = component.shadowRoot;
     if (shadowRoot) {
       const children = Array.from(shadowRoot.children);
-      children.forEach((child) => {
-        if (child instanceof HTMLElement && child.tagName.includes("-")) {
+      children.forEach(child => {
+        if (child instanceof HTMLElement && child.tagName.includes('-')) {
           componentNode.relationships.push({
-            type: "parent-child",
+            type: 'parent-child',
             source: component.constructor.name,
             target: child.tagName.toLowerCase(),
-            description: "Child component relationship",
+            description: 'Child component relationship',
           });
         }
       });
     }
   }
 
-  private analyzeComponentComposition(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeComponentComposition(component: LitElement, componentNode: ComponentNode): void {
     const renderMethod = Object.getPrototypeOf(component).render;
     if (!renderMethod) return;
 
@@ -777,39 +691,34 @@ export class WebComponentsAnalyzer implements Analyzer {
       customElements.forEach((element: string) => {
         const tagName = element.slice(1); // Remove '<'
         componentNode.relationships.push({
-          type: "composition",
+          type: 'composition',
           source: component.constructor.name,
           target: tagName,
-          description: "Component composition through template",
+          description: 'Component composition through template',
         });
       });
     }
   }
 
-  private analyzeEventRelationships(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeEventRelationships(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString();
 
       // Look for event dispatch to specific components
-      const dispatchMatches = methodStr.match(
-        /dispatchEvent.*?['"]([^'"]+)['"]/g
-      );
+      const dispatchMatches = methodStr.match(/dispatchEvent.*?['"]([^'"]+)['"]/g);
       if (dispatchMatches) {
         dispatchMatches.forEach((match: string) => {
           const eventName = match.match(/['"]([^'"]+)['"]/)?.[1];
           if (eventName) {
             componentNode.relationships.push({
-              type: "event",
+              type: 'event',
               source: component.constructor.name,
-              target: "event:" + eventName,
+              target: 'event:' + eventName,
               description: `Event communication through ${eventName}`,
             });
           }
@@ -818,30 +727,27 @@ export class WebComponentsAnalyzer implements Analyzer {
     });
   }
 
-  private analyzeStateRelationships(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeStateRelationships(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Look for shared state patterns
     const statePatterns = [
-      { pattern: "store", type: "state-store" },
-      { pattern: "context", type: "context-provider" },
-      { pattern: "service", type: "service-dependency" },
-      { pattern: "provider", type: "provider-consumer" },
+      { pattern: 'store', type: 'state-store' },
+      { pattern: 'context', type: 'context-provider' },
+      { pattern: 'service', type: 'service-dependency' },
+      { pattern: 'provider', type: 'provider-consumer' },
     ];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
 
       statePatterns.forEach(({ pattern, type }) => {
         if (methodStr.includes(pattern)) {
           componentNode.relationships.push({
-            type: "dependency",
+            type: 'dependency',
             source: component.constructor.name,
             target: type,
             description: `Shared state through ${type}`,
@@ -862,14 +768,12 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Performance optimizations
    */
   private analyzeIgniteElement(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name: string) => typeof prototype[name] === "function"
+      (name: string) => typeof prototype[name] === 'function',
     );
 
     // Check for ignite-element patterns
@@ -884,27 +788,25 @@ export class WebComponentsAnalyzer implements Analyzer {
     methods.forEach((method: string) => {
       const methodStr = prototype[method].toString();
 
-      Object.entries(ignitePatterns).forEach(
-        ([feature, pattern]: [string, RegExp]) => {
-          if (pattern.test(methodStr)) {
-            componentNode.metadata.tags.push(`ignite-${feature}`);
+      Object.entries(ignitePatterns).forEach(([feature, pattern]: [string, RegExp]) => {
+        if (pattern.test(methodStr)) {
+          componentNode.metadata.tags.push(`ignite-${feature}`);
 
-            // Add relationship for ignite integration
-            componentNode.relationships.push({
-              type: "dependency",
-              source: component.constructor.name,
-              target: `ignite-${feature}`,
-              description: `Uses ignite-element ${feature} feature`,
-            });
-          }
+          // Add relationship for ignite integration
+          componentNode.relationships.push({
+            type: 'dependency',
+            source: component.constructor.name,
+            target: `ignite-${feature}`,
+            description: `Uses ignite-element ${feature} feature`,
+          });
         }
-      );
+      });
     });
 
     // Check for ignite-element imports
     const classStr = component.constructor.toString();
-    if (classStr.includes("ignite-element")) {
-      componentNode.metadata.tags.push("ignite-component");
+    if (classStr.includes('ignite-element')) {
+      componentNode.metadata.tags.push('ignite-component');
     }
   }
 
@@ -919,9 +821,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Security considerations
    */
   private analyzeLitHtmlTemplates(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     const renderMethod = Object.getPrototypeOf(component).render;
@@ -942,10 +842,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     this.analyzeTemplateSecurity(renderStr, componentNode);
   }
 
-  private analyzeTemplateStructure(
-    renderStr: string,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeTemplateStructure(renderStr: string, componentNode: ComponentNode): void {
     // Check for template complexity
     const templatePatterns = {
       conditionals: /\$\{.*\?.*:.*\}/g,
@@ -965,19 +862,16 @@ export class WebComponentsAnalyzer implements Analyzer {
     });
   }
 
-  private analyzeDirectiveUsage(
-    renderStr: string,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeDirectiveUsage(renderStr: string, componentNode: ComponentNode): void {
     const directivePatterns = [
-      "repeat",
-      "cache",
-      "classMap",
-      "styleMap",
-      "ref",
-      "until",
-      "guard",
-      "live",
+      'repeat',
+      'cache',
+      'classMap',
+      'styleMap',
+      'ref',
+      'until',
+      'guard',
+      'live',
     ];
 
     directivePatterns.forEach((directive: string) => {
@@ -987,10 +881,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     });
   }
 
-  private analyzeTemplatePerformance(
-    renderStr: string,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeTemplatePerformance(renderStr: string, componentNode: ComponentNode): void {
     // Check for performance issues
     const performanceIssues = {
       nestedLoops: /for\s*\([^)]*\)\s*{[^}]*for\s*\([^)]*\)/,
@@ -998,32 +889,26 @@ export class WebComponentsAnalyzer implements Analyzer {
       largeArrays: /new Array\(\d{4,}\)/,
     };
 
-    Object.entries(performanceIssues).forEach(
-      ([issue, pattern]: [string, RegExp]) => {
-        const matches = renderStr.match(pattern);
-        if (matches && matches.length > 0) {
-          componentNode.metadata.tags.push(`performance-${issue}`);
-          if (!componentNode.metadata.performance) {
-            componentNode.metadata.performance = {
-              renderTime: 0,
-              memoryUsage: 0,
-              eventHandling: 0,
-            };
-          }
-          if (componentNode.metadata.performance) {
-            componentNode.metadata.performance.renderTime =
-              (componentNode.metadata.performance.renderTime || 0) +
-              matches.length * 10;
-          }
+    Object.entries(performanceIssues).forEach(([issue, pattern]: [string, RegExp]) => {
+      const matches = renderStr.match(pattern);
+      if (matches && matches.length > 0) {
+        componentNode.metadata.tags.push(`performance-${issue}`);
+        if (!componentNode.metadata.performance) {
+          componentNode.metadata.performance = {
+            renderTime: 0,
+            memoryUsage: 0,
+            eventHandling: 0,
+          };
+        }
+        if (componentNode.metadata.performance) {
+          componentNode.metadata.performance.renderTime =
+            (componentNode.metadata.performance.renderTime || 0) + matches.length * 10;
         }
       }
-    );
+    });
   }
 
-  private analyzeTemplateSecurity(
-    renderStr: string,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeTemplateSecurity(renderStr: string, componentNode: ComponentNode): void {
     // Check for security issues
     const securityIssues = {
       unsafeHtml: /unsafeHTML/,
@@ -1031,23 +916,21 @@ export class WebComponentsAnalyzer implements Analyzer {
       evalUsage: /eval\(|new Function\(/,
     };
 
-    Object.entries(securityIssues).forEach(
-      ([issue, pattern]: [string, RegExp]) => {
-        if (pattern.test(renderStr)) {
-          componentNode.metadata.tags.push(`security-risk-${issue}`);
-          if (!componentNode.metadata.security) {
-            componentNode.metadata.security = {
-              xssPrevention: false,
-              eventHandlerSecurity: false,
-              propertyValidation: false,
-            };
-          }
-          if (componentNode.metadata.security) {
-            componentNode.metadata.security.xssPrevention = false;
-          }
+    Object.entries(securityIssues).forEach(([issue, pattern]: [string, RegExp]) => {
+      if (pattern.test(renderStr)) {
+        componentNode.metadata.tags.push(`security-risk-${issue}`);
+        if (!componentNode.metadata.security) {
+          componentNode.metadata.security = {
+            xssPrevention: false,
+            eventHandlerSecurity: false,
+            propertyValidation: false,
+          };
+        }
+        if (componentNode.metadata.security) {
+          componentNode.metadata.security.xssPrevention = false;
         }
       }
-    );
+    });
   }
 
   // MEMORY_ANCHOR: {core} security_analysis
@@ -1061,9 +944,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Property validation
    */
   private analyzeSecurity(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     // Analyze input sanitization
@@ -1077,35 +958,26 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Analyze template security
     this.analyzeTemplateSecurity(
-      Object.getPrototypeOf(component).render?.toString() || "",
-      componentNode
+      Object.getPrototypeOf(component).render?.toString() || '',
+      componentNode,
     );
   }
 
-  private analyzeInputSanitization(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeInputSanitization(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for sanitization patterns
-    const sanitizationPatterns = [
-      "sanitize",
-      "escape",
-      "encode",
-      "validate",
-      "filter",
-    ];
+    const sanitizationPatterns = ['sanitize', 'escape', 'encode', 'validate', 'filter'];
 
     let hasSanitization = false;
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (sanitizationPatterns.some((pattern) => methodStr.includes(pattern))) {
+      if (sanitizationPatterns.some(pattern => methodStr.includes(pattern))) {
         hasSanitization = true;
-        componentNode.metadata.tags.push("input-sanitization");
+        componentNode.metadata.tags.push('input-sanitization');
       }
     });
 
@@ -1119,25 +991,22 @@ export class WebComponentsAnalyzer implements Analyzer {
     componentNode.metadata.security.xssPrevention = hasSanitization;
   }
 
-  private analyzeEventHandlerSecurity(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeEventHandlerSecurity(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for security issues in event handlers
-    const securityIssues = methods.some((method) => {
+    const securityIssues = methods.some(method => {
       const methodStr = prototype[method].toString().toLowerCase();
       return (
-        methodStr.includes("eval(") ||
-        methodStr.includes("function(") ||
-        methodStr.includes("settimeout(") ||
-        methodStr.includes("setinterval(") ||
-        methodStr.includes("innerhtml") ||
-        methodStr.includes("outerhtml")
+        methodStr.includes('eval(') ||
+        methodStr.includes('function(') ||
+        methodStr.includes('settimeout(') ||
+        methodStr.includes('setinterval(') ||
+        methodStr.includes('innerhtml') ||
+        methodStr.includes('outerhtml')
       );
     });
 
@@ -1151,17 +1020,12 @@ export class WebComponentsAnalyzer implements Analyzer {
     componentNode.metadata.security.eventHandlerSecurity = !securityIssues;
   }
 
-  private analyzePropertySecurity(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
-    const staticProps =
-      (component.constructor as typeof LitElement).properties || {};
+  private analyzePropertySecurity(component: LitElement, componentNode: ComponentNode): void {
+    const staticProps = (component.constructor as typeof LitElement).properties || {};
 
     // Check if properties have validation
     const hasValidation = Object.values(staticProps).some(
-      (config) =>
-        config && (config.hasChanged || config.converter || config.type)
+      config => config && (config.hasChanged || config.converter || config.type),
     );
 
     if (!componentNode.metadata.security) {
@@ -1185,9 +1049,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Color contrast
    */
   private analyzeAccessibility(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     // Analyze ARIA attributes
@@ -1203,10 +1065,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     this.analyzeColorContrast(component, componentNode);
   }
 
-  private analyzeAriaAttributes(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeAriaAttributes(component: LitElement, componentNode: ComponentNode): void {
     const renderMethod = Object.getPrototypeOf(component).render;
     if (!renderMethod) return;
 
@@ -1227,7 +1086,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     componentNode.metadata.accessibility.ariaAttributes = [
       ...new Set([
         ...ariaAttributes,
-        ...roles.map((r: string) => r.match(/["']([^"']+)["']/)?.[1] || ""),
+        ...roles.map((r: string) => r.match(/["']([^"']+)["']/)?.[1] || ''),
       ]),
     ];
 
@@ -1236,23 +1095,20 @@ export class WebComponentsAnalyzer implements Analyzer {
       ariaAttributes.length > 0 || roles.length > 0;
   }
 
-  private analyzeKeyboardNavigation(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeKeyboardNavigation(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for keyboard event handlers
-    const hasKeyboardHandlers = methods.some((method) => {
+    const hasKeyboardHandlers = methods.some(method => {
       const methodStr = prototype[method].toString().toLowerCase();
       return (
-        methodStr.includes("keydown") ||
-        methodStr.includes("keyup") ||
-        methodStr.includes("keypress") ||
-        methodStr.includes("onkey")
+        methodStr.includes('keydown') ||
+        methodStr.includes('keyup') ||
+        methodStr.includes('keypress') ||
+        methodStr.includes('onkey')
       );
     });
 
@@ -1266,10 +1122,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     componentNode.metadata.accessibility.keyboardSupport = hasKeyboardHandlers;
   }
 
-  private analyzeScreenReaderSupport(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeScreenReaderSupport(component: LitElement, componentNode: ComponentNode): void {
     const renderMethod = Object.getPrototypeOf(component).render;
     if (!renderMethod) return;
 
@@ -1277,16 +1130,16 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Check for screen reader friendly patterns
     const screenReaderPatterns = [
-      "aria-label",
-      "aria-describedby",
-      "aria-live",
-      "role=",
-      "alt=",
-      "title=",
+      'aria-label',
+      'aria-describedby',
+      'aria-live',
+      'role=',
+      'alt=',
+      'title=',
     ];
 
-    const hasScreenReaderSupport = screenReaderPatterns.some((pattern) =>
-      renderStr.includes(pattern)
+    const hasScreenReaderSupport = screenReaderPatterns.some(pattern =>
+      renderStr.includes(pattern),
     );
 
     if (!componentNode.metadata.accessibility) {
@@ -1296,14 +1149,10 @@ export class WebComponentsAnalyzer implements Analyzer {
         ariaAttributes: [],
       };
     }
-    componentNode.metadata.accessibility.screenReaderSupport =
-      hasScreenReaderSupport;
+    componentNode.metadata.accessibility.screenReaderSupport = hasScreenReaderSupport;
   }
 
-  private analyzeColorContrast(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeColorContrast(component: LitElement, componentNode: ComponentNode): void {
     // Note: This is a simplified version. In a real implementation,
     // we would need to analyze the actual rendered component and its styles
     const renderMethod = Object.getPrototypeOf(component).render;
@@ -1313,12 +1162,12 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     // Check for color-related properties
     const hasColorProperties =
-      renderStr.includes("color:") ||
-      renderStr.includes("background-color:") ||
-      renderStr.includes("background:");
+      renderStr.includes('color:') ||
+      renderStr.includes('background-color:') ||
+      renderStr.includes('background:');
 
     if (hasColorProperties) {
-      componentNode.metadata.tags.push("uses-colors");
+      componentNode.metadata.tags.push('uses-colors');
     }
   }
 
@@ -1333,9 +1182,7 @@ export class WebComponentsAnalyzer implements Analyzer {
    * - Performance metrics
    */
   private analyzePWACompatibility(component: LitElement): void {
-    const componentNode = this.components.get(
-      this.generateComponentId(component)
-    );
+    const componentNode = this.components.get(this.generateComponentId(component));
     if (!componentNode) return;
 
     // Analyze offline capabilities
@@ -1351,83 +1198,68 @@ export class WebComponentsAnalyzer implements Analyzer {
     this.analyzePWAPerformance(component, componentNode);
   }
 
-  private analyzeOfflineCapabilities(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeOfflineCapabilities(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for offline-related patterns
-    const offlinePatterns = [
-      "offline",
-      "navigator.onLine",
-      "caches.",
-      "indexedDB",
-      "localStorage",
-    ];
+    const offlinePatterns = ['offline', 'navigator.onLine', 'caches.', 'indexedDB', 'localStorage'];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (offlinePatterns.some((pattern) => methodStr.includes(pattern))) {
-        componentNode.metadata.tags.push("offline-capable");
+      if (offlinePatterns.some(pattern => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push('offline-capable');
       }
     });
   }
 
   private analyzeServiceWorkerIntegration(
     component: LitElement,
-    componentNode: ComponentNode
+    componentNode: ComponentNode,
   ): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for service worker integration
-    const swPatterns = ["serviceWorker", "navigator.serviceWorker", "workbox"];
+    const swPatterns = ['serviceWorker', 'navigator.serviceWorker', 'workbox'];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (swPatterns.some((pattern) => methodStr.includes(pattern))) {
-        componentNode.metadata.tags.push("service-worker-integrated");
+      if (swPatterns.some(pattern => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push('service-worker-integrated');
       }
     });
   }
 
-  private analyzeCachingStrategy(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzeCachingStrategy(component: LitElement, componentNode: ComponentNode): void {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for caching patterns
     const cachePatterns = [
-      "cache.match",
-      "cache.put",
-      "cache.add",
-      "caches.open",
-      "localStorage.setItem",
-      "localStorage.getItem",
+      'cache.match',
+      'cache.put',
+      'cache.add',
+      'caches.open',
+      'localStorage.setItem',
+      'localStorage.getItem',
     ];
 
-    methods.forEach((method) => {
+    methods.forEach(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      if (cachePatterns.some((pattern) => methodStr.includes(pattern))) {
-        componentNode.metadata.tags.push("implements-caching");
+      if (cachePatterns.some(pattern => methodStr.includes(pattern))) {
+        componentNode.metadata.tags.push('implements-caching');
       }
     });
   }
 
-  private analyzePWAPerformance(
-    component: LitElement,
-    componentNode: ComponentNode
-  ): void {
+  private analyzePWAPerformance(component: LitElement, componentNode: ComponentNode): void {
     const renderMethod = Object.getPrototypeOf(component).render;
     if (!renderMethod) return;
 
@@ -1447,7 +1279,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     });
 
     // Update performance metadata
-    if (componentNode.metadata.tags.includes("pwa-heavyComputation")) {
+    if (componentNode.metadata.tags.includes('pwa-heavyComputation')) {
       if (!componentNode.metadata.performance) {
         componentNode.metadata.performance = {
           renderTime: 0,
@@ -1466,19 +1298,17 @@ export class WebComponentsAnalyzer implements Analyzer {
     if (config.type) return config.type;
     if (config.converter) {
       const converterStr = config.converter.toString();
-      if (converterStr.includes("String")) return "string";
-      if (converterStr.includes("Number")) return "number";
-      if (converterStr.includes("Boolean")) return "boolean";
-      if (converterStr.includes("Array")) return "array";
-      if (converterStr.includes("Object")) return "object";
+      if (converterStr.includes('String')) return 'string';
+      if (converterStr.includes('Number')) return 'number';
+      if (converterStr.includes('Boolean')) return 'boolean';
+      if (converterStr.includes('Array')) return 'array';
+      if (converterStr.includes('Object')) return 'object';
     }
-    return "unknown";
+    return 'unknown';
   }
 
   private hasDefaultValue(config: any): boolean {
-    return (
-      config.hasOwnProperty("value") || config.hasOwnProperty("defaultValue")
-    );
+    return config.hasOwnProperty('value') || config.hasOwnProperty('defaultValue');
   }
 
   private getDefaultValue(config: any): any {
@@ -1491,12 +1321,12 @@ export class WebComponentsAnalyzer implements Analyzer {
     const paramMatch = methodStr.match(/\(([^)]*)\)/);
 
     if (paramMatch) {
-      const paramNames = paramMatch[1].split(",").map((p) => p.trim());
-      paramNames.forEach((name) => {
+      const paramNames = paramMatch[1].split(',').map(p => p.trim());
+      paramNames.forEach(name => {
         if (name) {
           params.push({
             name,
-            type: "any",
+            type: 'any',
             required: true,
           });
         }
@@ -1506,10 +1336,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     return params;
   }
 
-  private analyzeComponentPerformance(
-    component: LitElement,
-    node: ComponentNode
-  ): void {
+  private analyzeComponentPerformance(component: LitElement, node: ComponentNode): void {
     // Initialize performance metrics if not present
     if (!node.metadata.performance) {
       node.metadata.performance = {
@@ -1538,10 +1365,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     }
   }
 
-  private analyzeComponentSecurity(
-    component: LitElement,
-    node: ComponentNode
-  ): void {
+  private analyzeComponentSecurity(component: LitElement, node: ComponentNode): void {
     // Initialize security metrics if not present
     if (!node.metadata.security) {
       node.metadata.security = {
@@ -1570,10 +1394,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     }
   }
 
-  private analyzeComponentAccessibility(
-    component: LitElement,
-    node: ComponentNode
-  ): void {
+  private analyzeComponentAccessibility(component: LitElement, node: ComponentNode): void {
     // Initialize accessibility metrics if not present
     if (!node.metadata.accessibility) {
       node.metadata.accessibility = {
@@ -1623,68 +1444,58 @@ export class WebComponentsAnalyzer implements Analyzer {
   private hasXSSPrevention(component: LitElement): boolean {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for sanitization patterns
-    const sanitizationPatterns = [
-      "sanitize",
-      "escape",
-      "encode",
-      "validate",
-      "filter",
-    ];
+    const sanitizationPatterns = ['sanitize', 'escape', 'encode', 'validate', 'filter'];
 
-    return methods.some((method) => {
+    return methods.some(method => {
       const methodStr = prototype[method].toString().toLowerCase();
-      return sanitizationPatterns.some((pattern) =>
-        methodStr.includes(pattern)
-      );
+      return sanitizationPatterns.some(pattern => methodStr.includes(pattern));
     });
   }
 
   private hasSecureEventHandlers(component: LitElement): boolean {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
     // Check for security issues in event handlers
-    return !methods.some((method) => {
+    return !methods.some(method => {
       const methodStr = prototype[method].toString().toLowerCase();
       return (
-        methodStr.includes("eval(") ||
-        methodStr.includes("function(") ||
-        methodStr.includes("settimeout(") ||
-        methodStr.includes("setinterval(") ||
-        methodStr.includes("innerhtml") ||
-        methodStr.includes("outerhtml")
+        methodStr.includes('eval(') ||
+        methodStr.includes('function(') ||
+        methodStr.includes('settimeout(') ||
+        methodStr.includes('setinterval(') ||
+        methodStr.includes('innerhtml') ||
+        methodStr.includes('outerhtml')
       );
     });
   }
 
   private hasPropertyValidation(component: LitElement): boolean {
-    const staticProps =
-      (component.constructor as typeof LitElement).properties || {};
+    const staticProps = (component.constructor as typeof LitElement).properties || {};
     return Object.values(staticProps).some(
-      (config) =>
-        config && (config.hasChanged || config.converter || config.type)
+      config => config && (config.hasChanged || config.converter || config.type),
     );
   }
 
   private hasKeyboardSupport(component: LitElement): boolean {
     const prototype = Object.getPrototypeOf(component);
     const methods = Object.getOwnPropertyNames(prototype).filter(
-      (name) => typeof prototype[name] === "function"
+      name => typeof prototype[name] === 'function',
     );
 
-    return methods.some((method) => {
+    return methods.some(method => {
       const methodStr = prototype[method].toString().toLowerCase();
       return (
-        methodStr.includes("keydown") ||
-        methodStr.includes("keyup") ||
-        methodStr.includes("keypress") ||
-        methodStr.includes("onkey")
+        methodStr.includes('keydown') ||
+        methodStr.includes('keyup') ||
+        methodStr.includes('keypress') ||
+        methodStr.includes('onkey')
       );
     });
   }
@@ -1695,15 +1506,15 @@ export class WebComponentsAnalyzer implements Analyzer {
 
     const renderStr = renderMethod.toString();
     const screenReaderPatterns = [
-      "aria-label",
-      "aria-describedby",
-      "aria-live",
-      "role=",
-      "alt=",
-      "title=",
+      'aria-label',
+      'aria-describedby',
+      'aria-live',
+      'role=',
+      'alt=',
+      'title=',
     ];
 
-    return screenReaderPatterns.some((pattern) => renderStr.includes(pattern));
+    return screenReaderPatterns.some(pattern => renderStr.includes(pattern));
   }
 
   private getAriaAttributes(component: LitElement): string[] {
@@ -1717,7 +1528,7 @@ export class WebComponentsAnalyzer implements Analyzer {
     return [
       ...new Set([
         ...ariaAttributes,
-        ...roles.map((r: string) => r.match(/["']([^"']+)["']/)?.[1] || ""),
+        ...roles.map((r: string) => r.match(/["']([^"']+)["']/)?.[1] || ''),
       ]),
     ];
   }

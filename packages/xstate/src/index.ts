@@ -3,5 +3,5 @@
  * @module @mcp/xstate
  */
 
-export { XStateAnalyzer } from './analyzer';
-export type { XStateAnalysisData } from './analyzer';
+export * from './analyzer.js';
+export * from './server.js';

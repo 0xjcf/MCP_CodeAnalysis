@@ -1,12 +1,12 @@
-import { describe, it, expect } from "vitest";
-import { analyzeCode, getMetrics } from "../features/basic-analysis/analyzer";
+import { describe, it, expect } from 'vitest';
+import { analyzeCode, getMetrics } from '../features/basic-analysis/analyzer.js';
 
-describe("Complexity Analyzer Edge Cases", () => {
+describe('Complexity Analyzer Edge Cases', () => {
   // Test empty file analysis
-  it("should handle empty files correctly", async () => {
+  it('should handle empty files correctly', async () => {
     const result = await getMetrics({
-      fileContent: "",
-      language: "typescript",
+      fileContent: '',
+      language: 'typescript',
     });
     expect(result).toBeDefined();
     expect(result.complexity).toBeDefined();
@@ -15,7 +15,7 @@ describe("Complexity Analyzer Edge Cases", () => {
   });
 
   // Test file with only comments
-  it("should handle files with only comments", async () => {
+  it('should handle files with only comments', async () => {
     const code = `
       // This is a comment
       /* This is a block comment */
@@ -25,7 +25,7 @@ describe("Complexity Analyzer Edge Cases", () => {
     `;
     const result = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
     expect(result).toBeDefined();
     expect(result.complexity).toBeDefined();
@@ -34,7 +34,7 @@ describe("Complexity Analyzer Edge Cases", () => {
   });
 
   // Test file with complex nested structures
-  it("should handle complex nested structures", async () => {
+  it('should handle complex nested structures', async () => {
     const code = `
       function complexFunction() {
         if (condition1) {
@@ -57,7 +57,7 @@ describe("Complexity Analyzer Edge Cases", () => {
     `;
     const result = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
     expect(result).toBeDefined();
     expect(result.complexity).toBeDefined();
@@ -66,7 +66,7 @@ describe("Complexity Analyzer Edge Cases", () => {
   });
 
   // Test file with Unicode characters
-  it("should handle Unicode characters correctly", async () => {
+  it('should handle Unicode characters correctly', async () => {
     const code = `
       // Test with Unicode characters
       const 你好 = "Hello";
@@ -76,7 +76,7 @@ describe("Complexity Analyzer Edge Cases", () => {
     `;
     const result = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
     expect(result).toBeDefined();
     expect(result.complexity).toBeDefined();
@@ -85,7 +85,7 @@ describe("Complexity Analyzer Edge Cases", () => {
   });
 
   // Test file with maximum allowed complexity
-  it("should handle files with maximum allowed complexity", async () => {
+  it('should handle files with maximum allowed complexity', async () => {
     const code = `
       function maxComplexity() {
         if (c1) {
@@ -114,7 +114,7 @@ describe("Complexity Analyzer Edge Cases", () => {
     `;
     const result = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
     expect(result).toBeDefined();
     expect(result.complexity).toBeDefined();
@@ -123,7 +123,7 @@ describe("Complexity Analyzer Edge Cases", () => {
   });
 
   // Test property-based assertions
-  it("should maintain property-based invariants", async () => {
+  it('should maintain property-based invariants', async () => {
     const code = `
       function testFunction() {
         if (condition) {
@@ -134,27 +134,25 @@ describe("Complexity Analyzer Edge Cases", () => {
     `;
     const result = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
 
     // Property 1: Cyclomatic complexity should be non-negative
     expect(result.complexity.cyclomatic).toBeGreaterThanOrEqual(1);
 
     // Property 2: Cognitive complexity should be >= cyclomatic complexity
-    expect(result.complexity.cognitive).toBeGreaterThanOrEqual(
-      result.complexity.cyclomatic
-    );
+    expect(result.complexity.cognitive).toBeGreaterThanOrEqual(result.complexity.cyclomatic);
 
     // Property 3: Analysis should be idempotent
     const result2 = await getMetrics({
       fileContent: code,
-      language: "typescript",
+      language: 'typescript',
     });
     expect(result).toEqual(result2);
   });
 
   // Test error handling
-  it("should handle invalid input gracefully", async () => {
+  it('should handle invalid input gracefully', async () => {
     // @ts-ignore - Testing invalid input
     await expect(getMetrics({})).rejects.toThrow();
     // @ts-ignore - Testing invalid input

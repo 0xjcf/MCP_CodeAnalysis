@@ -1,5 +1,5 @@
-import Redis from "ioredis";
-import { createHash } from "crypto";
+import { Redis } from 'ioredis';
+import { createHash } from 'crypto';
 
 /**
  * Configuration options for the Redis Cache Store
@@ -74,15 +74,15 @@ export class RedisCacheStore {
    */
   constructor(options: RedisCacheStoreOptions) {
     this.client = new Redis(options.redisUrl);
-    this.prefix = options.prefix || "mcp:cache:";
+    this.prefix = options.prefix || 'mcp:cache:';
     this.defaultTtl = options.defaultTtl || 300; // 5 minutes default
     this.memCacheSize = options.memCacheSize || 1000;
     this.useMemoryCache = options.useMemoryCache !== false;
 
     // Set up error handler for Redis client
-    if (typeof this.client.on === "function") {
-      this.client.on("error", (err: Error) => {
-        console.error("Redis cache client error:", err);
+    if (typeof this.client.on === 'function') {
+      this.client.on('error', (err: Error) => {
+        console.error('Redis cache client error:', err);
       });
     }
   }
@@ -94,7 +94,7 @@ export class RedisCacheStore {
     try {
       await this.client.quit();
     } catch (error) {
-      console.error("Error disconnecting Redis cache client:", error);
+      console.error('Error disconnecting Redis cache client:', error);
     }
   }
 
@@ -117,12 +117,12 @@ export class RedisCacheStore {
    * @returns SHA-256 hash string
    */
   private createKeyHash(data: any): string {
-    if (typeof data === "string") {
+    if (typeof data === 'string') {
       return data;
     }
 
     const jsonStr = JSON.stringify(data);
-    return createHash("sha256").update(jsonStr).digest("hex");
+    return createHash('sha256').update(jsonStr).digest('hex');
   }
 
   /**
@@ -166,7 +166,7 @@ export class RedisCacheStore {
 
       return item.value;
     } catch (error) {
-      console.error("Failed to get item from Redis cache:", error);
+      console.error('Failed to get item from Redis cache:', error);
       return null; // Fail open for cache issues
     }
   }
@@ -178,12 +178,7 @@ export class RedisCacheStore {
    * @param ttl TTL in seconds (optional, uses default if not specified)
    * @param namespace Optional namespace
    */
-  public async set<T>(
-    key: string,
-    value: T,
-    ttl?: number,
-    namespace?: string
-  ): Promise<void> {
+  public async set<T>(key: string, value: T, ttl?: number, namespace?: string): Promise<void> {
     const cacheKey = this.getCacheKey(this.createKeyHash(key), namespace);
     const ttlValue = ttl ?? this.defaultTtl;
     const now = Date.now();
@@ -202,12 +197,12 @@ export class RedisCacheStore {
     // Update Redis cache
     try {
       if (ttlValue > 0) {
-        await this.client.set(cacheKey, JSON.stringify(item), "EX", ttlValue);
+        await this.client.set(cacheKey, JSON.stringify(item), 'EX', ttlValue);
       } else {
         await this.client.set(cacheKey, JSON.stringify(item));
       }
     } catch (error) {
-      console.error("Failed to set item in Redis cache:", error);
+      console.error('Failed to set item in Redis cache:', error);
       // Continue even if Redis fails - we still have memory cache
     }
   }
@@ -258,7 +253,7 @@ export class RedisCacheStore {
     try {
       await this.client.del(cacheKey);
     } catch (error) {
-      console.error("Failed to delete item from Redis cache:", error);
+      console.error('Failed to delete item from Redis cache:', error);
     }
   }
 
@@ -285,7 +280,7 @@ export class RedisCacheStore {
         await this.client.del(...keys);
       }
     } catch (error) {
-      console.error("Failed to invalidate namespace in Redis cache:", error);
+      console.error('Failed to invalidate namespace in Redis cache:', error);
     }
   }
 
@@ -306,7 +301,7 @@ export class RedisCacheStore {
         await this.client.del(...keys);
       }
     } catch (error) {
-      console.error("Failed to clear Redis cache:", error);
+      console.error('Failed to clear Redis cache:', error);
     }
   }
 
@@ -316,10 +311,7 @@ export class RedisCacheStore {
    * @param namespace Optional namespace
    * @returns Object with keys mapped to their cached values (or null if not found)
    */
-  public async getMany<T>(
-    keys: string[],
-    namespace?: string
-  ): Promise<Record<string, T | null>> {
+  public async getMany<T>(keys: string[], namespace?: string): Promise<Record<string, T | null>> {
     const result: Record<string, T | null> = {};
     const missingKeys: string[] = [];
     const keyMapping: Record<string, string> = {};
@@ -331,18 +323,11 @@ export class RedisCacheStore {
         keyMapping[cacheKey] = key;
 
         const memItem = this.memCache.get(cacheKey);
-        if (
-          memItem &&
-          (memItem.expiresAt === null || memItem.expiresAt > Date.now())
-        ) {
+        if (memItem && (memItem.expiresAt === null || memItem.expiresAt > Date.now())) {
           result[key] = memItem.value as T;
           this.memCacheStats.hits++;
         } else {
-          if (
-            memItem &&
-            memItem.expiresAt !== null &&
-            memItem.expiresAt <= Date.now()
-          ) {
+          if (memItem && memItem.expiresAt !== null && memItem.expiresAt <= Date.now()) {
             // Remove expired item from memory cache
             this.memCache.delete(cacheKey);
           }
@@ -390,21 +375,18 @@ export class RedisCacheStore {
 
           // Update memory cache if enabled
           if (this.useMemoryCache) {
-            const cacheKey = this.getCacheKey(
-              this.createKeyHash(originalKey),
-              namespace
-            );
+            const cacheKey = this.getCacheKey(this.createKeyHash(originalKey), namespace);
             this.setMemoryCache(cacheKey, item);
           }
 
           result[originalKey] = item.value;
         } catch (parseError) {
-          console.error("Failed to parse Redis cache item:", parseError);
+          console.error('Failed to parse Redis cache item:', parseError);
           result[originalKey] = null;
         }
       }
     } catch (error) {
-      console.error("Failed to get items from Redis cache:", error);
+      console.error('Failed to get items from Redis cache:', error);
       // Set remaining keys to null
       for (const key of missingKeys) {
         if (!(key in result)) {
@@ -425,7 +407,7 @@ export class RedisCacheStore {
   public async setMany<T>(
     items: Record<string, T>,
     ttl?: number,
-    namespace?: string
+    namespace?: string,
   ): Promise<void> {
     const ttlValue = ttl ?? this.defaultTtl;
     const now = Date.now();
@@ -450,7 +432,7 @@ export class RedisCacheStore {
 
         // Add to Redis pipeline
         if (ttlValue > 0) {
-          pipeline.set(cacheKey, JSON.stringify(item), "EX", ttlValue);
+          pipeline.set(cacheKey, JSON.stringify(item), 'EX', ttlValue);
         } else {
           pipeline.set(cacheKey, JSON.stringify(item));
         }
@@ -458,7 +440,7 @@ export class RedisCacheStore {
 
       await pipeline.exec();
     } catch (error) {
-      console.error("Failed to set items in Redis cache:", error);
+      console.error('Failed to set items in Redis cache:', error);
       // Continue even if Redis fails - we still have memory cache
     }
   }
@@ -470,8 +452,7 @@ export class RedisCacheStore {
   public getStats(): any {
     const hitRate =
       this.memCacheStats.hits + this.memCacheStats.misses > 0
-        ? this.memCacheStats.hits /
-          (this.memCacheStats.hits + this.memCacheStats.misses)
+        ? this.memCacheStats.hits / (this.memCacheStats.hits + this.memCacheStats.misses)
         : 0;
 
     return {

@@ -55,7 +55,7 @@ const ruleRegistry: QualityRule[] = [
     analyze: (content, filePath) => {
       const issues: QualityIssue[] = [];
       const lines = content.split('\n');
-      
+
       lines.forEach((line, i) => {
         if (/console\.(log|warn|error|info|debug)\(/.test(line)) {
           issues.push({
@@ -65,13 +65,13 @@ const ruleRegistry: QualityRule[] = [
             line: i + 1,
             message: 'Console statement should be removed in production code',
             rule: 'no-console',
-            context: line.trim()
+            context: line.trim(),
           });
         }
       });
-      
+
       return issues;
-    }
+    },
   },
   {
     id: 'max-line-length',
@@ -82,7 +82,7 @@ const ruleRegistry: QualityRule[] = [
     analyze: (content, filePath) => {
       const issues: QualityIssue[] = [];
       const lines = content.split('\n');
-      
+
       lines.forEach((line, i) => {
         if (line.length > 100) {
           issues.push({
@@ -91,13 +91,13 @@ const ruleRegistry: QualityRule[] = [
             file: filePath,
             line: i + 1,
             message: 'Line exceeds 100 characters',
-            rule: 'max-line-length'
+            rule: 'max-line-length',
           });
         }
       });
-      
+
       return issues;
-    }
+    },
   },
   {
     id: 'no-empty-catch',
@@ -108,13 +108,13 @@ const ruleRegistry: QualityRule[] = [
     analyze: (content, filePath) => {
       const issues: QualityIssue[] = [];
       const lines = content.split('\n');
-      
+
       for (let i = 0; i < lines.length; i++) {
         if (/catch\s*\([^)]*\)\s*{/.test(lines[i])) {
           // Look for empty catch block
           let j = i + 1;
           let isEmpty = true;
-          
+
           while (j < lines.length && !lines[j].includes('}')) {
             const trimmed = lines[j].trim();
             if (trimmed !== '' && !trimmed.startsWith('//')) {
@@ -123,7 +123,7 @@ const ruleRegistry: QualityRule[] = [
             }
             j++;
           }
-          
+
           if (isEmpty) {
             issues.push({
               type: 'error-handling',
@@ -132,14 +132,14 @@ const ruleRegistry: QualityRule[] = [
               line: i + 1,
               message: 'Empty catch block',
               rule: 'no-empty-catch',
-              context: lines[i].trim()
+              context: lines[i].trim(),
             });
           }
         }
       }
-      
+
       return issues;
-    }
+    },
   },
   // Generic rules for all languages
   {
@@ -151,7 +151,7 @@ const ruleRegistry: QualityRule[] = [
     analyze: (content, filePath) => {
       const issues: QualityIssue[] = [];
       const lines = content.split('\n');
-      
+
       lines.forEach((line, i) => {
         if (/(?:\/\/|\/\*|#|<!--)\s*(?:TODO|FIXME|XXX)/.test(line)) {
           issues.push({
@@ -161,14 +161,14 @@ const ruleRegistry: QualityRule[] = [
             line: i + 1,
             message: 'TODO comment found',
             rule: 'no-todo-comments',
-            context: line.trim()
+            context: line.trim(),
           });
         }
       });
-      
+
       return issues;
-    }
-  }
+    },
+  },
 ];
 
 // Add this mapping function somewhere at the top of the file
@@ -183,18 +183,18 @@ function getSeverityKey(severity: string): 'errors' | 'warnings' | 'info' {
  */
 function applyRules(content: string, filePath: string, ext: string): QualityIssue[] {
   const issues: QualityIssue[] = [];
-  
+
   // Get applicable rules for this file type
-  const applicableRules = ruleRegistry.filter(rule => 
-    rule.languages.includes('*') || rule.languages.includes(ext.replace('.', ''))
+  const applicableRules = ruleRegistry.filter(
+    rule => rule.languages.includes('*') || rule.languages.includes(ext.replace('.', '')),
   );
-  
+
   // Apply each rule
   for (const rule of applicableRules) {
     const ruleIssues = rule.analyze(content, filePath);
     issues.push(...ruleIssues);
   }
-  
+
   return issues;
 }
 
@@ -208,13 +208,13 @@ export async function analyzeCodeQuality(
     excludePaths?: string[];
     maxIssues?: number;
     minSeverity?: 'error' | 'warning' | 'info';
-  } = {}
+  } = {},
 ): Promise<QualityAnalysisResult> {
   const {
     includePaths = ['**/*.*'],
     excludePaths = ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.git/**'],
     maxIssues = 1000,
-    minSeverity = 'warning'
+    minSeverity = 'warning',
   } = options;
 
   // Find files to analyze
@@ -222,7 +222,7 @@ export async function analyzeCodeQuality(
     cwd: repositoryPath,
     ignore: excludePaths,
     absolute: false,
-    nodir: true
+    nodir: true,
   });
 
   // Initialize result
@@ -230,7 +230,7 @@ export async function analyzeCodeQuality(
     issueCount: { errors: 0, warnings: 0, info: 0 },
     issues: [],
     summary: { byFile: {}, byRule: {} },
-    metadata: { analyzedFiles: files.length, languageBreakdown: {} }
+    metadata: { analyzedFiles: files.length, languageBreakdown: {} },
   };
 
   // Track language breakdown
@@ -242,7 +242,7 @@ export async function analyzeCodeQuality(
   try {
     // Get code metrics for complexity-based issues
     const metricsResult = await analyzeCodeMetrics(repositoryPath);
-    
+
     // Analyze each file
     let issueCount = 0;
     for (const file of files) {
@@ -252,10 +252,10 @@ export async function analyzeCodeQuality(
         const fullPath = path.join(repositoryPath, file);
         const ext = path.extname(file).toLowerCase();
         const content = await fs.readFile(fullPath, 'utf8');
-        
+
         // Apply rules to this file
         let fileIssues = applyRules(content, file, ext);
-        
+
         // Add complexity-based issues by integrating with metrics data
         const fileMetrics = metricsResult.files?.find(f => f.filePath === file);
         if (fileMetrics && fileMetrics.cyclomaticComplexity > 10) {
@@ -264,27 +264,28 @@ export async function analyzeCodeQuality(
             severity: 'warning',
             file: file,
             message: `High cyclomatic complexity: ${fileMetrics.cyclomaticComplexity}`,
-            rule: 'max-complexity'
+            rule: 'max-complexity',
           });
         }
-        
+
         // Filter by severity
         fileIssues = fileIssues.filter(issue => {
           if (minSeverity === 'error') return issue.severity === 'error';
-          if (minSeverity === 'warning') return issue.severity === 'error' || issue.severity === 'warning';
+          if (minSeverity === 'warning')
+            return issue.severity === 'error' || issue.severity === 'warning';
           return true;
         });
-        
+
         // Update summary
         if (fileIssues.length > 0) {
           result.summary.byFile[file] = { errors: 0, warnings: 0, info: 0 };
-          
+
           for (const issue of fileIssues) {
             // Update issue counts using the mapping function
             const severityKey = getSeverityKey(issue.severity);
             result.issueCount[severityKey]++;
             result.summary.byFile[file][severityKey]++;
-            
+
             // Update rule summary
             if (!result.summary.byRule[issue.rule]) {
               result.summary.byRule[issue.rule] = { errors: 0, warnings: 0, info: 0 };
@@ -292,11 +293,10 @@ export async function analyzeCodeQuality(
             result.summary.byRule[issue.rule][severityKey]++;
           }
         }
-        
+
         // Add issues to result
         result.issues.push(...fileIssues);
         issueCount += fileIssues.length;
-        
       } catch (error) {
         console.error(`Error analyzing file ${file}:`, error);
       }
@@ -306,18 +306,18 @@ export async function analyzeCodeQuality(
     console.error('Error getting code metrics:', error);
     // Continue with just the regular quality analysis
   }
-  
+
   // Sort issues by severity (errors first, then warnings, then info)
   result.issues.sort((a, b) => {
     const severityOrder = { error: 0, warning: 1, info: 2 };
     return severityOrder[a.severity] - severityOrder[b.severity];
   });
-  
+
   // Ensure we don't exceed maxIssues
   if (result.issues.length > maxIssues) {
     result.issues = result.issues.slice(0, maxIssues);
   }
-  
+
   return result;
 }
 
@@ -341,4 +341,4 @@ export function addQualityRule(rule: QualityRule): void {
  */
 export function getQualityRules(): QualityRule[] {
   return [...ruleRegistry];
-} 
+}

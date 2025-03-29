@@ -1,27 +1,44 @@
 {
   "name": "@mcp/core",
-  "version": "1.0.0",
-  "description": "Core functionality for MCP Code Analysis",
+  "version": "0.0.1",
+  "description": "Core package for Model Context Protocol",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
+    "start": "pnpm build && node dist/server-main.js",
     "test": "vitest",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "lint": "eslint src --ext .ts"
   },
   "dependencies": {
-    "typescript": "^5.0.0"
+    "@mcp/types": "workspace:*",
+    "@mcp/xstate": "workspace:^",
+    "@modelcontextprotocol/sdk": "^1.8.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0",
-    "vitest": "^1.0.0"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
+    "@jest/globals": "^29.7.0",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.17.27",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "eslint": "^8.56.0",
+    "figures": "^6.1.0",
+    "ignite-element": "^1.4.5",
+    "inquirer": "^12.5.0",
+    "ioredis": "^5.6.0",
+    "lit": "^3.1.0",
+    "lit-html": "^3.2.1",
+    "open": "^10.1.0",
+    "ora": "^8.2.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "typescript": "^5.3.3",
+    "uuid": "^11.1.0",
+    "vitest": "^1.2.2",
+    "xstate": "^5.19.2"
   }
 }

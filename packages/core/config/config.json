@@ -1,0 +1,27 @@
+{
+  "server": {
+    "name": "CodeAnalysisPro",
+    "version": "1.0.0",
+    "transport": "stdio"
+  },
+  "features": {
+    "basicAnalysis": true,
+    "memory": true,
+    "visualization": true,
+    "knowledgeGraph": true,
+    "multiRepo": true,
+    "evolution": true,
+    "socioTechnical": true,
+    "compliance": true,
+    "coaching": true,
+    "simulation": true,
+    "domainSpecific": true
+  },
+  "http": {
+    "port": 3000,
+    "host": "localhost"
+  },
+  "storage": {
+    "path": "./data"
+  }
+}

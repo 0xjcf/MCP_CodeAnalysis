@@ -3,18 +3,17 @@
  * @module @mcp/xstate
  */
 
-import { Analyzer, AnalysisResult, AnalysisOptions } from '@mcp/core';
+import { Analyzer, AnalysisOptions, AnalysisResult } from '@mcp/types';
 import { createMachine, AnyStateMachine } from 'xstate';
-import { inspect } from '@xstate/inspect';
 
 export interface XStateAnalysisData {
+  machineDefinition?: object;
   states: string[];
+  events: string[];
   transitions: Array<{
-    from: string;
-    to: string;
+    source: string;
+    target: string;
     event: string;
-    guards?: string[];
-    actions?: string[];
   }>;
   services: Array<{
     name: string;
@@ -40,7 +39,7 @@ export interface XStateAnalysisData {
 export class XStateAnalyzer implements Analyzer {
   private options: AnalysisOptions;
 
-  constructor(options: AnalysisOptions = {}) {
+  constructor(options: AnalysisOptions = { sourceCode: '' }) {
     this.options = {
       strict: true,
       verbose: false,
@@ -49,23 +48,39 @@ export class XStateAnalyzer implements Analyzer {
     };
   }
 
-  async analyze(source: string): Promise<AnalysisResult> {
+  async analyze(options: AnalysisOptions): Promise<AnalysisResult> {
     try {
-      // Parse the source code to extract the state machine definition
-      const machine = this.parseStateMachine(source);
-
-      // Analyze the state machine
+      const { sourceCode } = options;
+      const machine = this.parseStateMachine(sourceCode);
       const analysis = this.analyzeStateMachine(machine);
+
+      // Calculate performance metrics
+      const stateCount = analysis.states.length;
+      const transitionCount = analysis.transitions.length;
+      const serviceCount = analysis.services.length;
+      const complexity =
+        stateCount + transitionCount + serviceCount <= 5
+          ? 'low'
+          : stateCount + transitionCount + serviceCount <= 15
+            ? 'medium'
+            : 'high';
 
       return {
         success: true,
-        data: analysis,
+        data: {
+          ...analysis,
+          performance: {
+            stateCount,
+            transitionCount,
+            serviceCount,
+            complexity,
+          },
+        },
       };
     } catch (error) {
       return {
         success: false,
-        data: null,
-        errors: [error instanceof Error ? error : new Error(String(error))],
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
       };
     }
   }
@@ -128,6 +143,7 @@ export class XStateAnalyzer implements Analyzer {
     const services: XStateAnalysisData['services'] = [];
     const guards: XStateAnalysisData['guards'] = [];
     const actions: XStateAnalysisData['actions'] = [];
+    const events = new Set<string>();
 
     // Helper function to extract actions from a transition config
     const extractActions = (config: any) => {
@@ -142,6 +158,7 @@ export class XStateAnalyzer implements Analyzer {
       // Analyze transitions
       if (stateNode.on) {
         for (const [event, transition] of Object.entries(stateNode.on)) {
+          events.add(event);
           const transitionConfig = Array.isArray(transition) ? transition[0] : transition;
           const target =
             typeof transitionConfig.target === 'string'
@@ -151,11 +168,9 @@ export class XStateAnalyzer implements Analyzer {
                 : state;
 
           transitions.push({
-            from: state,
-            to: target,
+            source: state,
+            target: typeof target === 'string' ? target : target.key,
             event,
-            guards: transitionConfig.guard ? [String(transitionConfig.guard)] : undefined,
-            actions: transitionConfig.actions ? transitionConfig.actions.map(String) : undefined,
           });
 
           // Collect actions from transitions
@@ -211,33 +226,20 @@ export class XStateAnalyzer implements Analyzer {
       }
     }
 
-    // Calculate performance metrics
-    const performance = {
-      stateCount: states.length,
-      transitionCount: transitions.length,
-      serviceCount: services.length,
-      complexity: this.calculateComplexity(states.length, transitions.length, services.length),
-    };
-
     return {
+      machineDefinition: machine,
       states,
+      events: Array.from(events),
       transitions,
       services,
       guards,
       actions,
-      performance,
+      performance: {
+        stateCount: states.length,
+        transitionCount: transitions.length,
+        serviceCount: services.length,
+        complexity: 'low',
+      },
     };
-  }
-
-  private calculateComplexity(
-    stateCount: number,
-    transitionCount: number,
-    serviceCount: number,
-  ): 'low' | 'medium' | 'high' {
-    const complexityScore = stateCount * 2 + transitionCount + serviceCount * 3;
-
-    if (complexityScore < 10) return 'low';
-    if (complexityScore < 30) return 'medium';
-    return 'high';
   }
 }

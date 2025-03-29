@@ -3,8 +3,8 @@
  * @module @mcp/core
  */
 
-import Redis from 'ioredis';
-import { IAnalysisResult } from './index';
+import { Redis } from 'ioredis';
+import { AnalysisResult } from './index.js';
 
 export interface RedisSessionStoreOptions {
   host?: string;
@@ -54,7 +54,7 @@ export class RedisSessionStore {
     return `${this.keyPrefix}${sessionId}`;
   }
 
-  async set(sessionId: string, data: IAnalysisResult): Promise<void> {
+  async set(sessionId: string, data: AnalysisResult): Promise<void> {
     try {
       const key = this.getKey(sessionId);
       await this.client.setex(key, this.ttl, JSON.stringify(data));
@@ -64,7 +64,7 @@ export class RedisSessionStore {
     }
   }
 
-  async get(sessionId: string): Promise<IAnalysisResult | null> {
+  async get(sessionId: string): Promise<AnalysisResult | null> {
     try {
       const key = this.getKey(sessionId);
       const data = await this.client.get(key);

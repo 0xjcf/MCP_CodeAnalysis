@@ -13,12 +13,10 @@
  * are most appropriate for a given task.
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from "../utils/responses.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
+import { getToolRegistry } from '../registry/index.js';
+import { createSuccessResponse, createErrorResponse } from '../utils/responses.js';
 
 /**
  * Interface representing a tool's metadata
@@ -56,34 +54,21 @@ export interface ToolMetadata {
   /** Unique name of the tool */
   name: string;
   /** Detailed description of what the tool does */
-  description: string;
-  /** Parameters the tool accepts */
-  parameters: {
-    /** Parameter name */
-    name: string;
-    /** Parameter data type */
-    type: string;
-    /** Human-readable description of the parameter */
-    description: string;
-    /** Whether the parameter must be provided */
-    required: boolean;
-    /** Default value if not provided */
-    default?: any;
-    /** Example value for the parameter */
-    example?: any;
-  }[];
-  /** Usage examples for the tool */
-  examples?: {
-    /** Description of what the example demonstrates */
-    description: string;
-    /** Sample parameter values */
-    parameters: Record<string, any>;
-    /** Expected response (optional) */
-    response?: any;
-  }[];
+  description?: string;
   /** Category the tool belongs to (e.g., "code-analysis", "visualization") */
   category?: string;
-  /** Tags for filtering and discovery */
+  /** Schema of the tool */
+  schema: z.ZodType<any>;
+  /** Source of the tool */
+  source: string;
+  /** Timeout for the tool */
+  timeout?: number;
+  /** Rate limit for the tool */
+  rateLimit?: {
+    requests: number;
+    period: number;
+  };
+  /** Tags associated with the tool */
   tags?: string[];
 }
 
@@ -91,9 +76,9 @@ export interface ToolMetadata {
  * Register tool discovery features with the MCP server
  *
  * This function registers three discovery tools:
- * 1. list-available-tools: Lists all available tools with filtering options
+ * 1. list-tools: Lists all available tools with filtering options
  * 2. get-tool-details: Gets detailed information about a specific tool
- * 3. visualize-tool-relationships: Visualizes how tools relate to each other
+ * 3. get-tools-by-category: Gets tools by category
  *
  * These tools provide AI agents with the ability to discover and understand
  * the available functionality of the MCP server.
@@ -111,92 +96,52 @@ export interface ToolMetadata {
 export function registerToolDiscoveryFeatures(server: McpServer) {
   // Register a tool to list all available tools
   server.tool(
-    "list-available-tools",
+    'list-tools',
     {
-      category: z
-        .string()
-        .optional()
-        .describe(
-          "Filter tools by category (e.g., 'code-analysis', 'visualization')"
-        ),
-      tag: z
-        .string()
-        .optional()
-        .describe("Filter tools by tag (e.g., 'javascript', 'performance')"),
-      includeExamples: z
-        .boolean()
-        .default(true)
-        .describe("Include example usage in the response for each tool"),
+      category: z.string().optional().describe('Optional category to filter tools by'),
     },
-    async ({ category, tag, includeExamples }) => {
-      // In a real implementation, this would introspect the server
-      // For now, we'll build a static list of tool metadata
+    async ({ category }) => {
       const tools = getAvailableTools(server);
+      const filteredTools = category ? tools.filter(tool => tool.category === category) : tools;
 
-      // Filter by category if specified
-      let filteredTools = tools;
-      if (category) {
-        filteredTools = filteredTools.filter((t) => t.category === category);
-      }
-
-      // Filter by tag if specified
-      if (tag) {
-        filteredTools = filteredTools.filter((t) => t.tags?.includes(tag));
-      }
-
-      // Remove examples if not requested (to reduce response size)
-      if (!includeExamples) {
-        filteredTools = filteredTools.map((tool) => ({
-          ...tool,
-          examples: undefined,
-        }));
-      }
-
-      // Create a standard response
-      const response = createSuccessResponse(
-        { tools: filteredTools },
-        "list-available-tools"
-      );
-
-      // Return MCP-formatted response
       return {
         content: [
           {
-            type: "text",
-            text: JSON.stringify(response, null, 2),
+            type: 'text',
+            text: JSON.stringify(
+              createSuccessResponse({ tools: filteredTools }, 'list-tools'),
+              null,
+              2,
+            ),
           },
         ],
       };
-    }
+    },
   );
 
   // Register a tool to get detailed information about a specific tool
   server.tool(
-    "get-tool-details",
+    'get-tool-details',
     {
       toolName: z
         .string()
-        .describe(
-          "Name of the tool to get details for (e.g., 'analyze-repository')"
-        ),
+        .describe("Name of the tool to get details for (e.g., 'analyze-repository')"),
     },
     async ({ toolName }) => {
-      const tools = getAvailableTools(server);
-      const tool = tools.find((t) => t.name === toolName);
+      const registry = getToolRegistry();
+      const tool = registry.getTool(toolName);
 
       if (!tool) {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
-                createErrorResponse(
-                  `Tool '${toolName}' not found`,
-                  "get-tool-details",
-                  { code: 404 }
-                ),
+                createErrorResponse(`Tool '${toolName}' not found`, 'get-tool-details', {
+                  code: 404,
+                }),
                 null,
-                2
+                2,
               ),
             },
           ],
@@ -205,63 +150,56 @@ export function registerToolDiscoveryFeatures(server: McpServer) {
       }
 
       // Create a standard response
-      const response = createSuccessResponse({ tool }, "get-tool-details");
-
-      // Return MCP-formatted response
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify(response, null, 2),
-          },
-        ],
-      };
-    }
-  );
-
-  // Register a tool to visualize tool relationships
-  server.tool(
-    "visualize-tool-relationships",
-    {
-      format: z
-        .enum(["json", "mermaid", "dot"])
-        .default("json")
-        .describe(
-          "Output format for the visualization: 'json' for raw data, 'mermaid' for Mermaid diagram syntax, 'dot' for GraphViz DOT format"
-        ),
-    },
-    async ({ format }) => {
-      const tools = getAvailableTools(server);
-      const relationships = generateToolRelationships(tools);
-
-      let visualization;
-      switch (format) {
-        case "mermaid":
-          visualization = generateMermaidDiagram(relationships);
-          break;
-        case "dot":
-          visualization = generateDotDiagram(relationships);
-          break;
-        default:
-          visualization = relationships;
-      }
-
-      // Create a standard response
       const response = createSuccessResponse(
-        { visualization, format },
-        "visualize-tool-relationships"
+        {
+          tool: {
+            name: tool.id,
+            description: tool.description,
+            category: tool.category,
+            schema: tool.schema,
+            source: tool.source,
+            timeout: tool.timeout,
+            rateLimit: tool.rateLimit,
+          },
+        },
+        'get-tool-details',
       );
 
       // Return MCP-formatted response
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: JSON.stringify(response, null, 2),
           },
         ],
       };
-    }
+    },
+  );
+
+  // Register a tool to get tools by category
+  server.tool(
+    'get-tools-by-category',
+    {
+      category: z.string().describe('Category to get tools for'),
+    },
+    async ({ category }) => {
+      const registry = getToolRegistry();
+      const tools = registry.getToolsByCategory(category);
+
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              createSuccessResponse({ tools }, 'get-tools-by-category'),
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    },
   );
 }
 
@@ -283,249 +221,24 @@ export function registerToolDiscoveryFeatures(server: McpServer) {
  * ```
  */
 function getAvailableTools(server: McpServer): ToolMetadata[] {
-  // For now, return a static list of known tools
-  // In a full implementation, this would introspect the server
+  const registry = getToolRegistry();
+  const tools = registry.getAllTools();
 
-  return [
-    {
-      name: "analyze-repository",
-      description:
-        "Analyzes a code repository for structure, dependencies, and metrics",
-      parameters: [
-        {
-          name: "repositoryUrl",
-          type: "string",
-          description: "URL of the repository to analyze",
-          required: true,
-          example: "https://github.com/example/repo",
-        },
-        {
-          name: "depth",
-          type: "number",
-          description: "Analysis depth",
-          required: false,
-          default: 2,
-          example: 3,
-        },
-        {
-          name: "includeDependencies",
-          type: "boolean",
-          description: "Include dependency analysis",
-          required: false,
-          default: true,
-          example: true,
-        },
-        {
-          name: "includeComplexity",
-          type: "boolean",
-          description: "Include complexity analysis",
-          required: false,
-          default: true,
-          example: true,
-        },
-        {
-          name: "specificFiles",
-          type: "string[]",
-          description: "Specific files to analyze",
-          required: false,
-          example: ["src/main.ts", "src/utils/*.ts"],
-        },
-      ],
-      examples: [
-        {
-          description: "Analyze a GitHub repository",
-          parameters: {
-            repositoryUrl: "https://github.com/example/repo",
-            depth: 2,
-            includeDependencies: true,
-          },
-        },
-      ],
-      category: "code-analysis",
-      tags: ["repository", "analysis", "dependencies"],
-    },
-    {
-      name: "analyze-dependencies",
-      description: "Analyzes dependencies within code or a repository",
-      parameters: [
-        {
-          name: "repositoryUrl",
-          type: "string",
-          description: "URL of the repository to analyze",
-          required: false,
-          example: "https://github.com/example/repo",
-        },
-        {
-          name: "fileContent",
-          type: "string",
-          description: "Source code content to analyze",
-          required: false,
-          example: "const fs = require('fs'); const path = require('path');",
-        },
-        {
-          name: "language",
-          type: "string",
-          description: "Programming language of the code",
-          required: false,
-          example: "javascript",
-        },
-      ],
-      examples: [
-        {
-          description: "Analyze dependencies in JavaScript code",
-          parameters: {
-            fileContent:
-              "const fs = require('fs'); const path = require('path');",
-            language: "javascript",
-          },
-        },
-      ],
-      category: "code-analysis",
-      tags: ["dependencies", "imports", "modules"],
-    },
-    {
-      name: "calculate-metrics",
-      description: "Calculates code quality metrics for files or repositories",
-      parameters: [
-        {
-          name: "repositoryUrl",
-          type: "string",
-          description: "URL of the repository to analyze",
-          required: false,
-          example: "https://github.com/example/repo",
-        },
-        {
-          name: "filePath",
-          type: "string",
-          description: "Path to the file within the repository",
-          required: false,
-          example: "src/main.ts",
-        },
-        {
-          name: "fileContent",
-          type: "string",
-          description: "Source code content to analyze",
-          required: false,
-          example: "function calculateSum(a, b) { return a + b; }",
-        },
-        {
-          name: "language",
-          type: "string",
-          description: "Programming language of the code",
-          required: false,
-          example: "javascript",
-        },
-        {
-          name: "metrics",
-          type: "string[]",
-          description: "Specific metrics to calculate",
-          required: false,
-          default: ["complexity", "linesOfCode", "maintainability"],
-          example: ["complexity", "linesOfCode"],
-        },
-      ],
-      examples: [
-        {
-          description: "Calculate metrics for JavaScript code",
-          parameters: {
-            fileContent: "function calculateSum(a, b) { return a + b; }",
-            language: "javascript",
-            metrics: ["complexity", "linesOfCode"],
-          },
-        },
-      ],
-      category: "code-metrics",
-      tags: ["metrics", "complexity", "quality"],
-    },
-    // Tool discovery tools (self-reference)
-    {
-      name: "list-available-tools",
-      description:
-        "Lists all available tools with their descriptions and parameters",
-      parameters: [
-        {
-          name: "category",
-          type: "string",
-          description: "Filter tools by category",
-          required: false,
-          example: "code-analysis",
-        },
-        {
-          name: "tag",
-          type: "string",
-          description: "Filter tools by tag",
-          required: false,
-          example: "dependencies",
-        },
-        {
-          name: "includeExamples",
-          type: "boolean",
-          description: "Include example usage in the response",
-          required: false,
-          default: true,
-          example: true,
-        },
-      ],
-      examples: [
-        {
-          description: "List all code analysis tools",
-          parameters: {
-            category: "code-analysis",
-            includeExamples: true,
-          },
-        },
-      ],
-      category: "tool-discovery",
-      tags: ["meta", "discovery", "help"],
-    },
-    {
-      name: "get-tool-details",
-      description: "Gets detailed information about a specific tool",
-      parameters: [
-        {
-          name: "toolName",
-          type: "string",
-          description: "Name of the tool to get details for",
-          required: true,
-          example: "analyze-repository",
-        },
-      ],
-      examples: [
-        {
-          description: "Get details about the analyze-repository tool",
-          parameters: {
-            toolName: "analyze-repository",
-          },
-        },
-      ],
-      category: "tool-discovery",
-      tags: ["meta", "discovery", "help"],
-    },
-    {
-      name: "visualize-tool-relationships",
-      description: "Visualizes relationships between different tools",
-      parameters: [
-        {
-          name: "format",
-          type: "enum",
-          description: "Output format for the visualization",
-          required: false,
-          default: "json",
-          example: "mermaid",
-        },
-      ],
-      examples: [
-        {
-          description: "Generate a Mermaid diagram of tool relationships",
-          parameters: {
-            format: "mermaid",
-          },
-        },
-      ],
-      category: "tool-discovery",
-      tags: ["meta", "visualization", "relationships"],
-    },
-  ];
+  return Array.from(tools.values()).map(tool => ({
+    name: tool.id,
+    description: tool.description,
+    category: tool.category,
+    schema: tool.schema as z.ZodType<any>,
+    source: tool.source,
+    timeout: tool.timeout,
+    rateLimit: tool.rateLimit
+      ? {
+          requests: tool.rateLimit.maxRequests,
+          period: tool.rateLimit.windowMs,
+        }
+      : undefined,
+    tags: (tool as any).tags || [],
+  }));
 }
 
 /**
@@ -545,10 +258,10 @@ function generateToolRelationships(tools: ToolMetadata[]): {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
   edges: ToolRelationship[];
 } {
-  const nodes = tools.map((tool) => ({
+  const nodes = tools.map(tool => ({
     id: tool.name,
     name: tool.name,
-    category: tool.category || "uncategorized",
+    category: tool.category || 'uncategorized',
     tags: tool.tags || [],
   }));
 
@@ -558,8 +271,8 @@ function generateToolRelationships(tools: ToolMetadata[]): {
 
   // Group tools by category
   const categoriesMap: Record<string, string[]> = {};
-  tools.forEach((tool) => {
-    const category = tool.category || "uncategorized";
+  tools.forEach(tool => {
+    const category = tool.category || 'uncategorized';
     if (!categoriesMap[category]) {
       categoriesMap[category] = [];
     }
@@ -567,7 +280,7 @@ function generateToolRelationships(tools: ToolMetadata[]): {
   });
 
   // Connect tools within the same category
-  Object.keys(categoriesMap).forEach((category) => {
+  Object.keys(categoriesMap).forEach(category => {
     const toolsInCategory = categoriesMap[category];
     if (toolsInCategory.length > 1) {
       for (let i = 0; i < toolsInCategory.length; i++) {
@@ -575,7 +288,7 @@ function generateToolRelationships(tools: ToolMetadata[]): {
           edges.push({
             source: toolsInCategory[i],
             target: toolsInCategory[j],
-            type: "related",
+            type: 'related',
             description: `Both in category: ${category}`,
           });
         }
@@ -585,8 +298,8 @@ function generateToolRelationships(tools: ToolMetadata[]): {
 
   // Connect tools that share tags
   const tagsMap: Record<string, string[]> = {};
-  tools.forEach((tool) => {
-    (tool.tags || []).forEach((tag) => {
+  tools.forEach(tool => {
+    (tool.tags || []).forEach(tag => {
       if (!tagsMap[tag]) {
         tagsMap[tag] = [];
       }
@@ -594,23 +307,23 @@ function generateToolRelationships(tools: ToolMetadata[]): {
     });
   });
 
-  Object.keys(tagsMap).forEach((tag) => {
+  Object.keys(tagsMap).forEach(tag => {
     const toolsWithTag = tagsMap[tag];
     if (toolsWithTag.length > 1) {
       for (let i = 0; i < toolsWithTag.length; i++) {
         for (let j = i + 1; j < toolsWithTag.length; j++) {
           // Avoid duplicates
           const existingEdge = edges.find(
-            (e) =>
+            e =>
               (e.source === toolsWithTag[i] && e.target === toolsWithTag[j]) ||
-              (e.source === toolsWithTag[j] && e.target === toolsWithTag[i])
+              (e.source === toolsWithTag[j] && e.target === toolsWithTag[i]),
           );
 
           if (!existingEdge) {
             edges.push({
               source: toolsWithTag[i],
               target: toolsWithTag[j],
-              type: "tag-related",
+              type: 'tag-related',
               description: `Both have tag: ${tag}`,
             });
           }
@@ -629,11 +342,11 @@ function generateMermaidDiagram(relationships: {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
   edges: ToolRelationship[];
 }): string {
-  let mermaid = "graph TD;\n";
+  let mermaid = 'graph TD;\n';
 
   // Add nodes grouped by category
   const nodesByCategory: Record<string, { id: string; name: string }[]> = {};
-  relationships.nodes.forEach((node) => {
+  relationships.nodes.forEach(node => {
     if (!nodesByCategory[node.category]) {
       nodesByCategory[node.category] = [];
     }
@@ -641,16 +354,16 @@ function generateMermaidDiagram(relationships: {
   });
 
   // Subgraphs for categories
-  Object.keys(nodesByCategory).forEach((category) => {
+  Object.keys(nodesByCategory).forEach(category => {
     mermaid += `  subgraph ${category}\n`;
-    nodesByCategory[category].forEach((node) => {
+    nodesByCategory[category].forEach(node => {
       mermaid += `    ${node.id}["${node.name}"]\n`;
     });
-    mermaid += "  end\n";
+    mermaid += '  end\n';
   });
 
   // Add edges
-  relationships.edges.forEach((edge) => {
+  relationships.edges.forEach(edge => {
     mermaid += `  ${edge.source} --- ${edge.target}\n`;
   });
 
@@ -664,15 +377,15 @@ function generateDotDiagram(relationships: {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
   edges: ToolRelationship[];
 }): string {
-  let dot = "digraph ToolRelationships {\n";
+  let dot = 'digraph ToolRelationships {\n';
 
   // Graph settings
-  dot += "  rankdir=TD;\n";
-  dot += "  node [shape=box, style=filled, fontname=Arial];\n";
+  dot += '  rankdir=TD;\n';
+  dot += '  node [shape=box, style=filled, fontname=Arial];\n';
 
   // Group nodes by category
   const nodesByCategory: Record<string, { id: string; name: string }[]> = {};
-  relationships.nodes.forEach((node) => {
+  relationships.nodes.forEach(node => {
     if (!nodesByCategory[node.category]) {
       nodesByCategory[node.category] = [];
     }
@@ -680,20 +393,20 @@ function generateDotDiagram(relationships: {
   });
 
   // Subgraphs for categories
-  Object.keys(nodesByCategory).forEach((category) => {
-    dot += `  subgraph cluster_${category.replace(/[^a-zA-Z0-9]/g, "_")} {\n`;
+  Object.keys(nodesByCategory).forEach(category => {
+    dot += `  subgraph cluster_${category.replace(/[^a-zA-Z0-9]/g, '_')} {\n`;
     dot += `    label="${category}";\n`;
-    nodesByCategory[category].forEach((node) => {
+    nodesByCategory[category].forEach(node => {
       dot += `    "${node.id}" [label="${node.name}"];\n`;
     });
-    dot += "  }\n";
+    dot += '  }\n';
   });
 
   // Add edges
-  relationships.edges.forEach((edge) => {
+  relationships.edges.forEach(edge => {
     dot += `  "${edge.source}" -> "${edge.target}" [label="${edge.type}"];\n`;
   });
 
-  dot += "}\n";
+  dot += '}\n';
   return dot;
 }

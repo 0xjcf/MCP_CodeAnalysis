@@ -63,7 +63,6 @@ export const MCPStateMachine = setup({
       },
     },
     stopped: {
-      type: 'final',
       on: {
         START: 'running',
         ERROR: {
@@ -73,7 +72,6 @@ export const MCPStateMachine = setup({
       },
     },
     error: {
-      type: 'final',
       on: {
         START: 'running',
       },

@@ -1,4 +1,4 @@
-import { ToolState } from "../state/interfaces/toolExecutionService";
+import { ToolState } from '../state/interfaces/toolExecutionService.js';
 
 /**
  * Result of tool execution

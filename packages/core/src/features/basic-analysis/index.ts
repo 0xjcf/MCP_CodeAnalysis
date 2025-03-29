@@ -1,15 +1,12 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
-import { analyzeRepository, analyzeCode, getMetrics } from "./analyzer.js";
-import path from "path";
-import fs from "fs";
-import { getRepository } from "../../utils/repository-analyzer.js";
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../utils/responses.js";
-import { CodeAnalysisResult } from "../../types/responses.js";
-import { getToolRegistry } from "../../registry/index.js";
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
+import { analyzeRepository, analyzeCode, getMetrics } from './analyzer.js';
+import path from 'path';
+import fs from 'fs';
+import { getRepository } from '../../utils/repository-analyzer.js';
+import { createSuccessResponse, createErrorResponse } from '../../utils/responses.js';
+import { CodeAnalysisResult } from '../../types/responses.js';
+import { getToolRegistry } from '../../registry/index.js';
 
 /**
  * Register basic code analysis features with the MCP server
@@ -37,46 +34,38 @@ import { getToolRegistry } from "../../registry/index.js";
 export function registerBasicAnalysisFeatures(server: McpServer) {
   // Import the tool registry
   const registry = getToolRegistry();
-  const source = "basic-analysis";
+  const source = 'basic-analysis';
 
   // Tool for analyzing code dependencies - only register if not already registered
-  if (!registry.isToolRegistered("analyze-dependencies")) {
+  if (!registry.isToolRegistered('analyze-dependencies')) {
     // Only register if not already in the registry
     server.tool(
-      "analyze-dependencies",
+      'analyze-dependencies',
       {
         repositoryUrl: z
           .string()
           .optional()
-          .describe(
-            "URL of the repository to analyze (e.g., 'https://github.com/username/repo')"
-          ),
+          .describe("URL of the repository to analyze (e.g., 'https://github.com/username/repo')"),
         fileContent: z
           .string()
           .optional()
-          .describe(
-            "Source code content to analyze directly instead of from a repository"
-          ),
+          .describe('Source code content to analyze directly instead of from a repository'),
         language: z
           .string()
           .optional()
           .describe(
-            "Programming language of the code (e.g., 'javascript', 'python', 'typescript', 'rust')"
+            "Programming language of the code (e.g., 'javascript', 'python', 'typescript', 'rust')",
           ),
       },
       async ({ repositoryUrl, fileContent, language }) => {
         try {
-          const results = await analyzeRepository(
-            repositoryUrl,
-            fileContent,
-            language
-          );
+          const results = await analyzeRepository(repositoryUrl, fileContent, language);
 
           // Return standardized response
           return {
             content: [
               {
-                type: "text",
+                type: 'text',
                 text: JSON.stringify(results, null, 2),
               },
             ],
@@ -85,21 +74,19 @@ export function registerBasicAnalysisFeatures(server: McpServer) {
           return {
             content: [
               {
-                type: "text",
-                text: `Error analyzing dependencies: ${
-                  (error as Error).message
-                }`,
+                type: 'text',
+                text: `Error analyzing dependencies: ${(error as Error).message}`,
               },
             ],
             isError: true,
           };
         }
-      }
+      },
     );
 
     // Register with the tool registry
     registry.registerTool(
-      "analyze-dependencies",
+      'analyze-dependencies',
       {
         repositoryUrl: z.string().optional(),
         fileContent: z.string().optional(),
@@ -117,43 +104,37 @@ export function registerBasicAnalysisFeatures(server: McpServer) {
         // Implementation already registered with server
         return null;
       },
-      source
+      source,
     );
   }
 
   // Tool for calculating code metrics
   server.tool(
-    "calculate-metrics",
+    'calculate-metrics',
     {
       repositoryUrl: z
         .string()
         .optional()
-        .describe(
-          "URL of the repository to analyze (e.g., 'https://github.com/username/repo')"
-        ),
+        .describe("URL of the repository to analyze (e.g., 'https://github.com/username/repo')"),
       filePath: z
         .string()
         .optional()
-        .describe(
-          "Path to the file within the repository (e.g., 'src/main.ts')"
-        ),
+        .describe("Path to the file within the repository (e.g., 'src/main.ts')"),
       fileContent: z
         .string()
         .optional()
-        .describe(
-          "Source code content to analyze directly instead of from a repository"
-        ),
+        .describe('Source code content to analyze directly instead of from a repository'),
       language: z
         .string()
         .optional()
         .describe(
-          "Programming language of the code (e.g., 'javascript', 'python', 'typescript', 'rust')"
+          "Programming language of the code (e.g., 'javascript', 'python', 'typescript', 'rust')",
         ),
       metrics: z
         .array(z.string())
         .optional()
         .describe(
-          "Specific metrics to calculate, such as 'complexity', 'linesOfCode', 'maintainability', 'functions', 'classes'"
+          "Specific metrics to calculate, such as 'complexity', 'linesOfCode', 'maintainability', 'functions', 'classes'",
         ),
     },
     async ({ repositoryUrl, filePath, fileContent, language, metrics }) => {
@@ -163,13 +144,13 @@ export function registerBasicAnalysisFeatures(server: McpServer) {
           filePath,
           fileContent,
           language,
-          metrics: metrics || ["complexity", "linesOfCode", "maintainability"],
+          metrics: metrics || ['complexity', 'linesOfCode', 'maintainability'],
         });
 
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(results, null, 2),
             },
           ],
@@ -178,78 +159,72 @@ export function registerBasicAnalysisFeatures(server: McpServer) {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: `Error calculating metrics: ${(error as Error).message}`,
             },
           ],
           isError: true,
         };
       }
-    }
+    },
   );
 
   // Resource for accessing detailed analysis results
-  server.resource(
-    "analysis-results",
-    "analysis://:repo/:path",
-    async (href) => {
-      // href is now a URL object
-      const repoUrl = href.pathname.split("/")[1];
-      const filePath = href.pathname.split("/")[2];
+  server.resource('analysis-results', 'analysis://:repo/:path', async href => {
+    // href is now a URL object
+    const repoUrl = href.pathname.split('/')[1];
+    const filePath = href.pathname.split('/')[2];
 
-      if (!repoUrl || !filePath) {
-        throw new Error(`Invalid analysis URL: ${href.toString()}`);
-      }
-
-      // Implement the actual fetching logic here
-      const repoPath = await getRepository(repoUrl);
-      const fullPath = path.join(repoPath, filePath);
-      const content = fs.readFileSync(fullPath, "utf8");
-      const analysis = analyzeCode(content, path.extname(filePath).slice(1));
-
-      return {
-        contents: [
-          {
-            text: JSON.stringify(analysis, null, 2),
-            uri: `analysis://${repoUrl}/${filePath}`,
-            mimeType: "application/json",
-          },
-        ],
-      };
+    if (!repoUrl || !filePath) {
+      throw new Error(`Invalid analysis URL: ${href.toString()}`);
     }
-  );
+
+    // Implement the actual fetching logic here
+    const repoPath = await getRepository(repoUrl);
+    const fullPath = path.join(repoPath, filePath);
+    const content = fs.readFileSync(fullPath, 'utf8');
+    const analysis = analyzeCode(content, path.extname(filePath).slice(1));
+
+    return {
+      contents: [
+        {
+          text: JSON.stringify(analysis, null, 2),
+          uri: `analysis://${repoUrl}/${filePath}`,
+          mimeType: 'application/json',
+        },
+      ],
+    };
+  });
 
   // Prompt for requesting code review
   server.prompt(
-    "review-code",
+    'review-code',
     {
-      code: z.string().describe("The source code to review"),
+      code: z.string().describe('The source code to review'),
       language: z
         .string()
         .optional()
-        .describe(
-          "Programming language of the code (e.g., 'javascript', 'typescript', 'python')"
-        ),
+        .describe("Programming language of the code (e.g., 'javascript', 'typescript', 'python')"),
       focus: z
-        .enum(["security", "performance", "maintainability", "all"])
+        .enum(['security', 'performance', 'maintainability', 'all'])
         .optional()
-        .describe("Aspect to focus the review on"),
+        .describe('Aspect to focus the review on'),
     },
     ({ code, language, focus }) => {
       return {
         messages: [
           {
-            role: "user",
+            role: 'user',
             content: {
-              type: "text",
+              type: 'text',
               text: `Please review this ${
-                language || ""
-              } code with a focus on ${focus || "all aspects"}:\n\n${code}`,
+                language || ''
+              } code with a focus on ${focus || 'all aspects'}:\n\n${code}`,
             },
           },
         ],
       };
-    }
+    },
   );
 }
 
@@ -284,17 +259,11 @@ export function registerAnalysisTools(server: McpServer) {
     toolName: string,
     schema: any,
     handler: any,
-    registry = getToolRegistry()
+    registry = getToolRegistry(),
   ): boolean {
     try {
       // Register the tool with the server and registry
-      return registry.registerWithServer(
-        server,
-        toolName,
-        schema,
-        handler,
-        "basic-analysis"
-      );
+      return registry.registerWithServer(server, toolName, schema, handler, 'basic-analysis');
     } catch (error) {
       console.error(`Error registering ${toolName}:`, error);
       return false;
@@ -304,12 +273,12 @@ export function registerAnalysisTools(server: McpServer) {
   // Probe for existing tools using a temporary tool
   const probeResult = registerAnalyzerToolWithRegistry(
     server,
-    "_temp_analyze_tool_probe",
+    '_temp_analyze_tool_probe',
     {
       repoUrl: z.string().optional(),
     },
     // Handler will never be called as this is just a probe
-    async () => ({})
+    async () => ({}),
   );
 
   if (probeResult) {
@@ -318,15 +287,13 @@ export function registerAnalysisTools(server: McpServer) {
     registerBasicAnalysisFeatures(server);
   } else {
     // Error during registration indicates tools are already registered
-    console.log(
-      "[Registry] Info: Probe tool registration failed, assuming tools already exist"
-    );
+    console.log('[Registry] Info: Probe tool registration failed, assuming tools already exist');
   }
 
   // Always register the analyze-repository tool, replacing if needed
   registerAnalyzerToolWithRegistry(
     server,
-    "analyze-repository",
+    'analyze-repository',
     {
       repositoryUrl: z.string().optional(),
       fileContent: z.string().optional(),
@@ -342,7 +309,7 @@ export function registerAnalysisTools(server: McpServer) {
       language?: string;
     }) => {
       try {
-        console.log("analyze-repository called with:", {
+        console.log('analyze-repository called with:', {
           repositoryUrl,
           fileContent,
           language,
@@ -350,11 +317,7 @@ export function registerAnalysisTools(server: McpServer) {
 
         // Perform the actual analysis
         const startTime = Date.now();
-        const analysis = await analyzeRepository(
-          repositoryUrl,
-          fileContent,
-          language
-        );
+        const analysis = await analyzeRepository(repositoryUrl, fileContent, language);
 
         // Create a standardized response with the results
         const responseData = {
@@ -364,7 +327,7 @@ export function registerAnalysisTools(server: McpServer) {
             includedDependencies: true,
             includedComplexity: true,
             depth: 2,
-            specificFiles: "all",
+            specificFiles: 'all',
           },
         };
 
@@ -372,7 +335,7 @@ export function registerAnalysisTools(server: McpServer) {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(responseData, null, 2),
             },
           ],
@@ -381,22 +344,22 @@ export function registerAnalysisTools(server: McpServer) {
         // Create a standardized error response
         const errorResponse = createErrorResponse(
           error instanceof Error ? error.message : String(error),
-          "analyze-repository"
+          'analyze-repository',
         );
 
         // Return MCP-formatted error response
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(errorResponse, null, 2),
             },
           ],
           isError: true,
         };
       }
-    }
+    },
   );
 }
 
-export * from "./analyzer.js";
+export * from './analyzer.js';

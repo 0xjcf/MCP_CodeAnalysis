@@ -1,4 +1,4 @@
-import { Tool } from "../../tools/interfaces";
+import { Tool } from '../../tools/interfaces.js';
 
 /**
  * Represents the state of a tool during execution
@@ -44,7 +44,7 @@ export interface ToolExecutionResult {
   /**
    * Status of the execution (success or error)
    */
-  status: "success" | "error";
+  status: 'success' | 'error';
 
   /**
    * Time taken to execute in milliseconds
@@ -79,7 +79,7 @@ export interface ToolExecutionService {
     toolId: string,
     params: any,
     sessionId?: string,
-    useCached?: boolean
+    useCached?: boolean,
   ): Promise<ToolExecutionResult>;
 
   /**

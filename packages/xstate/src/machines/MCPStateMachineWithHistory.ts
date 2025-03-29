@@ -12,6 +12,7 @@ type MCPEvent =
 interface MCPContext {
   history: string[];
   error?: string;
+  previousState?: string;
 }
 
 // Define the state type
@@ -30,25 +31,28 @@ export const MCPStateMachineWithHistory = setup({
   },
   actions: {
     updateHistory: assign({
-      history: ({ context, event }) => {
-        const stateName =
+      history: ({ context, event, self }) => {
+        const currentState = String(self.getSnapshot().value);
+        const nextState =
           event.type === 'START'
-            ? 'running'
+            ? currentState === 'error'
+              ? 'idle'
+              : currentState === 'idle'
+                ? 'running'
+                : 'running'
             : event.type === 'PAUSE'
               ? 'paused'
               : event.type === 'RESUME'
                 ? 'running'
                 : event.type === 'STOP'
                   ? 'stopped'
-                  : 'error';
+                  : event.type === 'ERROR'
+                    ? 'error'
+                    : currentState;
 
-        // Don't add final states to history
-        if (stateName === 'stopped' || stateName === 'error') {
-          return context.history;
-        }
-
-        return [...context.history, stateName];
+        return [...context.history, nextState];
       },
+      previousState: ({ self }) => String(self.getSnapshot().value),
     }),
     setError: assign({
       history: ({ context }) => [...context.history, 'error'],
@@ -58,6 +62,17 @@ export const MCPStateMachineWithHistory = setup({
         }
         return undefined;
       },
+      previousState: ({ self }) => String(self.getSnapshot().value),
+    }),
+    clearError: assign({
+      error: undefined,
+    }),
+    updateHistoryFromError: assign({
+      history: ({ context }) => {
+        const wasRunning = context.previousState === 'running';
+        return [...context.history, 'idle', ...(wasRunning ? ['running'] : [])];
+      },
+      previousState: ({ self }) => String(self.getSnapshot().value),
     }),
   },
 }).createMachine({
@@ -65,6 +80,7 @@ export const MCPStateMachineWithHistory = setup({
   initial: 'idle',
   context: {
     history: ['idle'],
+    previousState: 'idle',
   },
   states: {
     idle: {
@@ -112,11 +128,10 @@ export const MCPStateMachineWithHistory = setup({
       },
     },
     stopped: {
-      type: 'final',
       on: {
         START: {
           target: 'running',
-          actions: 'updateHistory',
+          actions: ['updateHistory', 'clearError'],
         },
         ERROR: {
           target: 'error',
@@ -125,11 +140,10 @@ export const MCPStateMachineWithHistory = setup({
       },
     },
     error: {
-      type: 'final',
       on: {
         START: {
           target: 'running',
-          actions: 'updateHistory',
+          actions: ['updateHistoryFromError', 'clearError'],
         },
       },
     },

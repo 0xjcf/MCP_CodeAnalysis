@@ -1,0 +1,252 @@
+# MCP Tools Guide
+
+## Concepts
+
+### Tools
+
+Enable LLMs to perform actions through your server
+
+Tools are a powerful primitive in the Model Context Protocol (MCP) that enable servers to expose executable functionality to clients. Through tools, LLMs can interact with external systems, perform computations, and take actions in the real world.
+
+Tools are designed to be model-controlled, meaning that tools are exposed from servers to clients with the intention of the AI model being able to automatically invoke them (with a human in the loop to grant approval).
+
+## Overview
+
+Tools in MCP allow servers to expose executable functions that can be invoked by clients and used by LLMs to perform actions. Key aspects of tools include:
+
+- **Discovery**: Clients can list available tools through the tools/list endpoint
+- **Invocation**: Tools are called using the tools/call endpoint, where servers perform the requested operation and return results
+- **Flexibility**: Tools can range from simple calculations to complex API interactions
+
+Like resources, tools are identified by unique names and can include descriptions to guide their usage. However, unlike resources, tools represent dynamic operations that can modify state or interact with external systems.
+
+## Tool Definition Structure
+
+Each tool is defined with the following structure:
+
+```json
+{
+  name: string;          // Unique identifier for the tool
+  description?: string;  // Human-readable description
+  inputSchema: {         // JSON Schema for the tool's parameters
+    type: "object",
+    properties: { ... }  // Tool-specific parameters
+  }
+}
+```
+
+## Implementing Tools
+
+Here's an example of implementing a basic tool in an MCP server:
+
+```typescript
+const server = new Server(
+  {
+    name: 'example-server',
+    version: '1.0.0',
+  },
+  {
+    capabilities: {
+      tools: {},
+    },
+  },
+);
+
+// Define available tools
+server.setRequestHandler(ListToolsRequestSchema, async () => {
+  return {
+    tools: [
+      {
+        name: 'calculate_sum',
+        description: 'Add two numbers together',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            a: { type: 'number' },
+            b: { type: 'number' },
+          },
+          required: ['a', 'b'],
+        },
+      },
+    ],
+  };
+});
+
+// Handle tool execution
+server.setRequestHandler(CallToolRequestSchema, async request => {
+  if (request.params.name === 'calculate_sum') {
+    const { a, b } = request.params.arguments;
+    return {
+      content: [
+        {
+          type: 'text',
+          text: String(a + b),
+        },
+      ],
+    };
+  }
+  throw new Error('Tool not found');
+});
+```
+
+## Example Tool Patterns
+
+Here are some examples of types of tools that a server could provide:
+
+### System Operations
+
+Tools that interact with the local system:
+
+```json
+{
+  "name": "execute_command",
+  "description": "Run a shell command",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "command": { "type": "string" },
+      "args": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}
+```
+
+### API Integrations
+
+Tools that wrap external APIs:
+
+```json
+{
+  "name": "github_create_issue",
+  "description": "Create a GitHub issue",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "title": { "type": "string" },
+      "body": { "type": "string" },
+      "labels": { "type": "array", "items": { "type": "string" } }
+    }
+  }
+}
+```
+
+### Data Processing
+
+Tools that transform or analyze data:
+
+```json
+{
+  "name": "analyze_csv",
+  "description": "Analyze a CSV file",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "filepath": { "type": "string" },
+      "operations": {
+        "type": "array",
+        "items": {
+          "enum": ["sum", "average", "count"]
+        }
+      }
+    }
+  }
+}
+```
+
+## Best Practices
+
+When implementing tools:
+
+- Provide clear, descriptive names and descriptions
+- Use detailed JSON Schema definitions for parameters
+- Include examples in tool descriptions to demonstrate how the model should use them
+- Implement proper error handling and validation
+- Use progress reporting for long operations
+- Keep tool operations focused and atomic
+- Document expected return value structures
+- Implement proper timeouts
+- Consider rate limiting for resource-intensive operations
+- Log tool usage for debugging and monitoring
+
+## Security Considerations
+
+When exposing tools:
+
+### Input Validation
+
+- Validate all parameters against the schema
+- Sanitize file paths and system commands
+- Validate URLs and external identifiers
+- Check parameter sizes and ranges
+- Prevent command injection
+
+### Access Control
+
+- Implement authentication where needed
+- Use appropriate authorization checks
+- Audit tool usage
+- Rate limit requests
+- Monitor for abuse
+
+### Error Handling
+
+- Don't expose internal errors to clients
+- Log security-relevant errors
+- Handle timeouts appropriately
+- Clean up resources after errors
+- Validate return values
+
+## Tool Discovery and Updates
+
+MCP supports dynamic tool discovery:
+
+- Clients can list available tools at any time
+- Servers can notify clients when tools change using notifications/tools/list_changed
+- Tools can be added or removed during runtime
+- Tool definitions can be updated (though this should be done carefully)
+
+## Error Handling
+
+Tool errors should be reported within the result object, not as MCP protocol-level errors. This allows the LLM to see and potentially handle the error. When a tool encounters an error:
+
+- Set isError to true in the result
+- Include error details in the content array
+
+Here's an example of proper error handling for tools:
+
+```typescript
+try {
+  // Tool operation
+  const result = performOperation();
+  return {
+    content: [
+      {
+        type: 'text',
+        text: `Operation successful: ${result}`,
+      },
+    ],
+  };
+} catch (error) {
+  return {
+    isError: true,
+    content: [
+      {
+        type: 'text',
+        text: `Error: ${error.message}`,
+      },
+    ],
+  };
+}
+```
+
+This approach allows the LLM to see that an error occurred and potentially take corrective action or request human intervention.
+
+## Testing Tools
+
+A comprehensive testing strategy for MCP tools should cover:
+
+- **Functional testing**: Verify tools execute correctly with valid inputs and handle invalid inputs appropriately
+- **Integration testing**: Test tool interaction with external systems using both real and mocked dependencies
+- **Security testing**: Validate authentication, authorization, input sanitization, and rate limiting
+- **Performance testing**: Check behavior under load, timeout handling, and resource cleanup
+- **Error handling**: Ensure tools properly report errors through the MCP protocol and clean up resources

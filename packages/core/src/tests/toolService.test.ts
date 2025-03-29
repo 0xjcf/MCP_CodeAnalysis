@@ -1,14 +1,14 @@
 /**
  * Tests for Tool Execution Service
- * 
+ *
  * This file contains tests for the ToolExecutionService class which provides
  * a runtime interface for executing tools with state management.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ToolExecutionService } from '../state/services/toolService';
-import { createSuccessResponse, createErrorResponse } from '../utils/responses';
-import { clearSession, getSessionIds } from '../state/machines/toolMachine';
+import { ToolExecutionService } from '../state/services/toolService.js';
+import { createSuccessResponse, createErrorResponse } from '../utils/responses.js';
+import { clearSession, getSessionIds } from '../state/machines/toolMachine.js';
 
 describe('Tool Execution Service', () => {
   // Clear all sessions before each test
@@ -125,9 +125,9 @@ describe('Tool Execution Service', () => {
       // Start with a fresh mock that we can verify is never called
       vi.resetAllMocks();
 
-      const mockExecuteFunction = vi.fn().mockResolvedValue("test result");
+      const mockExecuteFunction = vi.fn().mockResolvedValue('test result');
       const emptyService = new ToolExecutionService();
-      
+
       // Setup: force toolName to be null to ensure the test condition
       // This is needed because the actual implementation might have default values
       // @ts-ignore - Accessing private properties for testing
@@ -172,12 +172,12 @@ describe('Tool Execution Service', () => {
           tool: 'testTool',
           version: '1.0.0',
           executionTime: 0,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         },
         status: {
           success: true,
-          code: 200
-        }
+          code: 200,
+        },
       };
 
       const mockExecuteFunction = vi.fn().mockResolvedValue(responseResult);
@@ -225,7 +225,7 @@ describe('Tool Execution Service', () => {
       // Cancel immediately - this won't affect our promise since we fixed the implementation
       service.cancel();
 
-      // The execution should complete normally since our implementation doesn't actually 
+      // The execution should complete normally since our implementation doesn't actually
       // cancel the promise (we would need to refactor to support true cancellation)
       const result = await executionPromise;
       expect(result).toBeDefined();
@@ -273,4 +273,4 @@ describe('Tool Execution Service', () => {
       expect(history.length).toBe(0);
     });
   });
-}); 
+});

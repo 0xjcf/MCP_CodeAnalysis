@@ -2,12 +2,12 @@
  * Core analyzer types for the MCP platform
  */
 
-import { ComponentMetadata } from "../../types/component";
+import { ComponentMetadata } from '../../types/component.js';
 
 export interface AnalysisResult {
-  type: "web-component";
+  type: 'web-component';
   name: string;
-  complexity: "low" | "medium" | "high";
+  complexity: 'low' | 'medium' | 'high';
   dependencies: string[];
   issues: AnalysisIssue[];
   recommendations: string[];
@@ -17,7 +17,7 @@ export interface AnalysisResult {
 export interface AnalysisIssue {
   type: string;
   message: string;
-  severity: "low" | "medium" | "high";
+  severity: 'low' | 'medium' | 'high';
   location?: {
     file: string;
     line: number;

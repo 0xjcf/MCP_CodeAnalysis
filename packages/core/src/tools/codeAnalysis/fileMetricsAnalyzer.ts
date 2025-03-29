@@ -1,7 +1,8 @@
-import { promises as fs } from "fs";
-import path from "path";
-import { Tool, ToolResult } from "../interfaces";
-import { ToolState } from "../../state/interfaces/toolExecutionService";
+import { promises as fs } from 'fs';
+import path from 'path';
+import { z } from 'zod';
+import { Tool, ToolResult } from '../interfaces.js';
+import { ToolState } from '../../state/interfaces/toolExecutionService.js';
 
 /**
  * Parameters for the file metrics analyzer tool
@@ -62,7 +63,7 @@ interface FileMetricsResult {
    */
   lineMetrics?: {
     lineNumber: number;
-    type: "code" | "comment" | "blank" | "mixed";
+    type: 'code' | 'comment' | 'blank' | 'mixed';
     content: string;
     indentation: number;
   }[];
@@ -125,17 +126,17 @@ interface FileMetricsState extends ToolState {
  * - Detailed line-by-line metrics
  */
 export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
-  id: "analyze-file-metrics",
-  name: "File Metrics Analyzer",
-  description: "Analyzes source code files to calculate various metrics",
-  version: "1.0.0",
-  category: "code-analysis",
+  id: 'analyze-file-metrics',
+  name: 'File Metrics Analyzer',
+  description: 'Analyzes source code files to calculate various metrics',
+  version: '1.0.0',
+  category: 'code-analysis',
   cacheTtl: 3600, // Cache results for 1 hour
   supportsState: true,
 
   async execute(
     params: FileMetricsParams,
-    state: FileMetricsState = {}
+    state: FileMetricsState = {},
   ): Promise<ToolResult<FileMetricsResult>> {
     try {
       // Initialize state if not exists
@@ -161,7 +162,7 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
         content = fileContent;
       } else {
         try {
-          content = await fs.readFile(filePath, "utf-8");
+          content = await fs.readFile(filePath, 'utf-8');
         } catch (error: any) {
           return {
             result: null as unknown as FileMetricsResult,
@@ -193,15 +194,14 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
       const lineMetrics = includeLineMetrics
         ? ([] as Array<{
             lineNumber: number;
-            type: "code" | "comment" | "blank" | "mixed";
+            type: 'code' | 'comment' | 'blank' | 'mixed';
             content: string;
             indentation: number;
           }>)
         : undefined;
 
       // Get comment patterns for this file type
-      const { lineComment, blockCommentStart, blockCommentEnd } =
-        getCommentPatterns(fileType);
+      const { lineComment, blockCommentStart, blockCommentEnd } = getCommentPatterns(fileType);
       let inBlockComment = false;
 
       for (let i = 0; i < lines.length; i++) {
@@ -221,18 +221,16 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
         const indentation = line.length - line.trimLeft().length;
 
         // Update nesting depth based on brackets/braces
-        if (!inBlockComment && trimmedLine.includes("{")) {
+        if (!inBlockComment && trimmedLine.includes('{')) {
           currentNestingDepth +=
-            countOccurrences(trimmedLine, "{") -
-            countOccurrences(trimmedLine, "}");
+            countOccurrences(trimmedLine, '{') - countOccurrences(trimmedLine, '}');
           // Check if this might be a function declaration
           if (isFunctionDeclaration(trimmedLine, fileType)) {
             functionCount++;
           }
-        } else if (!inBlockComment && trimmedLine.includes("}")) {
+        } else if (!inBlockComment && trimmedLine.includes('}')) {
           currentNestingDepth -=
-            countOccurrences(trimmedLine, "}") -
-            countOccurrences(trimmedLine, "{");
+            countOccurrences(trimmedLine, '}') - countOccurrences(trimmedLine, '{');
         }
 
         // Ensure nesting depth doesn't go negative
@@ -244,22 +242,20 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
         }
 
         // Determine line type
-        let lineType: "code" | "comment" | "blank" | "mixed" = "code";
+        let lineType: 'code' | 'comment' | 'blank' | 'mixed' = 'code';
 
         // Check for blank lines
-        if (trimmedLine === "") {
+        if (trimmedLine === '') {
           blankLineCount++;
-          lineType = "blank";
+          lineType = 'blank';
         }
         // Check for full-line comments
         else if (
           (lineComment && trimmedLine.startsWith(lineComment)) ||
-          (inBlockComment &&
-            blockCommentEnd &&
-            !trimmedLine.includes(blockCommentEnd))
+          (inBlockComment && blockCommentEnd && !trimmedLine.includes(blockCommentEnd))
         ) {
           commentLineCount++;
-          lineType = "comment";
+          lineType = 'comment';
         }
         // Check for block comment start
         else if (blockCommentStart && trimmedLine.includes(blockCommentStart)) {
@@ -272,64 +268,47 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
             // If there's code after the comment ends, it's a mixed line
             const afterComment = blockCommentEnd
               ? trimmedLine
-                  .slice(
-                    trimmedLine.indexOf(blockCommentEnd) +
-                      blockCommentEnd.length
-                  )
+                  .slice(trimmedLine.indexOf(blockCommentEnd) + blockCommentEnd.length)
                   .trim()
-              : "";
+              : '';
 
-            if (
-              afterComment &&
-              lineComment !== null &&
-              !afterComment.startsWith(lineComment)
-            ) {
-              lineType = "mixed";
+            if (afterComment && lineComment !== null && !afterComment.startsWith(lineComment)) {
+              lineType = 'mixed';
               codeLineCount++;
               commentLineCount++;
             } else {
-              lineType = "comment";
+              lineType = 'comment';
               commentLineCount++;
             }
           } else {
-            lineType = "comment";
+            lineType = 'comment';
             commentLineCount++;
           }
         }
         // Check for block comment end
-        else if (
-          inBlockComment &&
-          blockCommentEnd &&
-          trimmedLine.includes(blockCommentEnd)
-        ) {
+        else if (inBlockComment && blockCommentEnd && trimmedLine.includes(blockCommentEnd)) {
           inBlockComment = false;
 
           // If there's code after the comment ends, it's a mixed line
           const afterComment = blockCommentEnd
             ? trimmedLine
-                .slice(
-                  trimmedLine.indexOf(blockCommentEnd) + blockCommentEnd.length
-                )
+                .slice(trimmedLine.indexOf(blockCommentEnd) + blockCommentEnd.length)
                 .trim()
-            : "";
+            : '';
 
-          if (
-            afterComment &&
-            lineComment !== null &&
-            !afterComment.startsWith(lineComment)
-          ) {
-            lineType = "mixed";
+          if (afterComment && lineComment !== null && !afterComment.startsWith(lineComment)) {
+            lineType = 'mixed';
             codeLineCount++;
             commentLineCount++;
           } else {
-            lineType = "comment";
+            lineType = 'comment';
             commentLineCount++;
           }
         }
         // Must be a code line
         else {
           codeLineCount++;
-          lineType = "code";
+          lineType = 'code';
         }
 
         // Add to detailed metrics if requested
@@ -370,9 +349,7 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
       // Prune old entries if cache grows too large
       if (state.fileCache.size > 100) {
         const entries = Array.from(state.fileCache.entries());
-        const oldestEntries = entries
-          .sort((a, b) => a[1].timestamp - b[1].timestamp)
-          .slice(0, 20);
+        const oldestEntries = entries.sort((a, b) => a[1].timestamp - b[1].timestamp).slice(0, 20);
 
         for (const [key] of oldestEntries) {
           state.fileCache.delete(key);
@@ -384,12 +361,10 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
         state,
       };
     } catch (error: any) {
-      console.error("Error analyzing file metrics:", error);
+      console.error('Error analyzing file metrics:', error);
       return {
         result: null as unknown as FileMetricsResult,
-        error: `Failed to analyze file metrics: ${
-          error?.message || String(error)
-        }`,
+        error: `Failed to analyze file metrics: ${error?.message || String(error)}`,
         state,
       };
     }
@@ -401,36 +376,36 @@ export const fileMetricsAnalyzer: Tool<FileMetricsParams, FileMetricsResult> = {
  */
 function getFileType(extension: string): string {
   const typeMap: Record<string, string> = {
-    js: "javascript",
-    jsx: "javascript",
-    ts: "typescript",
-    tsx: "typescript",
-    py: "python",
-    java: "java",
-    c: "c",
-    cpp: "cpp",
-    cs: "csharp",
-    go: "go",
-    rb: "ruby",
-    php: "php",
-    rs: "rust",
-    swift: "swift",
-    kt: "kotlin",
-    scala: "scala",
-    html: "html",
-    css: "css",
-    scss: "scss",
-    less: "less",
-    json: "json",
-    md: "markdown",
-    sh: "shell",
-    yml: "yaml",
-    yaml: "yaml",
-    xml: "xml",
-    sql: "sql",
+    js: 'javascript',
+    jsx: 'javascript',
+    ts: 'typescript',
+    tsx: 'typescript',
+    py: 'python',
+    java: 'java',
+    c: 'c',
+    cpp: 'cpp',
+    cs: 'csharp',
+    go: 'go',
+    rb: 'ruby',
+    php: 'php',
+    rs: 'rust',
+    swift: 'swift',
+    kt: 'kotlin',
+    scala: 'scala',
+    html: 'html',
+    css: 'css',
+    scss: 'scss',
+    less: 'less',
+    json: 'json',
+    md: 'markdown',
+    sh: 'shell',
+    yml: 'yaml',
+    yaml: 'yaml',
+    xml: 'xml',
+    sql: 'sql',
   };
 
-  return typeMap[extension] || "text";
+  return typeMap[extension] || 'text';
 }
 
 /**
@@ -450,73 +425,73 @@ function getCommentPatterns(fileType: string): {
     }
   > = {
     javascript: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
     typescript: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
     python: {
-      lineComment: "#",
+      lineComment: '#',
       blockCommentStart: '"""',
       blockCommentEnd: '"""',
     },
-    java: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
-    c: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
-    cpp: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
+    java: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
+    c: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
+    cpp: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
     csharp: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
-    go: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
+    go: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
     ruby: {
-      lineComment: "#",
-      blockCommentStart: "=begin",
-      blockCommentEnd: "=end",
+      lineComment: '#',
+      blockCommentStart: '=begin',
+      blockCommentEnd: '=end',
     },
-    php: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
-    rust: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
+    php: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
+    rust: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
     swift: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
     kotlin: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
     scala: {
-      lineComment: "//",
-      blockCommentStart: "/*",
-      blockCommentEnd: "*/",
+      lineComment: '//',
+      blockCommentStart: '/*',
+      blockCommentEnd: '*/',
     },
     html: {
       lineComment: null,
-      blockCommentStart: "<!--",
-      blockCommentEnd: "-->",
+      blockCommentStart: '<!--',
+      blockCommentEnd: '-->',
     },
-    css: { lineComment: null, blockCommentStart: "/*", blockCommentEnd: "*/" },
-    scss: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
-    less: { lineComment: "//", blockCommentStart: "/*", blockCommentEnd: "*/" },
+    css: { lineComment: null, blockCommentStart: '/*', blockCommentEnd: '*/' },
+    scss: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
+    less: { lineComment: '//', blockCommentStart: '/*', blockCommentEnd: '*/' },
     json: { lineComment: null, blockCommentStart: null, blockCommentEnd: null },
     markdown: {
       lineComment: null,
       blockCommentStart: null,
       blockCommentEnd: null,
     },
-    shell: { lineComment: "#", blockCommentStart: null, blockCommentEnd: null },
-    yaml: { lineComment: "#", blockCommentStart: null, blockCommentEnd: null },
+    shell: { lineComment: '#', blockCommentStart: null, blockCommentEnd: null },
+    yaml: { lineComment: '#', blockCommentStart: null, blockCommentEnd: null },
     xml: {
       lineComment: null,
-      blockCommentStart: "<!--",
-      blockCommentEnd: "-->",
+      blockCommentStart: '<!--',
+      blockCommentEnd: '-->',
     },
-    sql: { lineComment: "--", blockCommentStart: "/*", blockCommentEnd: "*/" },
+    sql: { lineComment: '--', blockCommentStart: '/*', blockCommentEnd: '*/' },
   };
 
   return (
@@ -547,27 +522,26 @@ function countOccurrences(str: string, searchValue: string): number {
  * Helper function to detect if a line might contain a function declaration
  */
 function isFunctionDeclaration(line: string, fileType: string): boolean {
-  const jsPattern =
-    /function\s+\w+\s*\(|(\w+|\(.*\))\s*=>\s*{|\w+\s*\(.*\)\s*{/;
+  const jsPattern = /function\s+\w+\s*\(|(\w+|\(.*\))\s*=>\s*{|\w+\s*\(.*\)\s*{/;
   const pyPattern = /def\s+\w+\s*\(/;
   const javaPattern = /(\w+\s+)*\w+\s*\(.*\)\s*{/;
   const rubyPattern = /def\s+\w+/;
   const goPattern = /func\s+\w+\s*\(/;
 
   switch (fileType) {
-    case "javascript":
-    case "typescript":
+    case 'javascript':
+    case 'typescript':
       return jsPattern.test(line);
-    case "python":
+    case 'python':
       return pyPattern.test(line);
-    case "java":
-    case "c":
-    case "cpp":
-    case "csharp":
+    case 'java':
+    case 'c':
+    case 'cpp':
+    case 'csharp':
       return javaPattern.test(line);
-    case "ruby":
+    case 'ruby':
       return rubyPattern.test(line);
-    case "go":
+    case 'go':
       return goPattern.test(line);
     default:
       return false;

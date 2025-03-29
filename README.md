@@ -2,6 +2,70 @@
 
 This repository contains a modular code analysis framework designed to provide extensible tools for code quality measurement, architecture analysis, and developer guidance.
 
+## Project Purpose
+
+The MCP Code Analysis framework is designed to provide AI-assisted code analysis through a centralized MCP server. This architecture allows:
+
+1. **Centralized Analysis**: Run a single MCP server that can analyze any project
+2. **Extensible Analyzers**: Plug in different analyzers (XState, Web Components, etc.) as needed
+3. **AI Integration**: Connect AI tools to analyze code through the MCP server
+4. **Real-time Analysis**: Get immediate feedback through SSE connections
+
+## Architecture Overview
+
+The project follows a client-server architecture:
+
+```
+[Developer's Project] <-> [MCP Server] <-> [Analyzers]
+     ^                         ^
+     |                         |
+[AI Tools] <------------------+
+```
+
+### Core Components
+
+1. **MCP Server**
+
+   - Central server that manages analyzer connections
+   - Handles SSE communication for real-time updates
+   - Manages analyzer registration and execution
+
+2. **Analyzers**
+
+   - Modular analysis tools (XState, Web Components, etc.)
+   - Each analyzer focuses on specific aspects of code
+   - Can be enabled/disabled as needed
+
+3. **Client Tools**
+   - Tools for connecting to the MCP server
+   - Handle communication with analyzers
+   - Present analysis results
+
+### Usage Pattern
+
+1. Start the MCP server:
+
+   ```bash
+   pnpm start
+   ```
+
+2. Connect to the server via SSE:
+
+   ```bash
+   curl http://localhost:3000/sse
+   ```
+
+3. Use analyzers through the server:
+
+   - XState analyzer for state machine analysis
+   - Web Components analyzer for component analysis
+   - More analyzers can be added as needed
+
+4. Get AI-assisted analysis:
+   - AI tools connect to the MCP server
+   - Use analyzers to gather code insights
+   - Provide recommendations based on analysis
+
 ## Project Structure
 
 For detailed information about the project structure and best practices, see [Project Structure Documentation](docs/project-structure.md).

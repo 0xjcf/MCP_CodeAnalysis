@@ -28,7 +28,7 @@ class ContextMerger:
     
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
-        self.template_path = Path(__file__).parent / "templates" / "session_prompt_template.md"
+        self.template_path = Path(__file__).parent.parent / "templates" / "session-prompt.template.md"
         self.context = {}
     
     def load_json_file(self, file_path: str) -> Optional[Dict]:
