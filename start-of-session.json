@@ -12,7 +12,7 @@
   "technical_context": {
     "framework": "Node.js",
     "language": "TypeScript",
-    "dependencies": ["@modelcontextprotocol/sdk", "xstate", "typescript", "jest"],
+    "dependencies": ["@modelcontextprotocol/sdk", "xstate", "typescript", "vitest"],
     "architecture": "MCP server with modular analyzers"
   },
   "recent_changes": [
@@ -36,7 +36,7 @@
     "Set up proper monorepo tooling"
   ],
   "dependencies": {
-    "required": ["@modelcontextprotocol/sdk", "xstate", "typescript", "jest"],
+    "required": ["@modelcontextprotocol/sdk", "xstate", "typescript", "vitest"],
     "optional": ["web-components-analyzer", "pwa-analyzer"]
   }
 }

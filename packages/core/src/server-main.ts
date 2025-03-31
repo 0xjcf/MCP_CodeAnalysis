@@ -13,6 +13,11 @@
  */
 
 import { server, start } from './server.js';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { initializeToolRegistry } from '@mcp/shared/registry';
+import { registerXStateFeatures } from '@mcp/xstate';
+import { XStateAnalyzer } from '@mcp/xstate';
+import { z } from 'zod';
 
 // Register analyzers and tools
 import { registerAnalysisTools } from './features/basic-analysis/index.js';
@@ -28,10 +33,7 @@ import { registerMultiRepoFeatures } from './features/multi-repo/index.js';
 import { registerEvolutionFeatures } from './features/evolution/index.js';
 import { registerSessionTools } from './features/session-manager/index.js';
 import { registerDevTools } from './features/dev-tools/index.js';
-import { registerXStateFeatures } from '@mcp/xstate';
 import { getToolRegistry } from './registry/index.js';
-import { XStateAnalyzer } from '@mcp/xstate';
-import { z } from 'zod';
 
 // Register all tools
 registerAnalysisTools(server);
@@ -48,37 +50,6 @@ registerMultiRepoFeatures(server);
 registerEvolutionFeatures(server);
 registerSessionTools(server);
 registerDevTools(server);
-
-// Register XState analyzer with enhanced features
-const registry = getToolRegistry();
-registry.registerWithServer(
-  server,
-  'analyze-xstate',
-  {
-    sourceCode: z.string().describe('Source code containing XState machine definition'),
-    options: z
-      .object({
-        strict: z.boolean().optional().describe('Enable strict mode for analysis'),
-        verbose: z.boolean().optional().describe('Enable verbose output'),
-        timeout: z.number().optional().describe('Analysis timeout in milliseconds'),
-      })
-      .optional(),
-  },
-  async ({ sourceCode, options }) => {
-    const analyzer = new XStateAnalyzer(options || {});
-    return analyzer.analyze(sourceCode);
-  },
-  'xstate-analyzer',
-  {
-    description: 'Analyzes XState state machines for complexity and structure',
-    category: 'code-analysis',
-    timeout: 30000, // 30 second timeout
-    rateLimit: {
-      maxRequests: 10,
-      windowMs: 60000, // 1 minute window
-    },
-  },
-);
 
 // Parse environment variables
 const options = {

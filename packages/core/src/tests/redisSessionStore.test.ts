@@ -1,10 +1,26 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, test, expect, beforeEach, afterEach, vi, MockedFunction } from 'vitest';
 import Redis from 'ioredis';
 import { RedisSessionStore } from '../state/store/redisSessionStore.js';
 
-// Create a comprehensive mock Redis client
-const mockRedisClient = {
-  on: vi.fn((event, callback) => {
+// Define types for the mock Redis client
+interface MockRedisClient {
+  on: (event: string, callback: (error: Error) => void) => MockRedisClient;
+  disconnect: () => Promise<void>;
+  set: MockedFunction<(key: string, value: string, ...args: any[]) => Promise<string>>;
+  get: MockedFunction<(key: string) => Promise<string | null>>;
+  del: MockedFunction<(key: string) => Promise<number>>;
+  keys: MockedFunction<(pattern: string) => Promise<string[]>>;
+  expire: MockedFunction<(key: string, seconds: number) => Promise<number>>;
+  ttl: MockedFunction<(key: string) => Promise<number>>;
+  exists: MockedFunction<(key: string) => Promise<number>>;
+  eval: MockedFunction<(script: string, keys: number, ...args: any[]) => Promise<number>>;
+  _errorCallback: ((error: Error) => void) | null;
+  _simulateError: (error: Error) => void;
+}
+
+// Create a comprehensive mock Redis client with proper types
+const mockRedisClient: MockRedisClient = {
+  on: vi.fn((event: string, callback: (error: Error) => void) => {
     if (event === 'error') {
       // Store the error callback for testing
       mockRedisClient._errorCallback = callback;
@@ -13,7 +29,7 @@ const mockRedisClient = {
   }),
   disconnect: vi.fn().mockResolvedValue(undefined),
   set: vi.fn().mockResolvedValue('OK'),
-  get: vi.fn().mockImplementation(key => {
+  get: vi.fn().mockImplementation((key: string) => {
     if (key === 'session:exists') {
       return Promise.resolve(JSON.stringify({ id: 'exists', data: { key: 'value' } }));
     }
@@ -24,32 +40,32 @@ const mockRedisClient = {
   }),
   del: vi.fn().mockResolvedValue(1),
   keys: vi.fn().mockResolvedValue(['session:1', 'session:2']),
-  expire: vi.fn().mockImplementation(key => {
+  expire: vi.fn().mockImplementation((key: string) => {
     if (key === 'session:exists') {
       return Promise.resolve(1);
     }
     return Promise.resolve(0);
   }),
-  ttl: vi.fn().mockImplementation(key => {
+  ttl: vi.fn().mockImplementation((key: string) => {
     if (key === 'session:exists') {
       return Promise.resolve(300);
     }
     return Promise.resolve(-2);
   }),
-  exists: vi.fn().mockImplementation(key => {
+  exists: vi.fn().mockImplementation((key: string) => {
     if (key === 'session:exists' || key === 'lock:exists') {
       return Promise.resolve(1);
     }
     return Promise.resolve(0);
   }),
-  eval: vi.fn().mockImplementation((script, keys, args) => {
+  eval: vi.fn().mockImplementation((script: string, keys: number, ...args: any[]) => {
     if (args[1] === 'valid-token') {
       return Promise.resolve(1);
     }
     return Promise.resolve(0);
   }),
   // Store error callback for testing
-  _errorCallback: null as ((error: Error) => void) | null,
+  _errorCallback: null,
   // Method to simulate Redis error
   _simulateError: function (error: Error) {
     if (this._errorCallback) {
@@ -250,7 +266,7 @@ describe('RedisSessionStore', () => {
 
     test('acquireLock should return null when lock is unavailable', async () => {
       // Setup
-      mockRedisClient.set.mockResolvedValue(null); // null means lock not acquired
+      mockRedisClient.set.mockResolvedValue(''); // Empty string means lock not acquired
 
       // Execute
       const lockToken = await store.acquireLock('locked-session');

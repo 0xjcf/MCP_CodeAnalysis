@@ -24,9 +24,10 @@
     "emitDecoratorMetadata": true,
     "verbatimModuleSyntax": false,
     "isolatedModules": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "emitDeclarationOnly": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
-  "references": [{ "path": "../shared" }, { "path": "../xstate" }]
+  "references": [{ "path": "../types" }]
 }

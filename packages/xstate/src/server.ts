@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { XStateAnalyzer } from './analyzer.js';
-import { registerToolsWithRegistry } from '../../core/src/registry/index.js';
+import { registerToolsWithRegistry } from '@mcp/shared';
 import { AnalysisOptions } from '@mcp/types';
 
 /**

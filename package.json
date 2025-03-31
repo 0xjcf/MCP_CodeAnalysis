@@ -1,37 +1,22 @@
 {
-  "name": "mcp-code-analysis",
-  "version": "1.0.0",
-  "private": true,
-  "description": "MCP Code Analysis Platform",
+  "name": "@mcp/monorepo",
+  "version": "0.0.1",
+  "description": "Model Context Protocol Monorepo",
+  "type": "module",
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "lint": "pnpm -r lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "pnpm -r clean",
-    "dev": "pnpm -r dev",
-    "type-check": "pnpm -r type-check"
+    "lint": "pnpm -r lint"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.8.0",
-    "@types/express": "^5.0.1",
-    "express": "^4.21.2",
-    "glob": "^10.3.10",
-    "tsx": "^4.19.3",
-    "zod": "^3.24.2"
-  },
-  "type": "module"
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
+  }
 }

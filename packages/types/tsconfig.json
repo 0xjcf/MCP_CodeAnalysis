@@ -9,7 +9,9 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "declaration": true,
+    "declarationMap": true,
     "sourceMap": true,
+    "composite": true,
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
@@ -21,7 +23,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "verbatimModuleSyntax": false,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "rootDir": "src"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

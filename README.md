@@ -10,6 +10,7 @@ The MCP Code Analysis framework is designed to provide AI-assisted code analysis
 2. **Extensible Analyzers**: Plug in different analyzers (XState, Web Components, etc.) as needed
 3. **AI Integration**: Connect AI tools to analyze code through the MCP server
 4. **Real-time Analysis**: Get immediate feedback through SSE connections
+5. **Session Management**: Track and manage AI development sessions with comprehensive tools
 
 ## Architecture Overview
 
@@ -29,6 +30,7 @@ The project follows a client-server architecture:
    - Central server that manages analyzer connections
    - Handles SSE communication for real-time updates
    - Manages analyzer registration and execution
+   - Provides session management capabilities
 
 2. **Analyzers**
 
@@ -37,9 +39,17 @@ The project follows a client-server architecture:
    - Can be enabled/disabled as needed
 
 3. **Client Tools**
+
    - Tools for connecting to the MCP server
    - Handle communication with analyzers
    - Present analysis results
+   - Manage development sessions
+
+4. **Session Management**
+   - Track AI development sessions
+   - Store session data and context
+   - Support both HTTP and stdio transport modes
+   - Provide CLI and programmatic interfaces
 
 ### Usage Pattern
 
@@ -62,9 +72,16 @@ The project follows a client-server architecture:
    - More analyzers can be added as needed
 
 4. Get AI-assisted analysis:
+
    - AI tools connect to the MCP server
    - Use analyzers to gather code insights
    - Provide recommendations based on analysis
+
+5. Manage development sessions:
+   - Create and track AI development sessions
+   - Store session data and context
+   - Use CLI tools for session management
+   - Integrate with existing development workflow
 
 ## Project Structure
 
@@ -154,6 +171,18 @@ The XState analyzer provides:
 - Service integration analysis
 - Performance optimization suggestions
 
+### Session Management
+
+The framework includes a robust session management system for tracking AI development sessions:
+
+- **Session Tracking**: Create and manage development sessions
+- **History Management**: Track tool usage and execution history
+- **End-of-Session Data**: Save and retrieve session summaries
+- **CLI Tools**: Command-line interface for session management
+- **Client API**: TypeScript client for programmatic access
+
+For detailed information about session management, see [Session Management Documentation](docs/session-management.md).
+
 ## Development Guidelines
 
 For detailed development guidelines, see [Project Structure Documentation](docs/project-structure.md).
@@ -213,6 +242,7 @@ For detailed documentation, see the following:
 - [API Documentation](docs/api/)
 - [Analysis Tools](docs/tools/)
 - [Templates](docs/templates/)
+- [Session Management](docs/session-management.md)
 
 # MCP SDK State Management Architecture
 

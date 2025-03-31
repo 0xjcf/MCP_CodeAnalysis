@@ -9,6 +9,9 @@
     "test": "vitest",
     "lint": "eslint src --ext .ts"
   },
+  "dependencies": {
+    "zod": "^3.22.4"
+  },
   "devDependencies": {
     "@mcp/eslint-config": "workspace:*",
     "@mcp/tsconfig": "workspace:*",
