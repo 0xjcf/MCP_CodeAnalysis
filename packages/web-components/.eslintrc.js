@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   extends: ['@mcp/eslint-config'],
   parserOptions: {
     project: './tsconfig.json',
@@ -10,4 +10,4 @@ module.exports = {
     'react/jsx-uses-react': 'off',
     'react/prop-types': 'off',
   },
-}; 
+};

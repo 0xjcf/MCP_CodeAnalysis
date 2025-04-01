@@ -1,16 +1,17 @@
 {
   "name": "@mcp/web-components",
   "version": "0.1.0",
+  "type": "module",
   "description": "Web Components analyzer for MCP",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "tsc",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src --ext .ts",
+    "lint": "eslint --config .eslintrc.json src --ext .ts,.tsx",
+    "lint:fix": "eslint --config .eslintrc.json src --ext .ts,.tsx --fix",
     "clean": "rimraf dist"
   },
   "dependencies": {

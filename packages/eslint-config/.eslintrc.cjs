@@ -1,6 +1,6 @@
 module.exports = {
-  extends: ['./index.js'],
+  extends: ['./index.cjs'],
   parserOptions: {
     project: './tsconfig.json',
   },
-}; 
+};

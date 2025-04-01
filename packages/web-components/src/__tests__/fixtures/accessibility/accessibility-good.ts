@@ -1,27 +1,64 @@
-import { html } from 'lit-html';
-import { igniteCore, RenderArgs } from 'ignite-element';
-import { createMachine } from 'xstate';
+// Example of a web component with good accessibility practices
+export class GoodComponent extends HTMLElement {
+  private _shadow: ShadowRoot;
 
-// Initialize Ignite-core
-const { Shared } = igniteCore({
-  adapter: 'xstate',
-  source: createMachine({
-    id: 'accessibility-good',
-    initial: 'idle',
-    states: {
-      idle: {},
-    },
-  }),
-});
+  constructor() {
+    super();
+    this._shadow = this.attachShadow({ mode: 'open' });
+  }
 
-@Shared('good-component')
-export class GoodComponent {
-  render({ state }: RenderArgs<any, any>) {
-    return html`
-      <div role="main" aria-label="Main content">
-        <button @click=${this.handleClick} @keydown=${this.handleKeyDown} aria-label="Click me">
-          Click me
-        </button>
+  connectedCallback() {
+    this.render();
+    this.setupEventListeners();
+  }
+
+  private render() {
+    if (!this._shadow) return;
+
+    this._shadow.innerHTML = `
+      <style>
+        .container {
+          padding: 1rem;
+        }
+        button {
+          padding: 0.5rem 1rem;
+          margin: 0.5rem 0;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1rem 0;
+        }
+        td {
+          padding: 0.5rem;
+          border: 1px solid #ddd;
+        }
+        iframe {
+          width: 100%;
+          height: 200px;
+          margin: 1rem 0;
+        }
+        video {
+          width: 100%;
+          margin: 1rem 0;
+        }
+        input {
+          padding: 0.5rem;
+          margin: 0.5rem 0;
+          width: 100%;
+        }
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 1rem 0;
+        }
+        li {
+          padding: 0.5rem;
+          border-bottom: 1px solid #eee;
+        }
+      </style>
+      <div class="container" role="main" aria-label="Main content">
+        <button aria-label="Click me">Click me</button>
         <img src="image.jpg" alt="Descriptive text" />
         <table role="grid" aria-label="Data table">
           <tr>
@@ -43,13 +80,24 @@ export class GoodComponent {
     `;
   }
 
-  private handleClick() {
-    // Handle click with keyboard support
+  private setupEventListeners() {
+    const button = this._shadow.querySelector('button');
+    if (button) {
+      button.addEventListener('click', this.handleClick);
+      button.addEventListener('keydown', this.handleKeyDown);
+    }
   }
 
-  private handleKeyDown(event: KeyboardEvent) {
+  private handleClick = () => {
+    // Handle click with keyboard support
+  };
+
+  private handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Enter' || event.key === ' ') {
       this.handleClick();
     }
-  }
+  };
 }
+
+// Define the custom element
+customElements.define('good-component', GoodComponent);

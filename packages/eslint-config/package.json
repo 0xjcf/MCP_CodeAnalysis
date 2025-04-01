@@ -1,13 +1,14 @@
 {
   "name": "@mcp/eslint-config",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "type": "module",
   "description": "Shared ESLint configuration for MCP packages",
-  "main": "index.js",
+  "main": "index.cjs",
   "files": [
-    "index.js",
-    "typescript.js",
-    "react.js",
-    "prettier.js"
+    "index.cjs",
+    "typescript.cjs",
+    "react.cjs",
+    "prettier.cjs"
   ],
   "scripts": {
     "test": "eslint test.tsx",
@@ -30,15 +31,21 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-react": "^7.0.0",
-    "eslint-plugin-react-hooks": "^4.0.0"
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.2.5"
   },
   "devDependencies": {
-    "@types/react": "^19.0.12",
-    "eslint-plugin-prettier": "^5.2.5",
-    "react": "^19.0.0"
+    "@types/eslint": "^8.56.2",
+    "@types/node": "^20.11.19",
+    "@types/react": "^18.2.57",
+    "typescript": "^5.3.3"
   }
 }

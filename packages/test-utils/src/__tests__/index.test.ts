@@ -30,10 +30,14 @@ describe('Test Utilities', () => {
 
     it('should create a machine with guards', () => {
       const config = { states: 2, guards: 2 };
-      console.log('Creating machine with config:', config);
+      if (!process.env.CI) {
+        console.log('Creating machine with config:', config);
+      }
       const machine = createTestMachine(config);
-      console.log('Machine states:', JSON.stringify(machine.states, null, 2));
-      console.log('Machine guards:', JSON.stringify((machine.config as any).guards, null, 2));
+      if (!process.env.CI) {
+        console.log('Machine states:', JSON.stringify(machine.states, null, 2));
+        console.log('Machine guards:', JSON.stringify((machine.config as any).guards, null, 2));
+      }
 
       const state1 = machine.states.state1;
       const state2 = machine.states.state2;
@@ -44,8 +48,10 @@ describe('Test Utilities', () => {
       const state1NextEvent = state1.on.NEXT[0] as unknown as { guard: string };
       const state2NextEvent = state2.on.NEXT[0] as unknown as { guard: string };
 
-      console.log('State1 Next Event:', JSON.stringify(state1NextEvent, null, 2));
-      console.log('State2 Next Event:', JSON.stringify(state2NextEvent, null, 2));
+      if (!process.env.CI) {
+        console.log('State1 Next Event:', JSON.stringify(state1NextEvent, null, 2));
+        console.log('State2 Next Event:', JSON.stringify(state2NextEvent, null, 2));
+      }
 
       expect(state1NextEvent.guard).toBe('guard1');
       expect(state2NextEvent.guard).toBe('guard2');

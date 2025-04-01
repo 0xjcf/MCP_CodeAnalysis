@@ -1,25 +1,30 @@
-import { html } from 'lit-html';
-import { igniteCore, RenderArgs } from 'ignite-element';
-import { createMachine } from 'xstate';
+class BadComponent extends HTMLElement {
+  private _shadow: ShadowRoot;
 
-// Initialize Ignite-core
-const { Shared } = igniteCore({
-  adapter: 'xstate',
-  source: createMachine({
-    id: 'accessibility-bad',
-    initial: 'idle',
-    states: {
-      idle: {},
-    },
-  }),
-});
+  constructor() {
+    super();
+    this._shadow = this.attachShadow({ mode: 'open' });
+  }
 
-@Shared('bad-component')
-export class BadComponent {
-  render(_args: RenderArgs<any, any>) {
-    return html`
-      <div style="color: #000; background-color: #fff;">
-        <div onclick="handleClick()">Click me</div>
+  connectedCallback() {
+    this.render();
+  }
+
+  private render() {
+    if (!this._shadow) return;
+
+    this._shadow.innerHTML = `
+      <style>
+        .container {
+          color: #000;
+          background-color: #fff;
+        }
+        .clickable {
+          cursor: pointer;
+        }
+      </style>
+      <div class="container">
+        <div class="clickable" onclick="this.handleClick()">Click me</div>
         <img src="image.jpg" />
         <table>
           <tr>
@@ -43,3 +48,5 @@ export class BadComponent {
     // No keyboard support
   }
 }
+
+customElements.define('bad-component', BadComponent);

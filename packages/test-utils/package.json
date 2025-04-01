@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run --coverage --reporter=verbose --outputFile=test-results.json"
+    "test": "vitest run"
   },
   "dependencies": {
     "vitest": "^1.6.1"

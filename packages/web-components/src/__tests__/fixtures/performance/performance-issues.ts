@@ -1,11 +1,24 @@
-import { html } from 'lit-html';
-import { Shared } from 'ignite-element';
-import { createMachine } from 'xstate';
+export class PerformanceIssuesComponent extends HTMLElement {
+  private _shadow: ShadowRoot;
 
-@Shared('performance-issues')
-export class PerformanceIssuesComponent {
+  constructor() {
+    super();
+    this._shadow = this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    this.render();
+    // Force reflow
+    const width = this.getWidth();
+    // Force repaint
+    this.style.backgroundColor = 'red';
+    this.style.backgroundColor = 'blue';
+  }
+
   private render() {
-    return html`
+    if (!this._shadow) return;
+
+    this._shadow.innerHTML = `
       <div>
         <div id="container">${this.renderLargeList()}</div>
         <div style="width: ${this.getWidth()}px"></div>
@@ -16,27 +29,22 @@ export class PerformanceIssuesComponent {
 
   private renderLargeList() {
     const items = Array.from({ length: 1000 }, (_, i) => i);
-    return html`
+    return `
       <ul>
-        ${items.map(i => html`<li>Item ${i}</li>`)}
+        ${items.map(i => `<li>Item ${i}</li>`).join('')}
       </ul>
     `;
   }
 
   private getWidth() {
-    const element = document.getElementById('container');
+    const element = this._shadow.querySelector('#container') as HTMLElement;
     return element?.offsetWidth || 0;
   }
 
   private getDynamicContent() {
     return '<div>Dynamic content</div>';
   }
-
-  private connectedCallback() {
-    // Force reflow
-    const width = this.getWidth();
-    // Force repaint
-    this.style.backgroundColor = 'red';
-    this.style.backgroundColor = 'blue';
-  }
 }
+
+// Define the custom element
+customElements.define('performance-issues', PerformanceIssuesComponent);

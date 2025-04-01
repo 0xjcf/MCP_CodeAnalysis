@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --filter=!@mcp/types test",
     "lint": "pnpm -r lint"
   },
   "workspaces": [

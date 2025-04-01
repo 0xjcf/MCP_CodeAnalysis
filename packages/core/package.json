@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsc",
     "start": "pnpm build && node dist/server-main.js",
-    "test": "vitest",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {
