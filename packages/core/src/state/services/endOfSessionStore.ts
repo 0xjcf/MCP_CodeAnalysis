@@ -8,6 +8,8 @@
 
 import { SessionStore } from './types.js';
 import { v4 as uuidv4 } from 'uuid';
+import { Redis } from 'ioredis';
+import { RedisSessionStore } from './redisSessionStore.js';
 
 export interface EndOfSessionData {
   session_id?: string;
@@ -67,13 +69,39 @@ export interface EndOfSessionData {
   };
 }
 
+interface ListRecordsOptions {
+  limit?: number;
+  offset?: number;
+  filter?: Record<string, any>;
+}
+
+interface SessionRecord {
+  id: string;
+  timestamp: number;
+  data: Record<string, any>;
+}
+
 export class EndOfSessionStore {
   private sessionStore: SessionStore;
   private readonly prefix: string;
+  private redis: Redis;
+  private sessionId: string;
 
-  constructor(sessionStore: SessionStore, prefix: string = 'mcp:end-of-session:') {
-    this.sessionStore = sessionStore;
-    this.prefix = prefix;
+  constructor(options: { redisUrl: string; sessionId: string; prefix?: string }) {
+    const url = new URL(options.redisUrl);
+    this.redis = new Redis({
+      host: url.hostname,
+      port: parseInt(url.port),
+      password: url.password || undefined,
+    });
+    this.sessionId = options.sessionId;
+    this.prefix = options.prefix || 'mcp:end-of-session:';
+    this.sessionStore = new RedisSessionStore({
+      redisUrl: options.redisUrl,
+      prefix: this.prefix,
+      defaultTtl: 3600,
+      lockTimeout: 30000,
+    });
   }
 
   /**
@@ -101,8 +129,13 @@ export class EndOfSessionStore {
    * @returns Array of session IDs
    */
   async listEndOfSessions(): Promise<string[]> {
-    const sessions = await this.sessionStore.getSessions();
-    return sessions.filter(id => id.startsWith(this.prefix));
+    try {
+      const sessions = await this.sessionStore.getSessions();
+      return sessions;
+    } catch (error) {
+      console.error('Error listing end-of-session records:', error);
+      throw new Error('Failed to list end-of-session records');
+    }
   }
 
   /**
@@ -119,5 +152,37 @@ export class EndOfSessionStore {
   async clearAll(): Promise<void> {
     const sessions = await this.listEndOfSessions();
     await Promise.all(sessions.map(id => this.deleteEndOfSession(id)));
+  }
+
+  async listRecords(options: ListRecordsOptions = {}): Promise<SessionRecord[]> {
+    try {
+      const { limit = 10, offset = 0, filter = {} } = options;
+      const records = await this.redis.zrange(this.getRecordsKey(), offset, offset + limit - 1);
+
+      return records
+        .map((record: string) => {
+          try {
+            const parsed = JSON.parse(record);
+            // Apply filters if provided
+            if (Object.keys(filter).length > 0) {
+              return Object.entries(filter).every(([key, value]) => parsed[key] === value)
+                ? parsed
+                : null;
+            }
+            return parsed;
+          } catch (error) {
+            console.error('Failed to parse record:', error);
+            return null;
+          }
+        })
+        .filter((record): record is SessionRecord => record !== null);
+    } catch (error) {
+      console.error('Failed to list records:', error);
+      throw new Error('Failed to list records');
+    }
+  }
+
+  private getRecordsKey(): string {
+    return `session:records:${this.sessionId}`;
   }
 }

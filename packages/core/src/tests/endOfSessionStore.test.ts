@@ -2,21 +2,102 @@
  * Tests for EndOfSessionStore
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
 import { EndOfSessionStore, EndOfSessionData } from '../state/services/endOfSessionStore.js';
-import { MemorySessionStore } from '../state/services/memorySessionStore.js';
+import { RedisSessionStore } from '../redisSessionStore.js';
+
+interface MockRedisClient {
+  on: (event: string, callback: (error: Error) => void) => MockRedisClient;
+  disconnect: () => Promise<void>;
+  quit: () => Promise<void>;
+  get: Mock;
+  set: Mock;
+  setex: Mock;
+  del: Mock;
+  keys: Mock;
+  clearAll: () => Promise<void>;
+  _errorCallback: ((error: Error) => void) | null;
+  _simulateError: (error: Error) => void;
+  _store: Map<string, any>;
+}
+
+// Mock Redis client
+const mockRedisClient: MockRedisClient = {
+  on: vi.fn((event: string, callback: (error: Error) => void) => {
+    if (event === 'error') {
+      mockRedisClient._errorCallback = callback;
+    }
+    return mockRedisClient;
+  }),
+  disconnect: vi.fn().mockResolvedValue(undefined),
+  quit: vi.fn().mockResolvedValue(undefined),
+  get: vi.fn().mockImplementation(async (key: string) => {
+    const value = mockRedisClient._store.get(key);
+    return value ? JSON.stringify(value) : null;
+  }),
+  set: vi.fn().mockImplementation(async (key: string, value: string) => {
+    mockRedisClient._store.set(key, JSON.parse(value));
+    return 'OK';
+  }),
+  setex: vi.fn().mockImplementation(async (key: string, seconds: number, value: string) => {
+    mockRedisClient._store.set(key, JSON.parse(value));
+    return 'OK';
+  }),
+  del: vi.fn().mockImplementation(async (key: string) => {
+    return mockRedisClient._store.delete(key) ? 1 : 0;
+  }),
+  keys: vi.fn().mockImplementation(async (pattern: string) => {
+    // Convert Redis pattern to regex
+    const regexPattern = pattern
+      .replace(/\./g, '\\.') // Escape dots
+      .replace(/\*/g, '.*') // Convert * to regex wildcard
+      .replace(/\?/g, '.'); // Convert ? to regex single character
+    const regex = new RegExp(`^${regexPattern}$`);
+    return Array.from(mockRedisClient._store.keys()).filter(key => regex.test(key));
+  }),
+  clearAll: vi.fn().mockImplementation(async () => {
+    mockRedisClient._store.clear();
+    return undefined;
+  }),
+  _errorCallback: null,
+  _simulateError: function (error: Error): void {
+    if (this._errorCallback) {
+      this._errorCallback(error);
+    }
+  },
+  _store: new Map<string, any>(),
+};
+
+vi.mock('ioredis', () => {
+  return {
+    default: vi.fn().mockImplementation(() => mockRedisClient),
+    Redis: vi.fn().mockImplementation(() => mockRedisClient),
+  };
+});
 
 describe('EndOfSessionStore', () => {
-  let sessionStore: MemorySessionStore;
+  let sessionStore: RedisSessionStore;
   let endOfSessionStore: EndOfSessionStore;
 
   beforeEach(() => {
-    sessionStore = new MemorySessionStore();
-    endOfSessionStore = new EndOfSessionStore(sessionStore);
+    vi.clearAllMocks();
+    mockRedisClient._store.clear(); // Clear the store before each test
+    sessionStore = new RedisSessionStore({
+      host: 'localhost',
+      port: 6379,
+      keyPrefix: 'mcp:session:',
+      ttl: 3600,
+    });
+    endOfSessionStore = new EndOfSessionStore({
+      redisUrl: 'redis://localhost:6379',
+      sessionId: 'test-session',
+      prefix: 'mcp:end-of-session:',
+    });
   });
 
   afterEach(async () => {
     await endOfSessionStore.clearAll();
+    mockRedisClient._store.clear(); // Clear the store after each test
   });
 
   const mockEndOfSessionData: EndOfSessionData = {

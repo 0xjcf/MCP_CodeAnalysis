@@ -143,57 +143,57 @@ export class AccessibilityAnalyzer {
     // Only add issues for missing features
     if (!metrics.hasAriaAttributes) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'missing-role',
         message: 'Component lacks ARIA attributes',
-        impact: 'high',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasKeyboardSupport) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'keyboard-navigation',
         message: 'Component lacks keyboard support',
-        impact: 'high',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasSemanticHTML) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'semantic-html',
         message: 'Component lacks semantic HTML structure',
-        impact: 'medium',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasTextAlternatives) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'missing-label',
         message: 'Component lacks text alternatives for non-text content',
-        impact: 'high',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasFocusManagement) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'focus-management',
         message: 'Component lacks proper focus management',
-        impact: 'high',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasColorContrast) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'color-contrast',
         message: 'Component may have insufficient color contrast',
-        impact: 'medium',
+        severity: 'warning',
       });
     }
 
     if (!metrics.hasDynamicContent) {
       metrics.issues.push({
-        type: 'warning',
+        type: 'dynamic-content',
         message: 'Component lacks dynamic content announcements',
-        impact: 'medium',
+        severity: 'warning',
       });
     }
   }

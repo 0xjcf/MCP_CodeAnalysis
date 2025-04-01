@@ -71,8 +71,24 @@ export class RedisSessionStore implements SessionStore {
    * @returns The session data or null if not found
    */
   async getSession<T = SessionData>(sessionId: string): Promise<T | null> {
-    const data = await this.redis.get(this.getKey(sessionId));
-    return data ? JSON.parse(data) : null;
+    try {
+      const data = await this.redis.get(this.getKey(sessionId));
+      if (!data) {
+        return null;
+      }
+      try {
+        return JSON.parse(data);
+      } catch (error) {
+        console.error(`Failed to parse session data for ${sessionId}:`, error);
+        throw new Error('Failed to parse session data');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Failed to parse session data') {
+        throw error;
+      }
+      console.error(`Error retrieving session ${sessionId}:`, error);
+      throw new Error('Redis operation failed');
+    }
   }
 
   /**

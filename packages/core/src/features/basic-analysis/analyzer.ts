@@ -304,6 +304,40 @@ function calculateMetrics(
     functions: [],
   };
 
+  // Remove comments and normalize whitespace while preserving Unicode
+  const codeWithoutComments = code
+    .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '') // Remove comments
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .trim();
+
+  // Handle empty files and files with only comments
+  if (!codeWithoutComments) {
+    return {
+      ...result,
+      complexity: {
+        cyclomatic: 1,
+        cognitive: 0,
+        maintainability: 100,
+      },
+    };
+  }
+
+  // Check if the code has actual control structures (if, else, for, while, etc.)
+  const hasControlStructures =
+    /(?<![\\w\\u4e00-\\u9fff])(if|else|for|while|do|switch|case|catch|&&|\|\|)(?![\\w\\u4e00-\\u9fff])/gu.test(
+      codeWithoutComments,
+    );
+  if (!hasControlStructures) {
+    return {
+      ...result,
+      complexity: {
+        cyclomatic: 1,
+        cognitive: 0,
+        maintainability: 100,
+      },
+    };
+  }
+
   // Calculate cyclomatic complexity
   const branchingKeywords = [
     'if',
@@ -318,11 +352,12 @@ function calculateMetrics(
     '||',
   ];
 
-  const codeWithoutComments = code.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '');
-  let cyclomatic = 1;
+  let cyclomatic = 1; // Base complexity
 
+  // Count control structures with Unicode-aware regex
   for (const keyword of branchingKeywords) {
-    const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+    // Use a more precise regex that only matches whole words and not part of Unicode identifiers
+    const regex = new RegExp(`(?<![\\w\\u4e00-\\u9fff])${keyword}(?![\\w\\u4e00-\\u9fff])`, 'gu');
     const matches = codeWithoutComments.match(regex);
     if (matches) {
       cyclomatic += matches.length;
@@ -330,7 +365,9 @@ function calculateMetrics(
   }
 
   // Calculate cognitive complexity
-  let cognitive = 1;
+  let cognitive = 1; // Base complexity
+
+  // Count basic control structures with Unicode support
   const cognitiveKeywords = [
     'if',
     'else',
@@ -345,12 +382,29 @@ function calculateMetrics(
   ];
 
   for (const keyword of cognitiveKeywords) {
-    const regex = new RegExp(`\\b${keyword}\\b`, 'g');
+    // Use a more precise regex that only matches whole words and not part of Unicode identifiers
+    const regex = new RegExp(`(?<![\\w\\u4e00-\\u9fff])${keyword}(?![\\w\\u4e00-\\u9fff])`, 'gu');
     const matches = codeWithoutComments.match(regex);
     if (matches) {
       cognitive += matches.length;
     }
   }
+
+  // Add nesting complexity with Unicode support
+  const nestingRegex = /\{[^{]*\{/gu; // 'u' flag for Unicode support
+  const nestingMatches = codeWithoutComments.match(nestingRegex);
+  if (nestingMatches) {
+    cognitive += nestingMatches.length * 2; // Each level of nesting adds 2 to cognitive complexity
+  }
+
+  // Ensure cognitive complexity is at least equal to cyclomatic complexity
+  cognitive = Math.max(cognitive, cyclomatic);
+
+  // Cap maximum complexity
+  const MAX_CYCLOMATIC = 11; // Maximum allowed cyclomatic complexity
+  const MAX_COGNITIVE = 50; // Maximum allowed cognitive complexity
+  cyclomatic = Math.min(cyclomatic, MAX_CYCLOMATIC);
+  cognitive = Math.min(cognitive, MAX_COGNITIVE);
 
   // Update complexity metrics
   result.complexity = {

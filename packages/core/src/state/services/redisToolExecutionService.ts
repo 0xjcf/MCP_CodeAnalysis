@@ -8,10 +8,9 @@
  * @module redisToolExecutionService
  */
 
-import { Redis } from 'ioredis';
+import { RedisSessionStore, type RedisSessionStoreOptions } from '../../redisSessionStore.js';
 import { ToolExecutionService, type ExecutionResult } from './toolService.js';
 import { ToolResponse } from '../../types/responses.js';
-import { RedisSessionStore, type RedisSessionStoreOptions } from '../../redisSessionStore.js';
 import { Tool } from '../../tools/interfaces.js';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -58,30 +57,21 @@ export interface RedisToolExecutionServiceOptions {
 export class RedisToolExecutionService extends ToolExecutionService {
   private sessionStore: RedisSessionStore;
   private serviceId: string;
+  private isInitialized = false;
+  private lockToken: string | null = null;
 
   constructor(options: RedisToolExecutionServiceOptions) {
     super(options.sessionId || uuidv4());
     this.serviceId = options.serviceId || uuidv4();
     const url = new URL(options.redisUrl);
-    const storeOptions: RedisSessionStoreOptions = {
+    this.sessionStore = new RedisSessionStore({
       host: url.hostname,
       port: parseInt(url.port),
       keyPrefix: options.prefix || 'mcp:tool:',
       ttl: options.defaultTtl || 3600,
       db: 0,
       password: url.password || undefined,
-    };
-    this.sessionStore = new RedisSessionStore(storeOptions);
-
-    // Initialize state from Redis if it exists
-    this.initializeState();
-  }
-
-  /**
-   * Gets the service ID
-   */
-  public getServiceId(): string {
-    return this.serviceId;
+    });
   }
 
   /**
@@ -91,13 +81,18 @@ export class RedisToolExecutionService extends ToolExecutionService {
     try {
       const exists = await this.sessionStore.exists(this.serviceId);
       if (!exists) {
-        await this.sessionStore.set(this.serviceId, {
-          success: true,
-          data: {
-            state: { value: 'idle' },
-            context: { sessionId: this.serviceId },
-          },
-        });
+        await this.acquireLock();
+        try {
+          await this.sessionStore.set(this.serviceId, {
+            success: true,
+            data: {
+              state: { value: 'idle' },
+              context: { sessionId: this.serviceId },
+            },
+          });
+        } finally {
+          await this.releaseLock();
+        }
       }
 
       const session = await this.sessionStore.get(this.serviceId);
@@ -105,14 +100,15 @@ export class RedisToolExecutionService extends ToolExecutionService {
         const sessionData = session.data as SessionData;
         const context = this.getContext();
         if (context.toolName) {
-          this.selectTool(context.toolName);
+          await this.selectTool(context.toolName);
           if (context.parameters) {
-            this.setParameters(context.parameters);
+            await this.setParameters(context.parameters);
           }
         }
       }
     } catch (error) {
       console.error('Failed to initialize state:', error);
+      throw new Error('Redis operation failed');
     }
   }
 
@@ -120,28 +116,40 @@ export class RedisToolExecutionService extends ToolExecutionService {
    * Override selectTool to persist state changes
    */
   async selectTool(toolName: string): Promise<void> {
-    await super.selectTool(toolName);
-    await this.sessionStore.set(this.serviceId, {
-      success: true,
-      data: {
-        state: { value: 'tool_selected' },
-        context: this.getContext(),
-      },
-    });
+    await this.acquireLock();
+    try {
+      await super.selectTool(toolName);
+      await this.sessionStore.set(this.serviceId, {
+        success: true,
+        data: {
+          state: { value: 'tool_selected' },
+          context: this.getContext(),
+        },
+      });
+      await this.sessionStore.extendSessionTtl(this.serviceId);
+    } finally {
+      await this.releaseLock();
+    }
   }
 
   /**
    * Override setParameters to persist state changes
    */
   async setParameters(parameters: Record<string, any>): Promise<void> {
-    await super.setParameters(parameters);
-    await this.sessionStore.set(this.serviceId, {
-      success: true,
-      data: {
-        state: { value: 'parameters_set' },
-        context: this.getContext(),
-      },
-    });
+    await this.acquireLock();
+    try {
+      await super.setParameters(parameters);
+      await this.sessionStore.set(this.serviceId, {
+        success: true,
+        data: {
+          state: { value: 'parameters_set' },
+          context: this.getContext(),
+        },
+      });
+      await this.sessionStore.extendSessionTtl(this.serviceId);
+    } finally {
+      await this.releaseLock();
+    }
   }
 
   /**
@@ -150,60 +158,75 @@ export class RedisToolExecutionService extends ToolExecutionService {
   async execute<T>(
     executeFunction: (params: Record<string, any>) => Promise<T>,
   ): Promise<ToolResponse<T>> {
-    const result = await super.execute(executeFunction);
-    await this.sessionStore.set(this.serviceId, {
-      success: true,
-      data: {
-        state: { value: 'executed' },
-        context: this.getContext(),
-      },
-    });
-    return result;
-  }
-
-  /**
-   * Override cancel to persist state changes
-   */
-  async cancel(): Promise<void> {
-    await super.cancel();
-    await this.sessionStore.set(this.serviceId, {
-      success: true,
-      data: {
-        state: { value: 'cancelled' },
-        context: this.getContext(),
-      },
-    });
+    await this.acquireLock();
+    try {
+      const result = await super.execute(executeFunction);
+      await this.sessionStore.set(this.serviceId, {
+        success: true,
+        data: {
+          state: { value: 'executed' },
+          context: this.getContext(),
+        },
+      });
+      await this.sessionStore.extendSessionTtl(this.serviceId);
+      return result;
+    } finally {
+      await this.releaseLock();
+    }
   }
 
   /**
    * Override reset to persist state changes
    */
   async reset(): Promise<void> {
-    await super.reset();
-    await this.sessionStore.set(this.serviceId, {
-      success: true,
-      data: {
-        state: { value: 'idle' },
-        context: this.getContext(),
-      },
-    });
+    await this.acquireLock();
+    try {
+      await super.reset();
+      await this.sessionStore.set(this.serviceId, {
+        success: true,
+        data: {
+          state: { value: 'idle' },
+          context: this.getContext(),
+        },
+      });
+      await this.sessionStore.extendSessionTtl(this.serviceId);
+    } finally {
+      await this.releaseLock();
+    }
+  }
+
+  /**
+   * Acquires a lock for state modification
+   */
+  private async acquireLock(): Promise<void> {
+    this.lockToken = await this.sessionStore.acquireLock(this.serviceId);
+    if (!this.lockToken) {
+      throw new Error('Failed to acquire lock');
+    }
+  }
+
+  /**
+   * Releases the state modification lock
+   */
+  private async releaseLock(): Promise<void> {
+    if (this.lockToken) {
+      await this.sessionStore.releaseLock(this.serviceId, this.lockToken);
+      this.lockToken = null;
+    }
   }
 
   /**
    * Closes the Redis connection
    */
-  public async dispose(): Promise<void> {
+  public async close(): Promise<void> {
     try {
+      if (this.lockToken) {
+        await this.releaseLock();
+      }
       await this.sessionStore.close();
     } catch (error) {
-      console.error('Error disposing Redis tool execution service:', error);
+      console.error('Error closing Redis tool execution service:', error);
+      throw new Error('Failed to close Redis tool execution service');
     }
-  }
-
-  /**
-   * Closes the service
-   */
-  public async close(): Promise<void> {
-    await this.dispose();
   }
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r --filter=!@mcp/types test",
+    "test:watch": "pnpm -r --filter=!@mcp/types test:watch",
     "lint": "pnpm -r lint"
   },
   "workspaces": [
