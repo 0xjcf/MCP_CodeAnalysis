@@ -20,13 +20,18 @@ program
   .description('Create a new session')
   .option('-d, --description <description>', 'Session description')
   .option('-s, --server <path>', 'Path to MCP server script', '../../server-main.js')
+  .option('-p, --port <number>', 'Port of existing MCP server')
   .option('--debug', 'Enable debug logging')
   .action(async options => {
     const client = new McpSessionClient();
     const spinner = ora('Creating session...').start();
 
     try {
-      await client.connect(options.server, options.debug);
+      await client.connect(
+        options.server,
+        options.debug,
+        options.port ? parseInt(options.port) : undefined,
+      );
       const result = await client.createSession(options.description);
       spinner.succeed(`Created session ${chalk.cyan(result.sessionId)}`);
     } catch (error) {

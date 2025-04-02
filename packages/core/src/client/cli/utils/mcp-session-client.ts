@@ -8,6 +8,7 @@
 
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import type { Ora } from 'ora';
 import ora from 'ora';
 import chalk from 'chalk';
@@ -70,8 +71,9 @@ export class McpSessionClient {
    * Connect to the MCP server
    * @param serverPath Path to the server script
    * @param debug Enable debug logging
+   * @param port Optional port number to connect to existing server
    */
-  async connect(serverPath: string, debug = false): Promise<void> {
+  async connect(serverPath: string, debug = false, port?: number): Promise<void> {
     if (this.client) {
       return;
     }
@@ -79,10 +81,19 @@ export class McpSessionClient {
     this.spinner = ora('Connecting to MCP server...').start();
 
     try {
-      const transport = new StdioClientTransport({
-        command: 'node',
-        args: [serverPath],
-      });
+      let transport;
+
+      if (port) {
+        // Connect to existing server using SSE
+        const baseUrl = new URL(`http://localhost:${port}`);
+        transport = new SSEClientTransport(baseUrl);
+      } else {
+        // Spawn new server
+        transport = new StdioClientTransport({
+          command: 'node',
+          args: [serverPath],
+        });
+      }
 
       this.client = new Client(
         { name: 'mcp-session-client', version: '1.0.0' },

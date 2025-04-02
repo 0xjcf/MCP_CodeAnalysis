@@ -34,6 +34,9 @@ app.get('/', (_req, res) => {
   });
 });
 
+// Store active transport
+let activeTransport: SSEServerTransport | null = null;
+
 // SSE endpoint for client connections
 app.get('/mcp', (_req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -41,17 +44,28 @@ app.get('/mcp', (_req, res) => {
   res.setHeader('Connection', 'keep-alive');
 
   const transport = new SSEServerTransport('/messages', res);
+  activeTransport = transport;
+
   server.connect(transport).catch(err => {
     console.error('Failed to connect server to SSE transport:', err);
+    activeTransport = null;
     res.end();
+  });
+
+  // Clean up on connection close
+  res.on('close', () => {
+    activeTransport = null;
   });
 });
 
 // Client message endpoint
 app.post('/messages', express.json(), async (req, res) => {
   try {
-    const transport = new SSEServerTransport('/messages', res);
-    await transport.handlePostMessage(req, res);
+    if (!activeTransport) {
+      res.status(400).json({ error: 'No SSE connection established' });
+      return;
+    }
+    await activeTransport.handlePostMessage(req, res);
   } catch (error) {
     console.error('Error handling client message:', error);
     res.status(500).json({ error: 'Internal server error' });

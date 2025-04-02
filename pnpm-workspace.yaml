@@ -1,6 +1,8 @@
 packages:
-  - "packages/*"
-  - "test"
-  - "docs"
-  - "config"
-  - "tools"
+  - packages/*
+  - test
+  - docs
+  - config
+  - tools
+onlyBuiltDependencies:
+  - sqlite3
