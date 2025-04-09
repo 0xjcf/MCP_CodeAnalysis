@@ -1,7 +1,9 @@
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
 import fs from "fs";
 import path from "path";
+
+import { open } from 'sqlite';
+import sqlite3 from 'sqlite3';
+
 import { config } from "./config.js";
 
 // Database connection cache

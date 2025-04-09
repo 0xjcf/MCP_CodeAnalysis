@@ -2,57 +2,57 @@
  * Core component types for the MCP platform
  */
 
-export type ComplexityLevel = "low" | "medium" | "high";
+export type ComplexityLevel = 'low' | 'medium' | 'high';
 
-export interface PropertyValidation {
+export interface IPropertyValidation {
   type: string;
   required: boolean;
   pattern?: string;
   min?: number;
   max?: number;
-  rules?: ValidationRule[];
+  rules?: IValidationRule[];
 }
 
-export interface ValidationRule {
+export interface IValidationRule {
   type: string;
   message: string;
-  value?: any;
-  validate?: (value: any) => boolean;
+  value?: unknown;
+  validate?: (value: unknown) => boolean;
 }
 
-export interface ComponentEvent {
+export interface IComponentEvent {
   name: string;
   type: string;
-  detail?: any;
+  detail?: unknown;
   bubbles: boolean;
   composed: boolean;
   description?: string;
 }
 
-export interface Parameter {
+export interface IParameter {
   name: string;
   type: string;
   required: boolean;
-  defaultValue?: any;
+  defaultValue?: unknown;
 }
 
-export interface ComponentProperty {
+export interface IComponentProperty {
   name: string;
   type: string;
-  defaultValue?: any;
+  defaultValue?: unknown;
   description?: string;
-  validation?: PropertyValidation;
+  validation?: IPropertyValidation;
 }
 
-export interface ComponentMetadata {
+export interface IComponentMetadata {
   name: string;
   description?: string;
   version?: string;
   author?: string;
-  properties: PropertyMetadata[];
-  events: EventMetadata[];
-  methods: MethodMetadata[];
-  styling: StyleMetadata[];
+  properties: IPropertyMetadata[];
+  events: IEventMetadata[];
+  methods: IMethodMetadata[];
+  styling: IStyleMetadata[];
   dependencies: string[];
   tags: string[];
   performance?: {
@@ -72,69 +72,69 @@ export interface ComponentMetadata {
   };
 }
 
-export interface PropertyMetadata {
+export interface IPropertyMetadata {
   name: string;
   type: string;
   description?: string;
   required?: boolean;
-  default?: any;
+  default?: unknown;
   reflect?: boolean;
   attribute?: string;
   readonly?: boolean;
 }
 
-export interface EventMetadata {
+export interface IEventMetadata {
   name: string;
   description?: string;
-  detail?: any;
+  detail?: unknown;
   bubbles?: boolean;
   composed?: boolean;
 }
 
-export interface MethodMetadata {
+export interface IMethodMetadata {
   name: string;
   description?: string;
-  parameters: ParameterMetadata[];
+  parameters: IParameterMetadata[];
   returnType?: string;
   async?: boolean;
 }
 
-export interface ParameterMetadata {
+export interface IParameterMetadata {
   name: string;
   type: string;
   description?: string;
   required?: boolean;
-  default?: any;
+  default?: unknown;
 }
 
-export interface StyleMetadata {
+export interface IStyleMetadata {
   name: string;
   description?: string;
-  type: "css" | "scss" | "less";
+  type: 'css' | 'scss' | 'less';
   content: string;
 }
 
-export interface ComponentAnalysis {
-  metadata: ComponentMetadata;
-  issues: AnalysisIssue[];
+export interface IComponentAnalysis {
+  metadata: IComponentMetadata;
+  issues: IAnalysisIssue[];
   recommendations: string[];
-  complexity: "low" | "medium" | "high";
+  complexity: 'low' | 'medium' | 'high';
 }
 
-export interface AnalysisResult {
-  type: "web-component";
+export interface IAnalysisResult {
+  type: 'web-component';
   name: string;
   complexity: ComplexityLevel;
   dependencies: string[];
-  issues: AnalysisIssue[];
+  issues: IAnalysisIssue[];
   recommendations: string[];
-  metadata: ComponentMetadata;
+  metadata: IComponentMetadata;
 }
 
-export interface AnalysisIssue {
+export interface IAnalysisIssue {
   type: string;
   message: string;
-  severity: "low" | "medium" | "high";
+  severity: 'low' | 'medium' | 'high';
   location?: {
     file: string;
     line: number;
@@ -142,18 +142,18 @@ export interface AnalysisIssue {
   };
 }
 
-export interface ComponentNode {
+export interface IComponentNode {
   id: string;
   name: string;
   type: string;
-  properties: ComponentProperty[];
-  events: ComponentEvent[];
-  methods: any[];
-  relationships: ComponentRelationship[];
-  metadata: ComponentMetadata;
+  properties: IComponentProperty[];
+  events: IComponentEvent[];
+  methods: IMethodMetadata[];
+  relationships: IComponentRelationship[];
+  metadata: IComponentMetadata;
 }
 
-export interface ComponentRelationship {
+export interface IComponentRelationship {
   type: string;
   source: string;
   target: string;

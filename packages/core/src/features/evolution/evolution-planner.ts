@@ -1,3 +1,6 @@
+import fs from "fs";
+import path from "path";
+
 import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import { analyzeCode } from "../basic-analysis/analyzer.js";
 import {
@@ -5,8 +8,6 @@ import {
   queryKnowledgeGraph,
 } from "../knowledge-graph/graph-manager.js";
 import { retrieveMemories } from "../memory/memory-manager.js";
-import path from "path";
-import fs from "fs";
 
 /**
  * Generate an evolution plan for a codebase based on a specific goal and timeframe

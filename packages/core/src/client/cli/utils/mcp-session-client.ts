@@ -6,15 +6,16 @@
  * management through a simple API.
  */
 
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
-import type { Ora } from 'ora';
-import ora from 'ora';
-import chalk from 'chalk';
 import { spawn } from 'child_process';
 
-export interface SessionInfo {
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+import chalk from 'chalk';
+import type { Ora } from 'ora';
+import ora from 'ora';
+
+interface ISessionInfo {
   sessionId: string;
   selectedTool?: string;
   lastExecutionTime?: string;
@@ -22,7 +23,7 @@ export interface SessionInfo {
   hasError: boolean;
 }
 
-export interface SessionHistoryEntry {
+interface ISessionHistoryEntry {
   timestamp: string;
   tool: string;
   arguments: any;
@@ -30,35 +31,35 @@ export interface SessionHistoryEntry {
   error?: string;
 }
 
-export interface SessionHistory {
+interface ISessionHistory {
   sessionId: string;
   totalEntries: number;
   returnedEntries: number;
-  history: SessionHistoryEntry[];
+  history: ISessionHistoryEntry[];
 }
 
-export interface ActiveSession {
+interface IActiveSession {
   sessionId: string;
   toolsUsed: number;
   lastActivity?: string;
 }
 
-export interface SessionList {
+interface ISessionList {
   activeSessions: number;
-  sessions: ActiveSession[];
+  sessions: IActiveSession[];
 }
 
-export interface CreateSessionResult {
+interface ICreateSessionResult {
   sessionId: string;
   created: string;
 }
 
-export interface ClearSessionResult {
+interface IClearSessionResult {
   cleared: boolean;
   timestamp: string;
 }
 
-export interface EndOfSessionResult {
+interface IEndOfSessionResult {
   sessionId: string;
   data: any;
 }
@@ -130,7 +131,7 @@ export class McpSessionClient {
    * @param description Optional description for the session
    * @returns Session ID and creation timestamp
    */
-  async createSession(description?: string): Promise<CreateSessionResult> {
+  async createSession(description?: string): Promise<ICreateSessionResult> {
     if (!this.client) {
       throw new Error('Client not connected to server');
     }
@@ -138,7 +139,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'create-session',
       arguments: { description },
-    })) as unknown as CreateSessionResult;
+    })) as unknown as ICreateSessionResult;
 
     return result;
   }
@@ -148,7 +149,7 @@ export class McpSessionClient {
    * @param sessionId ID of the session to retrieve
    * @returns Session information
    */
-  async getSessionInfo(sessionId: string): Promise<SessionInfo> {
+  async getSessionInfo(sessionId: string): Promise<ISessionInfo> {
     if (!this.client) {
       throw new Error('Client not connected to server');
     }
@@ -156,7 +157,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'get-session-info',
       arguments: { sessionId },
-    })) as unknown as SessionInfo;
+    })) as unknown as ISessionInfo;
 
     return result;
   }
@@ -167,7 +168,7 @@ export class McpSessionClient {
    * @param limit Maximum number of history entries to return
    * @returns Session history
    */
-  async getSessionHistory(sessionId: string, limit = 10): Promise<SessionHistory> {
+  async getSessionHistory(sessionId: string, limit = 10): Promise<ISessionHistory> {
     if (!this.client) {
       throw new Error('Client not connected to server');
     }
@@ -175,7 +176,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'get-session-history',
       arguments: { sessionId, limit },
-    })) as unknown as SessionHistory;
+    })) as unknown as ISessionHistory;
 
     return result;
   }
@@ -193,7 +194,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'clear-session',
       arguments: { sessionId },
-    })) as unknown as ClearSessionResult;
+    })) as unknown as IClearSessionResult;
 
     return result.cleared;
   }
@@ -202,7 +203,7 @@ export class McpSessionClient {
    * List all active sessions
    * @returns List of active sessions
    */
-  async listSessions(): Promise<SessionList> {
+  async listSessions(): Promise<ISessionList> {
     if (!this.client) {
       throw new Error('Client not connected to server');
     }
@@ -210,7 +211,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'list-sessions',
       arguments: {},
-    })) as unknown as SessionList;
+    })) as unknown as ISessionList;
 
     return result;
   }
@@ -228,7 +229,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'save-end-of-session',
       arguments: { data },
-    })) as unknown as EndOfSessionResult;
+    })) as unknown as IEndOfSessionResult;
 
     return result.sessionId;
   }
@@ -246,7 +247,7 @@ export class McpSessionClient {
     const result = (await this.client.callTool({
       name: 'get-end-of-session',
       arguments: { sessionId },
-    })) as unknown as EndOfSessionResult;
+    })) as unknown as IEndOfSessionResult;
 
     return result.data;
   }

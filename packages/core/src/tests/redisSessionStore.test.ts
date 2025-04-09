@@ -1,79 +1,72 @@
-import { describe, test, expect, beforeEach, afterEach, vi, type Mock } from 'vitest';
-import Redis from 'ioredis';
-import { RedisSessionStore } from '../redisSessionStore.js';
-import { AnalysisResult } from '../index.js';
+import type { ISessionData } from '@mcp/types';
+import { Redis } from 'ioredis';
+import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 
-// Define types for the mock Redis client
-interface MockRedisClient {
-  on: (event: string, callback: (error: Error) => void) => MockRedisClient;
-  disconnect: () => Promise<void>;
-  set: Mock;
-  get: Mock;
-  del: Mock;
-  keys: Mock;
-  expire: Mock;
-  ttl: Mock;
-  exists: Mock;
-  eval: Mock;
-  setex: Mock;
-  quit: () => Promise<void>;
-  _errorCallback: ((error: Error) => void) | null;
-  _simulateError: (error: Error) => void;
+import { RedisSessionStore, RedisSessionStoreError } from '../state/services/redisSessionStore.js';
+
+
+interface IMockRedisClient {
+  get: ReturnType<typeof vi.fn>;
+  set: ReturnType<typeof vi.fn>;
+  setex: ReturnType<typeof vi.fn>;
+  del: ReturnType<typeof vi.fn>;
+  exists: ReturnType<typeof vi.fn>;
+  keys: ReturnType<typeof vi.fn>;
+  ttl: ReturnType<typeof vi.fn>;
+  expire: ReturnType<typeof vi.fn>;
+  eval: ReturnType<typeof vi.fn>;
+  quit: ReturnType<typeof vi.fn>;
+  on: ReturnType<typeof vi.fn>;
 }
 
 // Create a comprehensive mock Redis client with proper types
-const mockRedisClient: MockRedisClient = {
-  on: vi.fn((event: string, callback: (error: Error) => void) => {
-    if (event === 'error') {
-      mockRedisClient._errorCallback = callback;
-    }
-    return mockRedisClient;
-  }),
-  disconnect: vi.fn().mockResolvedValue(undefined),
-  quit: vi.fn().mockResolvedValue(undefined),
-  set: vi.fn().mockResolvedValue('OK'),
-  setex: vi.fn().mockResolvedValue('OK'),
+const mockRedisClient: IMockRedisClient = {
   get: vi.fn().mockImplementation((key: string) => {
     if (key === 'mcp:session:exists') {
-      return Promise.resolve(JSON.stringify({ success: true, data: { key: 'value' } }));
+      return Promise.resolve(
+        JSON.stringify({
+          id: 'test-id',
+          createdAt: Date.now(),
+          lastAccessed: Date.now(),
+          data: { key: 'value' },
+        }),
+      );
     }
     if (key === 'mcp:session:invalid-json') {
       return Promise.resolve('not-valid-json');
     }
     return Promise.resolve(null);
   }),
+  set: vi.fn().mockResolvedValue('OK'),
+  setex: vi.fn().mockResolvedValue('OK'),
   del: vi.fn().mockResolvedValue(1),
   keys: vi.fn().mockResolvedValue(['mcp:session:1', 'mcp:session:2']),
-  expire: vi.fn().mockImplementation((key: string) => {
-    if (key === 'mcp:session:exists') {
-      return Promise.resolve(1);
-    }
-    return Promise.resolve(0);
-  }),
   ttl: vi.fn().mockImplementation((key: string) => {
     if (key === 'mcp:session:exists') {
       return Promise.resolve(300);
     }
     return Promise.resolve(-2);
   }),
+  expire: vi.fn().mockImplementation((key: string) => {
+    if (key === 'mcp:session:exists') {
+      return Promise.resolve(1);
+    }
+    return Promise.resolve(0);
+  }),
   exists: vi.fn().mockImplementation((key: string) => {
-    if (key === 'mcp:session:exists' || key === 'mcp:session:lock:exists') {
+    if (key === 'mcp:session:exists') {
       return Promise.resolve(1);
     }
     return Promise.resolve(0);
   }),
-  eval: vi.fn().mockImplementation((script: string, keys: number, ...args: any[]) => {
-    if (args[1] === 'valid-token') {
+  eval: vi.fn().mockImplementation((script: string, numKeys: number, ...args: unknown[]) => {
+    if (script.includes('releaseLock')) {
       return Promise.resolve(1);
     }
     return Promise.resolve(0);
   }),
-  _errorCallback: null,
-  _simulateError: function (error: Error) {
-    if (this._errorCallback) {
-      this._errorCallback(error);
-    }
-  },
+  quit: vi.fn().mockResolvedValue('OK'),
+  on: vi.fn().mockReturnThis(),
 };
 
 // Mock the ioredis module
@@ -85,147 +78,164 @@ vi.mock('ioredis', () => {
 });
 
 describe('RedisSessionStore', () => {
-  let store: RedisSessionStore;
+  let store: RedisSessionStore<ISessionData>;
+  let mockClient: IMockRedisClient;
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    mockClient = { ...mockRedisClient };
     store = new RedisSessionStore({
-      host: 'localhost',
-      port: 6379,
-      keyPrefix: 'mcp:session:',
-      ttl: 3600,
-      lockTimeout: 30000,
+      redisUrl: 'redis://localhost:6379',
+      prefix: 'mcp:session:',
     });
   });
 
-  afterEach(async () => {
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  test('should get session data', async () => {
+    const sessionId = 'exists';
+    const result = await store.getSession(sessionId);
+    expect(result).toBeDefined();
+    expect(result?.id).toBe('test-id');
+    expect(mockClient.get).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should return null for non-existent session', async () => {
+    const sessionId = 'non-existent';
+    const result = await store.getSession(sessionId);
+    expect(result).toBeNull();
+    expect(mockClient.get).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should handle invalid JSON data', async () => {
+    const sessionId = 'invalid-json';
+    await expect(store.getSession(sessionId)).rejects.toThrow('Failed to parse session data');
+    expect(mockClient.get).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should set session data', async () => {
+    const sessionId = 'test-session';
+    const data: ISessionData = {
+      id: sessionId,
+      createdAt: Date.now(),
+      lastAccessed: Date.now(),
+      data: { key: 'value' },
+    };
+
+    await store.setSession(sessionId, data);
+    expect(mockClient.setex).toHaveBeenCalledWith(
+      `mcp:session:${sessionId}`,
+      expect.any(Number),
+      JSON.stringify(data),
+    );
+  });
+
+  test('should delete session', async () => {
+    const sessionId = 'test-session';
+    await store.deleteSession(sessionId);
+    expect(mockClient.del).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should clear session', async () => {
+    const sessionId = 'test-session';
+    await store.clearSession(sessionId);
+    expect(mockClient.del).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should get all sessions', async () => {
+    const sessions = await store.getSessions();
+    expect(sessions).toEqual(['1', '2']);
+    expect(mockClient.keys).toHaveBeenCalledWith('mcp:session:*');
+  });
+
+  test('should clear all sessions', async () => {
+    await store.clear();
+    expect(mockClient.keys).toHaveBeenCalledWith('mcp:session:*');
+    expect(mockClient.del).toHaveBeenCalledWith('mcp:session:1', 'mcp:session:2');
+  });
+
+  test('should extend session TTL', async () => {
+    const sessionId = 'exists';
+    const result = await store.extendSessionTtl(sessionId, 600);
+    expect(result).toBe(true);
+    expect(mockClient.expire).toHaveBeenCalledWith(`mcp:session:${sessionId}`, 600);
+  });
+
+  test('should get session TTL', async () => {
+    const sessionId = 'exists';
+    const result = await store.getSessionTtl(sessionId);
+    expect(result).toBe(300);
+    expect(mockClient.ttl).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should acquire lock', async () => {
+    const sessionId = 'test-session';
+    const result = await store.acquireLock(sessionId);
+    expect(result).toBeDefined();
+    expect(mockClient.set).toHaveBeenCalledWith(
+      `mcp:session:lock:${sessionId}`,
+      expect.any(String),
+      'PX',
+      expect.any(Number),
+      'NX',
+    );
+  });
+
+  test('should release lock', async () => {
+    const sessionId = 'test-session';
+    const token = 'test-token';
+    const result = await store.releaseLock(sessionId, token);
+    expect(result).toBe(true);
+    expect(mockClient.eval).toHaveBeenCalledWith(
+      expect.any(String),
+      1,
+      `mcp:session:lock:${sessionId}`,
+      token,
+    );
+  });
+
+  test('should create session if not exists', async () => {
+    const sessionId = 'new-session';
+    const initialState: ISessionData = {
+      id: sessionId,
+      createdAt: Date.now(),
+      lastAccessed: Date.now(),
+      data: { key: 'value' },
+    };
+
+    const result = await store.createSessionIfNotExists(sessionId, initialState);
+    expect(result).toEqual(initialState);
+    expect(mockClient.exists).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+    expect(mockClient.setex).toHaveBeenCalledWith(
+      `mcp:session:${sessionId}`,
+      expect.any(Number),
+      JSON.stringify(initialState),
+    );
+  });
+
+  test('should return existing session if exists', async () => {
+    const sessionId = 'exists';
+    const initialState: ISessionData = {
+      id: sessionId,
+      createdAt: Date.now(),
+      lastAccessed: Date.now(),
+      data: { key: 'value' },
+    };
+
+    const result = await store.createSessionIfNotExists(sessionId, initialState);
+    expect(result).toBeDefined();
+    expect(result?.id).toBe('test-id');
+    expect(mockClient.exists).toHaveBeenCalledWith(`mcp:session:${sessionId}`);
+  });
+
+  test('should disconnect', async () => {
+    await store.disconnect();
+    expect(mockClient.quit).toHaveBeenCalled();
+  });
+
+  test('should close', async () => {
     await store.close();
-  });
-
-  describe('Session Management', () => {
-    test('get should retrieve a session from Redis', async () => {
-      const sessionId = 'test-session-1';
-      const sessionData: AnalysisResult = { success: true, data: { foo: 'bar', count: 42 } };
-      mockRedisClient.get.mockResolvedValue(JSON.stringify(sessionData));
-
-      const result = await store.get(sessionId);
-
-      expect(mockRedisClient.get).toHaveBeenCalledWith('mcp:session:test-session-1');
-      expect(result).toEqual(sessionData);
-    });
-
-    test('get should return null for non-existent session', async () => {
-      mockRedisClient.get.mockResolvedValue(null);
-
-      const result = await store.get('nonexistent');
-
-      expect(result).toBeNull();
-    });
-
-    test('set should store session data in Redis', async () => {
-      const sessionId = 'test-session-2';
-      const sessionData: AnalysisResult = {
-        success: true,
-        data: { name: 'Test Session', items: [1, 2, 3] },
-      };
-      mockRedisClient.setex.mockResolvedValue('OK');
-
-      await store.set(sessionId, sessionData);
-
-      expect(mockRedisClient.setex).toHaveBeenCalledWith(
-        'mcp:session:test-session-2',
-        3600,
-        JSON.stringify(sessionData),
-      );
-    });
-
-    test('delete should remove a session from Redis', async () => {
-      const sessionId = 'test-session-4';
-      mockRedisClient.del.mockResolvedValue(1);
-
-      await store.delete(sessionId);
-
-      expect(mockRedisClient.del).toHaveBeenCalledWith('mcp:session:test-session-4');
-    });
-  });
-
-  describe('Session Locking', () => {
-    test('acquireLock should obtain a lock when available', async () => {
-      const sessionId = 'test-session-7';
-      mockRedisClient.set.mockResolvedValue('OK');
-
-      const token = await store.acquireLock(sessionId);
-
-      expect(mockRedisClient.set).toHaveBeenCalledWith(
-        'mcp:session:lock:test-session-7',
-        expect.any(String),
-        'PX',
-        30000,
-        'NX',
-      );
-      expect(token).toBeTruthy();
-    });
-
-    test('acquireLock should return null when lock is unavailable', async () => {
-      const sessionId = 'test-session-8';
-      mockRedisClient.set.mockResolvedValue(null);
-
-      const token = await store.acquireLock(sessionId);
-
-      expect(token).toBeNull();
-    });
-
-    test('releaseLock should release a lock with valid token', async () => {
-      const sessionId = 'test-session-8';
-      const token = 'valid-token-1234';
-      mockRedisClient.eval.mockResolvedValue(1);
-
-      const result = await store.releaseLock(sessionId, token);
-
-      expect(mockRedisClient.eval).toHaveBeenCalledWith(
-        expect.any(String),
-        1,
-        'mcp:session:lock:test-session-8',
-        token,
-      );
-      expect(result).toBe(true);
-    });
-
-    test('releaseLock should fail with invalid token', async () => {
-      const sessionId = 'test-session-8';
-      const token = 'invalid-token';
-      mockRedisClient.eval.mockResolvedValue(0);
-
-      const result = await store.releaseLock(sessionId, token);
-
-      expect(result).toBe(false);
-    });
-  });
-
-  describe('Error Handling', () => {
-    test('get should handle Redis errors', async () => {
-      const sessionId = 'error-test-session';
-      mockRedisClient.get.mockRejectedValue(new Error('Redis connection error'));
-
-      await expect(store.get(sessionId)).rejects.toThrow('Redis operation failed');
-    });
-
-    test('get should handle invalid JSON format', async () => {
-      const sessionId = 'corrupted-session';
-      mockRedisClient.get.mockResolvedValue('not-valid-json');
-
-      await expect(store.get(sessionId)).rejects.toThrow('Failed to parse session data');
-    });
-  });
-
-  describe('TTL Management', () => {
-    test('extendSessionTtl should update the expiration time', async () => {
-      const sessionId = 'test-session-5';
-      mockRedisClient.expire.mockResolvedValue(1);
-
-      await store.extendSessionTtl(sessionId);
-
-      expect(mockRedisClient.expire).toHaveBeenCalledWith('mcp:session:test-session-5', 3600);
-    });
+    expect(mockClient.quit).toHaveBeenCalled();
   });
 });

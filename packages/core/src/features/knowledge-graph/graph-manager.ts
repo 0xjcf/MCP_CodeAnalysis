@@ -1,11 +1,14 @@
-import { createDatabase } from "../../utils/database.js";
-import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import fs from "fs";
 import path from "path";
+
+import type { Database } from "sqlite";
 import { v4 as uuidv4 } from "uuid";
+
+import type { GraphNode, GraphRelationship, GraphQueryResult, GraphQuery } from "../../types/knowledge-graph.js";
+import { createDatabase } from "../../utils/database.js";
+import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import { analyzeCode } from "../basic-analysis/analyzer.js";
-import { GraphNode, GraphRelationship, GraphQueryResult, GraphQuery } from "../../types/knowledge-graph.js";
-import { Database } from "sqlite";
+
 
 let db: Database | undefined; // Will be initialized on first use
 
@@ -186,8 +189,8 @@ export async function queryKnowledgeGraph(query: GraphQuery): Promise<GraphQuery
   const { repositoryUrl, contextDepth = 1 } = query;
   
   // Start with a basic implementation that returns nodes related to a repository
-  let nodes: GraphNode[] = [];
-  let relationships: GraphRelationship[] = [];
+  const nodes: GraphNode[] = [];
+  const relationships: GraphRelationship[] = [];
   
   if (repositoryUrl) {
     // Get all nodes and relationships for the repository

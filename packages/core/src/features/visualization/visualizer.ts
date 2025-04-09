@@ -1,8 +1,9 @@
-import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import fs from "fs";
 import path from "path";
+
+import type { GraphNode } from "../../types/knowledge-graph.js";
+import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import { analyzeCode } from "../basic-analysis/analyzer.js";
-import { GraphNode } from "../../types/knowledge-graph.js";
 
 /**
  * Sanitize an ID for use in diagrams
@@ -167,7 +168,7 @@ function generateDotDependencyGraph(dependencies: Record<string, string[]>): str
     dot += `  "${safeFile}" [label="${file}"];\n`;
     
     // Add dependencies
-    for (const importItem of imports as string[]) {
+    for (const importItem of imports) {
       const safeImport = sanitizeId(importItem);
       dot += `  "${safeFile}" -> "${safeImport}";\n`;
     }

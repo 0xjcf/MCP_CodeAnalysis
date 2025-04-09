@@ -6,8 +6,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ToolExecutionService } from '../state/services/toolService.js';
+
 import { clearSession, getSessionIds } from '../state/machines/toolMachine.js';
+import { ToolExecutionService } from '../state/services/toolService.js';
 
 describe('ToolExecutionService - No Tool Selected', () => {
   beforeEach(() => {

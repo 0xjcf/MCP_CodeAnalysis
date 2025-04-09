@@ -1,20 +1,22 @@
 {
   "name": "@mcp/eslint-config",
   "version": "0.0.1",
-  "type": "module",
+  "type": "commonjs",
   "description": "Shared ESLint configuration for MCP packages",
-  "main": "index.cjs",
+  "main": "./index.cjs",
+  "exports": {
+    ".": "./index.cjs",
+    "./typescript": "./typescript.cjs"
+  },
   "files": [
     "index.cjs",
-    "typescript.cjs",
-    "react.cjs",
-    "prettier.cjs"
+    "typescript.cjs"
   ],
   "scripts": {
     "test": "eslint test.tsx",
     "test:fix": "eslint test.tsx --fix",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint": "eslint *.cjs",
+    "lint:fix": "eslint *.cjs --fix"
   },
   "keywords": [
     "eslint",
@@ -28,7 +30,8 @@
   "peerDependencies": {
     "eslint": "^8.0.0",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "react": "^18.0.0"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^7.0.1",
@@ -46,6 +49,7 @@
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.11.19",
     "@types/react": "^18.2.57",
-    "typescript": "^5.3.3"
+    "eslint-import-resolver-typescript": "^4.3.1",
+    "typescript": "^5.5.3"
   }
 }

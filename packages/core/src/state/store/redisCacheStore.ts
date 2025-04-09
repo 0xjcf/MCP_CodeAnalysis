@@ -1,10 +1,13 @@
-import { Redis } from 'ioredis';
 import { createHash } from 'crypto';
+
+import { Logger } from '@mcp/utils';
+import { Redis } from 'ioredis';
+
 
 /**
  * Configuration options for the Redis Cache Store
  */
-export interface RedisCacheStoreOptions {
+interface IRedisCacheStoreOptions {
   /**
    * Redis connection URL (e.g., redis://localhost:6379)
    */
@@ -34,10 +37,26 @@ export interface RedisCacheStoreOptions {
 /**
  * Interface for cached item with metadata
  */
-interface CacheItem<T> {
+interface ICacheItem<T> {
   value: T;
   timestamp: number;
   expiresAt: number | null;
+}
+
+/**
+ * Interface for cache statistics
+ */
+interface ICacheStats {
+  memory: {
+    hits: number;
+    misses: number;
+    evictions: number;
+    hitRate: string;
+  };
+  redis: {
+    keys: number;
+    memory: number;
+  };
 }
 
 /**
@@ -58,31 +77,33 @@ export class RedisCacheStore {
   private prefix: string;
   private defaultTtl: number;
   private useMemoryCache: boolean;
+  private logger: Logger;
 
   // Memory cache implementation
-  private memCache: Map<string, CacheItem<any>> = new Map();
+  private memCache: Map<string, ICacheItem<unknown>> = new Map();
   private memCacheSize: number;
   private memCacheStats = {
     hits: 0,
     misses: 0,
-    sets: 0,
+    evictions: 0,
   };
 
   /**
    * Creates a new RedisCacheStore
    * @param options Configuration options
    */
-  constructor(options: RedisCacheStoreOptions) {
+  constructor(options: IRedisCacheStoreOptions) {
     this.client = new Redis(options.redisUrl);
     this.prefix = options.prefix || 'mcp:cache:';
     this.defaultTtl = options.defaultTtl || 300; // 5 minutes default
     this.memCacheSize = options.memCacheSize || 1000;
     this.useMemoryCache = options.useMemoryCache !== false;
+    this.logger = new Logger('RedisCacheStore');
 
     // Set up error handler for Redis client
     if (typeof this.client.on === 'function') {
       this.client.on('error', (err: Error) => {
-        console.error('Redis cache client error:', err);
+        this.logger.error('Redis client error', { errorMessage: err.message });
       });
     }
   }
@@ -93,8 +114,9 @@ export class RedisCacheStore {
   public async disconnect(): Promise<void> {
     try {
       await this.client.quit();
-    } catch (error) {
-      console.error('Error disconnecting Redis cache client:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to disconnect Redis client', { errorMessage: message });
     }
   }
 
@@ -125,6 +147,19 @@ export class RedisCacheStore {
     return createHash('sha256').update(jsonStr).digest('hex');
   }
 
+  private isValidCacheItem<T>(data: unknown): data is ICacheItem<T> {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'value' in data &&
+      'timestamp' in data &&
+      'expiresAt' in data &&
+      typeof (data as { timestamp: unknown }).timestamp === 'number' &&
+      (typeof (data as { expiresAt: unknown }).expiresAt === 'number' ||
+        (data as { expiresAt: unknown }).expiresAt === null)
+    );
+  }
+
   /**
    * Gets an item from cache
    * @param key Cache key
@@ -138,36 +173,38 @@ export class RedisCacheStore {
     if (this.useMemoryCache) {
       const memItem = this.memCache.get(cacheKey);
       if (memItem) {
-        // Check if the item is expired
         if (memItem.expiresAt === null || memItem.expiresAt > Date.now()) {
           this.memCacheStats.hits++;
           return memItem.value as T;
-        } else {
-          // Remove expired item from memory cache
-          this.memCache.delete(cacheKey);
         }
+        this.memCache.delete(cacheKey);
       }
       this.memCacheStats.misses++;
     }
 
-    // Try Redis cache
     try {
       const data = await this.client.get(cacheKey);
       if (!data) {
         return null;
       }
 
-      const item = JSON.parse(data) as CacheItem<T>;
+      const parsedData = JSON.parse(data);
+      if (!this.isValidCacheItem<T>(parsedData)) {
+        this.logger.warn(`Invalid cache item format for key: ${cacheKey}`);
+        return null;
+      }
 
       // Update memory cache if enabled
       if (this.useMemoryCache) {
-        this.setMemoryCache(cacheKey, item);
+        this.setMemoryCache(cacheKey, parsedData);
       }
 
-      return item.value;
+      return parsedData.value;
     } catch (error) {
-      console.error('Failed to get item from Redis cache:', error);
-      return null; // Fail open for cache issues
+      this.logger.error(
+        `Error getting cache item: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+      return null;
     }
   }
 
@@ -183,7 +220,7 @@ export class RedisCacheStore {
     const ttlValue = ttl ?? this.defaultTtl;
     const now = Date.now();
 
-    const item: CacheItem<T> = {
+    const item: ICacheItem<T> = {
       value,
       timestamp: now,
       expiresAt: ttlValue > 0 ? now + ttlValue * 1000 : null,
@@ -201,8 +238,13 @@ export class RedisCacheStore {
       } else {
         await this.client.set(cacheKey, JSON.stringify(item));
       }
-    } catch (error) {
-      console.error('Failed to set item in Redis cache:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to set item in Redis cache', {
+        errorMessage: message,
+        cacheKey,
+        namespace,
+      });
       // Continue even if Redis fails - we still have memory cache
     }
   }
@@ -212,7 +254,7 @@ export class RedisCacheStore {
    * @param key Cache key
    * @param item Cache item with value and metadata
    */
-  private setMemoryCache<T>(key: string, item: CacheItem<T>): void {
+  private setMemoryCache<T>(key: string, item: ICacheItem<T>): void {
     // Clean up memory cache using LRU when it gets too large
     if (this.memCache.size > this.memCacheSize) {
       // Find the oldest key
@@ -233,7 +275,7 @@ export class RedisCacheStore {
     }
 
     this.memCache.set(key, item);
-    this.memCacheStats.sets++;
+    this.memCacheStats.evictions++;
   }
 
   /**
@@ -252,8 +294,13 @@ export class RedisCacheStore {
     // Remove from Redis cache
     try {
       await this.client.del(cacheKey);
-    } catch (error) {
-      console.error('Failed to delete item from Redis cache:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to delete item from Redis cache', {
+        errorMessage: message,
+        cacheKey,
+        namespace,
+      });
     }
   }
 
@@ -262,25 +309,27 @@ export class RedisCacheStore {
    * @param namespace Namespace to invalidate
    */
   public async invalidateNamespace(namespace: string): Promise<void> {
-    const namespacePrefix = `${this.prefix}${namespace}:*`;
-
-    // Clear matching items from memory cache if enabled
-    if (this.useMemoryCache) {
-      for (const key of this.memCache.keys()) {
-        if (key.startsWith(`${this.prefix}${namespace}:`)) {
-          this.memCache.delete(key);
-        }
-      }
-    }
-
-    // Clear matching items from Redis
     try {
-      const keys = await this.client.keys(namespacePrefix);
+      const pattern = this.getCacheKey('*', namespace);
+      const keys = await this.client.keys(pattern);
+
       if (keys.length > 0) {
+        // Remove from memory cache if enabled
+        if (this.useMemoryCache) {
+          for (const key of keys) {
+            this.memCache.delete(key);
+          }
+        }
+
+        // Remove from Redis cache
         await this.client.del(...keys);
       }
-    } catch (error) {
-      console.error('Failed to invalidate namespace in Redis cache:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to invalidate namespace in Redis cache', {
+        errorMessage: message,
+        namespace,
+      });
     }
   }
 
@@ -288,20 +337,21 @@ export class RedisCacheStore {
    * Clears the entire cache (both memory and Redis)
    */
   public async clear(): Promise<void> {
-    // Clear memory cache if enabled
-    if (this.useMemoryCache) {
-      this.memCache.clear();
-      this.memCacheStats = { hits: 0, misses: 0, sets: 0 };
-    }
-
-    // Clear Redis cache
     try {
-      const keys = await this.client.keys(`${this.prefix}*`);
+      // Clear memory cache if enabled
+      if (this.useMemoryCache) {
+        this.memCache.clear();
+      }
+
+      // Clear Redis cache
+      const pattern = this.getCacheKey('*');
+      const keys = await this.client.keys(pattern);
       if (keys.length > 0) {
         await this.client.del(...keys);
       }
-    } catch (error) {
-      console.error('Failed to clear Redis cache:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to clear Redis cache', { errorMessage: message });
     }
   }
 
@@ -313,85 +363,66 @@ export class RedisCacheStore {
    */
   public async getMany<T>(keys: string[], namespace?: string): Promise<Record<string, T | null>> {
     const result: Record<string, T | null> = {};
-    const missingKeys: string[] = [];
-    const keyMapping: Record<string, string> = {};
+    const redisKeys: string[] = [];
+    const keyMap = new Map<string, string>();
 
-    // Check memory cache first if enabled
+    // Process memory cache first if enabled
     if (this.useMemoryCache) {
       for (const key of keys) {
         const cacheKey = this.getCacheKey(this.createKeyHash(key), namespace);
-        keyMapping[cacheKey] = key;
-
         const memItem = this.memCache.get(cacheKey);
-        if (memItem && (memItem.expiresAt === null || memItem.expiresAt > Date.now())) {
-          result[key] = memItem.value as T;
-          this.memCacheStats.hits++;
-        } else {
-          if (memItem && memItem.expiresAt !== null && memItem.expiresAt <= Date.now()) {
-            // Remove expired item from memory cache
+        if (memItem) {
+          if (memItem.expiresAt === null || memItem.expiresAt > Date.now()) {
+            this.memCacheStats.hits++;
+            result[key] = memItem.value as T;
+          } else {
             this.memCache.delete(cacheKey);
+            redisKeys.push(cacheKey);
+            keyMap.set(cacheKey, key);
           }
-          missingKeys.push(key);
+        } else {
           this.memCacheStats.misses++;
+          redisKeys.push(cacheKey);
+          keyMap.set(cacheKey, key);
         }
       }
     } else {
-      // If memory cache is disabled, all keys need to be fetched from Redis
-      missingKeys.push(...keys);
+      // If memory cache is disabled, process all keys in Redis
       for (const key of keys) {
         const cacheKey = this.getCacheKey(this.createKeyHash(key), namespace);
-        keyMapping[cacheKey] = key;
+        redisKeys.push(cacheKey);
+        keyMap.set(cacheKey, key);
       }
     }
 
-    // If all keys were found in memory cache, return immediately
-    if (missingKeys.length === 0) {
-      return result;
-    }
+    // Process remaining keys in Redis
+    if (redisKeys.length > 0) {
+      try {
+        const values = await this.client.mget(redisKeys);
+        for (let i = 0; i < redisKeys.length; i++) {
+          const cacheKey = redisKeys[i];
+          const originalKey = keyMap.get(cacheKey);
+          const value = values[i];
 
-    // Fetch missing keys from Redis using pipeline for efficiency
-    try {
-      const pipeline = this.client.pipeline();
+          if (value && originalKey) {
+            const item = JSON.parse(value) as ICacheItem<T>;
+            result[originalKey] = item.value;
 
-      for (const key of missingKeys) {
-        const cacheKey = this.getCacheKey(this.createKeyHash(key), namespace);
-        pipeline.get(cacheKey);
-      }
-
-      const responses = await pipeline.exec();
-      if (!responses) return result;
-
-      for (let i = 0; i < responses.length; i++) {
-        const [err, data] = responses[i];
-        const originalKey = missingKeys[i];
-
-        if (err || !data) {
-          result[originalKey] = null;
-          continue;
-        }
-
-        try {
-          const item = JSON.parse(data as string) as CacheItem<T>;
-
-          // Update memory cache if enabled
-          if (this.useMemoryCache) {
-            const cacheKey = this.getCacheKey(this.createKeyHash(originalKey), namespace);
-            this.setMemoryCache(cacheKey, item);
+            // Update memory cache if enabled
+            if (this.useMemoryCache) {
+              this.setMemoryCache(cacheKey, item);
+            }
+          } else if (originalKey) {
+            result[originalKey] = null;
           }
-
-          result[originalKey] = item.value;
-        } catch (parseError) {
-          console.error('Failed to parse Redis cache item:', parseError);
-          result[originalKey] = null;
         }
-      }
-    } catch (error) {
-      console.error('Failed to get items from Redis cache:', error);
-      // Set remaining keys to null
-      for (const key of missingKeys) {
-        if (!(key in result)) {
-          result[key] = null;
-        }
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
+        this.logger.error('Failed to get items from Redis cache', {
+          errorMessage: message,
+          keys: redisKeys,
+          namespace,
+        });
       }
     }
 
@@ -419,7 +450,7 @@ export class RedisCacheStore {
       for (const [key, value] of Object.entries(items)) {
         const cacheKey = this.getCacheKey(this.createKeyHash(key), namespace);
 
-        const item: CacheItem<T> = {
+        const item: ICacheItem<T> = {
           value,
           timestamp: now,
           expiresAt: ttlValue > 0 ? now + ttlValue * 1000 : null,
@@ -439,32 +470,46 @@ export class RedisCacheStore {
       }
 
       await pipeline.exec();
-    } catch (error) {
-      console.error('Failed to set items in Redis cache:', error);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to set items in Redis cache', {
+        errorMessage: message,
+        keys: Object.keys(items),
+        namespace,
+      });
       // Continue even if Redis fails - we still have memory cache
     }
   }
 
   /**
-   * Gets cache statistics
-   * @returns Object with cache statistics
+   * Get cache statistics
+   * @returns Cache statistics object
    */
-  public getStats(): any {
-    const hitRate =
-      this.memCacheStats.hits + this.memCacheStats.misses > 0
-        ? this.memCacheStats.hits / (this.memCacheStats.hits + this.memCacheStats.misses)
-        : 0;
+  public async getStats(): Promise<ICacheStats> {
+    try {
+      const hitRate =
+        this.memCacheStats.hits / (this.memCacheStats.hits + this.memCacheStats.misses) || 0;
 
-    return {
-      memoryCache: {
-        enabled: this.useMemoryCache,
-        size: this.memCache.size,
-        maxSize: this.memCacheSize,
-        hits: this.memCacheStats.hits,
-        misses: this.memCacheStats.misses,
-        sets: this.memCacheStats.sets,
-        hitRate: hitRate.toFixed(2),
-      },
-    };
+      const redisInfo = await this.client.info('memory');
+      const memoryMatch = redisInfo.match(/used_memory:(\d+)/);
+      const memory = memoryMatch ? parseInt(memoryMatch[1], 10) : 0;
+
+      return {
+        memory: {
+          hits: this.memCacheStats.hits,
+          misses: this.memCacheStats.misses,
+          evictions: this.memCacheStats.evictions,
+          hitRate: hitRate.toFixed(2),
+        },
+        redis: {
+          keys: this.memCache.size,
+          memory,
+        },
+      };
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to get Redis cache stats', { errorMessage: message });
+      throw error;
+    }
   }
 }

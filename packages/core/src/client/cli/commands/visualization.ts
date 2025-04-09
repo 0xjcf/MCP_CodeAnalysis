@@ -1,11 +1,14 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import figures from 'figures';
 import fs from 'fs';
 import path from 'path';
-import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
+
+import chalk from 'chalk';
+import type { Command } from 'commander';
+import figures from 'figures';
+import ora from 'ora';
+
+
 import { formatOutput } from '../utils/formatters.js';
+import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
 
 export function registerVisualizationCommands(program: Command) {
   const vizCommand = program

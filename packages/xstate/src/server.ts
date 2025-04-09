@@ -1,104 +1,41 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
-import { XStateAnalyzer } from './analyzer.js';
-import { registerToolsWithRegistry } from '@mcp/shared';
-import { AnalysisOptions } from '@mcp/types';
-
 /**
- * Register XState analysis features with the MCP server
+ * XState server implementation
+ * @module @mcp/xstate
  */
-export function registerXStateFeatures(server: McpServer) {
-  // Create XState analyzer instance with default options
-  const analyzer = new XStateAnalyzer({ sourceCode: '' });
 
-  // Register the analyze-xstate tool using the registry
-  registerToolsWithRegistry(
-    server,
-    (server: McpServer) => {
-      server.tool(
-        'analyze-xstate',
-        {
-          sourceCode: z.string().describe('Source code containing XState machine definition'),
-          includeMachineDefinition: z
-            .boolean()
-            .optional()
-            .describe('Whether to include the full machine definition in the response'),
-        },
-        async ({
-          sourceCode,
-          includeMachineDefinition,
-        }: {
-          sourceCode: string;
-          includeMachineDefinition?: boolean;
-        }) => {
-          try {
-            const options: AnalysisOptions = { sourceCode };
-            const result = await analyzer.analyze(options);
+import { getToolRegistry } from '@mcp/registry';
+import type { McpServer } from '@mcp/types';
+import { z } from 'zod';
 
-            if (!result.success) {
-              return {
-                content: [
-                  {
-                    type: 'text',
-                    text: JSON.stringify(
-                      {
-                        success: false,
-                        error: result.error || 'Unknown error',
-                      },
-                      null,
-                      2,
-                    ),
-                  },
-                ],
-                isError: true,
-              };
-            }
+import { XStateAnalyzer } from './analyzer.js';
 
-            const data = result.data as any;
-            return {
-              content: [
-                {
-                  type: 'text',
-                  text: JSON.stringify(
-                    {
-                      success: true,
-                      data: {
-                        states: data.states,
-                        events: data.events,
-                        transitions: data.transitions,
-                        ...(includeMachineDefinition
-                          ? { machineDefinition: data.machineDefinition }
-                          : {}),
-                      },
-                    },
-                    null,
-                    2,
-                  ),
-                },
-              ],
-            };
-          } catch (error) {
-            return {
-              content: [
-                {
-                  type: 'text',
-                  text: JSON.stringify(
-                    {
-                      success: false,
-                      error: error instanceof Error ? error.message : 'Unknown error',
-                    },
-                    null,
-                    2,
-                  ),
-                },
-              ],
-              isError: true,
-            };
-          }
-        },
-      );
+const analysisInputSchema = z.object({
+  sourceCode: z.string().min(1),
+});
+
+export function registerXStateFeatures(_server: McpServer): void {
+  const toolRegistry = getToolRegistry();
+  if (!toolRegistry) {
+    throw new Error('Tool registry not found');
+  }
+
+  const analyzer = new XStateAnalyzer();
+
+  toolRegistry.registerTool(
+    'xstate-analyzer',
+    { sourceCode: z.string().min(1) },
+    async (params, _extra) => {
+      try {
+        const validatedParams = analysisInputSchema.parse(params);
+        const result = await analyzer.analyze(validatedParams);
+        return result;
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : String(error),
+        };
+      }
     },
     'xstate',
-    false,
   );
 }

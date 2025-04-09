@@ -1,9 +1,10 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
-import ora from 'ora';
+import type { Command } from 'commander';
 import figures from 'figures';
-import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
+import ora from 'ora';
+
 import { formatOutput } from '../utils/formatters.js';
+import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
 
 export function registerMetricsCommands(program: Command) {
   const metricsCommand = program

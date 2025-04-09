@@ -1,8 +1,9 @@
+import { spawn } from 'child_process';
+
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-import ora from 'ora';
 import chalk from 'chalk';
-import { spawn } from 'child_process';
+import ora from 'ora';
 
 let client: Client | null = null;
 

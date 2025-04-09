@@ -1,36 +1,38 @@
-import { getRepository, listFiles } from '../../utils/repository-analyzer.js';
 import fs from 'fs';
 import path from 'path';
+
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+
 import { CodeAnalysisResult } from '../../types/responses.js';
+import { getRepository, listFiles } from '../../utils/repository-analyzer.js';
 import { executeWithTiming, createErrorResponse } from '../../utils/responses.js';
 
-interface ComplexityMetrics {
+interface IComplexityMetrics {
   cyclomatic: number;
   cognitive: number;
   maintainability: number;
 }
 
-interface AnalysisResult {
+interface IAnalysisResult {
   readability: number;
   maintainability: number;
   complexity: number;
   issues: string[];
 }
 
-interface DetailedAnalysisResult {
+interface IDetailedAnalysisResult {
   readability: number;
   maintainability: number;
-  complexity: ComplexityMetrics;
+  complexity: IComplexityMetrics;
   issues: string[];
   imports: string[];
   classes: string[];
   functions: string[];
 }
 
-interface MetricsOptions {
+interface IMetricsOptions {
   repositoryUrl?: string;
   filePath?: string;
   fileContent?: string;
@@ -40,7 +42,7 @@ interface MetricsOptions {
   type?: string;
 }
 
-interface ToolParameters {
+interface IToolParameters {
   filePath: string;
   metrics?: string[];
 }
@@ -93,7 +95,7 @@ export async function analyzeRepository(
 /**
  * Analyze a single code snippet
  */
-export function analyzeCode(code: string, language?: string): DetailedAnalysisResult {
+export function analyzeCode(code: string, language?: string): IDetailedAnalysisResult {
   const metrics = calculateMetrics(code, language);
   let maintainability = Math.max(
     0,
@@ -145,7 +147,7 @@ export function analyzeCode(code: string, language?: string): DetailedAnalysisRe
 /**
  * Get metrics for files or a previous analysis
  */
-export async function getMetrics(options: MetricsOptions): Promise<any> {
+export async function getMetrics(options: IMetricsOptions): Promise<any> {
   const { repositoryUrl, filePath, fileContent, language, metrics, analysisId, type } = options;
 
   // If analysisId is provided, retrieve from cache
@@ -289,8 +291,8 @@ function calculateMetrics(
   code: string,
   language?: string,
   metrics?: string[],
-): DetailedAnalysisResult {
-  const result: DetailedAnalysisResult = {
+): IDetailedAnalysisResult {
+  const result: IDetailedAnalysisResult = {
     readability: 100,
     maintainability: 100,
     complexity: {
@@ -576,7 +578,7 @@ function analyzeCodeDetailed(
   code: string,
   language?: string,
   metrics: string[] = ['readability', 'maintainability', 'complexity'],
-): DetailedAnalysisResult {
+): IDetailedAnalysisResult {
   const result = calculateMetrics(code, language);
 
   // Apply any additional analysis based on requested metrics

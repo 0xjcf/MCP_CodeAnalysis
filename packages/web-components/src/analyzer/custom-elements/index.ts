@@ -6,13 +6,13 @@ export class CustomElementsAnalyzer {
     node: ts.ClassDeclaration,
   ): Pick<WebComponent, 'tagName' | 'extends' | 'isCustomElement'> {
     return {
-      tagName: this.getTagName(node),
-      extends: this.getExtends(node),
+      tagName: this.getTagName(node) || '',
+      extends: this.getExtends(node) || 'HTMLElement',
       isCustomElement: this.isCustomElement(node),
     };
   }
 
-  private getTagName(node: ts.ClassDeclaration): string {
+  private getTagName(node: ts.ClassDeclaration): string | undefined {
     let tagName = '';
     const className = node.name?.getText() || '';
 
@@ -43,7 +43,7 @@ export class CustomElementsAnalyzer {
     return tagName || className.toLowerCase();
   }
 
-  private getExtends(node: ts.ClassDeclaration): string {
+  private getExtends(node: ts.ClassDeclaration): string | undefined {
     let extendsClass = 'HTMLElement';
 
     // Check for extends clause

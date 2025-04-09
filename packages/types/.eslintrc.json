@@ -1,0 +1,10 @@
+{
+  "extends": "@mcp/eslint-config",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module",
+    "tsconfigRootDir": ".",
+    "warnOnUnsupportedTypeScriptVersion": false
+  },
+  "ignorePatterns": ["dist/**/*", "node_modules/**/*"]
+}

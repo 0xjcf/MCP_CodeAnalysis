@@ -1,0 +1,18 @@
+{
+  "extends": "@mcp/eslint-config",
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": ["PascalCase"],
+        "prefix": ["I"]
+      }
+    ]
+  },
+  "ignorePatterns": ["dist/**/*"]
+}

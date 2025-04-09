@@ -1,8 +1,10 @@
-import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
 import { execSync } from "child_process";
-import { buildKnowledgeGraph, queryKnowledgeGraph } from "../knowledge-graph/graph-manager.js";
-import path from "path";
 import fs from "fs";
+import path from "path";
+
+import { getRepository, listFiles } from "../../utils/repository-analyzer.js";
+import { buildKnowledgeGraph, queryKnowledgeGraph } from "../knowledge-graph/graph-manager.js";
+
 
 /**
  * Analyze socio-technical patterns in a repository
@@ -235,7 +237,7 @@ async function analyzeCodeOwnership(repoPath: string, contributorData: any): Pro
             email,
             name: contributor ? contributor.name : email,
             count,
-            percentage: (count as number / totalContributions) * 100
+            percentage: (count / totalContributions) * 100
           };
         })
         .sort((a, b) => b.count - a.count);
@@ -257,19 +259,19 @@ async function analyzeCodeOwnership(repoPath: string, contributorData: any): Pro
     
     // Identify knowledge distribution patterns
     const highConcentrationAreas = Object.entries(directoryOwnership)
-      .filter(([_, data]) => (data as any).concentration > 0.7)
+      .filter(([_, data]) => (data).concentration > 0.7)
       .map(([dir, data]) => ({
         directory: dir,
-        primaryOwner: (data as any).primaryOwner,
-        concentration: (data as any).concentration
+        primaryOwner: (data).primaryOwner,
+        concentration: (data).concentration
       }));
     
     const lowConcentrationAreas = Object.entries(directoryOwnership)
-      .filter(([_, data]) => (data as any).concentration < 0.4)
+      .filter(([_, data]) => (data).concentration < 0.4)
       .map(([dir, data]) => ({
         directory: dir,
-        contributorCount: (data as any).contributorCount,
-        concentration: (data as any).concentration
+        contributorCount: (data).contributorCount,
+        concentration: (data).concentration
       }));
     
     return {
@@ -1136,8 +1138,8 @@ function detectArchitectureTeamMisalignments(
   
   // Assign directories to teams based on who contributes most
   for (const [directory, data] of Object.entries(directoryOwnership)) {
-    if ((data as any).primaryOwner) {
-      const ownerEmail = (data as any).primaryOwner.email;
+    if ((data).primaryOwner) {
+      const ownerEmail = (data).primaryOwner.email;
       
       // Find which team this contributor belongs to
       for (const team of teams) {

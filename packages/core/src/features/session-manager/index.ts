@@ -12,11 +12,12 @@
  * - Viewing execution history
  */
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
+
+import { endOfSessionStore } from '../../state/helpers/endOfSessionStore.js';
 import { getSession, clearSession, getSessionIds } from '../../state/helpers/statefulTool.js';
 import { createSuccessResponse, createErrorResponse } from '../../utils/responses.js';
-import { endOfSessionStore } from '../../state/helpers/endOfSessionStore.js';
 
 /**
  * Register session management tools with the MCP server

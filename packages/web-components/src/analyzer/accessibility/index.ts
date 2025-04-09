@@ -1,213 +1,263 @@
-import * as ts from 'typescript';
-import { AccessibilityMetrics, AccessibilityIssue } from '../../types';
+import type { AccessibilityInfo, AccessibilityIssue } from '../../types';
 
+/**
+ * Analyzes accessibility features in source code
+ * @param sourceCode - The source code to analyze
+ * @returns Accessibility analysis results
+ */
+export function analyzeAccessibility(sourceCode: string): AccessibilityInfo {
+  return {
+    hasAccessibilityIssues: false,
+    issues: [],
+    hasRoles: false,
+    hasLabels: false,
+    hasFocusableElements: false,
+    hasAriaAttributes: false,
+    hasKeyboardSupport: false,
+    hasSemanticHTML: false,
+    hasTextAlternatives: false,
+    hasFocusManagement: false,
+    hasColorContrast: false,
+    hasDynamicContent: false,
+    hasFormElements: false,
+    hasInteractiveElements: false,
+    hasHeadings: false,
+    hasLists: false,
+    hasTables: false,
+    hasIframes: false,
+    hasMedia: false,
+  };
+}
+
+/**
+ * Analyzer class for checking accessibility features in source code
+ */
 export class AccessibilityAnalyzer {
-  private sourceFile: ts.SourceFile;
-
-  constructor(sourceFile: ts.SourceFile) {
-    this.sourceFile = sourceFile;
-  }
-
-  analyze(node: ts.ClassDeclaration): AccessibilityMetrics {
-    const metrics: AccessibilityMetrics = {
-      hasAriaAttributes: false,
-      hasKeyboardSupport: false,
-      hasSemanticHTML: false,
-      hasTextAlternatives: false,
-      hasFocusManagement: false,
-      hasColorContrast: false,
-      hasDynamicContent: false,
-      hasFormElements: false,
-      hasInteractiveElements: false,
-      hasHeadings: false,
-      hasLists: false,
-      hasTables: false,
-      hasIframes: false,
-      hasMedia: false,
-      issues: [],
-    };
-
-    this.visitNode(node, metrics);
-    this.generateIssues(metrics);
-    return metrics;
-  }
-
-  private visitNode(node: ts.Node, metrics: AccessibilityMetrics): void {
-    if (ts.isTemplateLiteral(node)) {
-      this.analyzeTemplate(node, metrics);
-    } else if (ts.isMethodDeclaration(node)) {
-      this.analyzeMethod(node, metrics);
-    }
-
-    ts.forEachChild(node, child => this.visitNode(child, metrics));
-  }
-
-  private analyzeTemplate(node: ts.TemplateLiteral, metrics: AccessibilityMetrics): void {
-    const templateText = node.getText();
-
-    // Check for ARIA attributes
-    if (templateText.includes('aria-') || templateText.includes('role=')) {
-      metrics.hasAriaAttributes = true;
-    }
-
-    // Check for semantic HTML
-    if (
-      templateText.includes('<header') ||
-      templateText.includes('<nav') ||
-      templateText.includes('<main') ||
-      templateText.includes('<article') ||
-      templateText.includes('<section') ||
-      templateText.includes('<aside') ||
-      templateText.includes('<footer')
-    ) {
-      metrics.hasSemanticHTML = true;
-    }
-
-    // Check for text alternatives
-    if (templateText.includes('alt=') || templateText.includes('aria-label=')) {
-      metrics.hasTextAlternatives = true;
-    }
-
-    // Check for focus management
-    if (templateText.includes('tabindex=') || templateText.includes('focus()')) {
-      metrics.hasFocusManagement = true;
-    }
-
-    // Check for interactive elements
-    if (templateText.includes('<button') || templateText.includes('<a href=')) {
-      metrics.hasInteractiveElements = true;
-    }
-
-    // Check for headings
-    if (
-      templateText.includes('<h1') ||
-      templateText.includes('<h2') ||
-      templateText.includes('<h3')
-    ) {
-      metrics.hasHeadings = true;
-    }
-
-    // Check for lists
-    if (templateText.includes('<ul') || templateText.includes('<ol')) {
-      metrics.hasLists = true;
-    }
-
-    // Check for tables
-    if (templateText.includes('<table')) {
-      metrics.hasTables = true;
-    }
-
-    // Check for iframes
-    if (templateText.includes('<iframe')) {
-      metrics.hasIframes = true;
-    }
-
-    // Check for media
-    if (
-      templateText.includes('<img') ||
-      templateText.includes('<video') ||
-      templateText.includes('<audio')
-    ) {
-      metrics.hasMedia = true;
-    }
-  }
-
-  private analyzeMethod(node: ts.MethodDeclaration, metrics: AccessibilityMetrics): void {
-    const methodText = node.getText();
-
-    // Check for keyboard support
-    if (
-      methodText.includes('keydown') ||
-      methodText.includes('keyup') ||
-      methodText.includes('keypress')
-    ) {
-      metrics.hasKeyboardSupport = true;
-    }
-
-    // Check for dynamic content
-    if (methodText.includes('innerHTML') || methodText.includes('textContent')) {
-      metrics.hasDynamicContent = true;
-    }
-
-    // Check for form elements
-    if (
-      methodText.includes('form') ||
-      methodText.includes('input') ||
-      methodText.includes('select')
-    ) {
-      metrics.hasFormElements = true;
-    }
-  }
-
-  private generateIssues(metrics: AccessibilityMetrics): void {
-    // Only add issues for missing features
-    if (!metrics.hasAriaAttributes) {
-      metrics.issues.push({
-        type: 'missing-role',
-        message: 'Component lacks ARIA attributes',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasKeyboardSupport) {
-      metrics.issues.push({
-        type: 'keyboard-navigation',
-        message: 'Component lacks keyboard support',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasSemanticHTML) {
-      metrics.issues.push({
-        type: 'semantic-html',
-        message: 'Component lacks semantic HTML structure',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasTextAlternatives) {
-      metrics.issues.push({
-        type: 'missing-label',
-        message: 'Component lacks text alternatives for non-text content',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasFocusManagement) {
-      metrics.issues.push({
-        type: 'focus-management',
-        message: 'Component lacks proper focus management',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasColorContrast) {
-      metrics.issues.push({
-        type: 'color-contrast',
-        message: 'Component may have insufficient color contrast',
-        severity: 'warning',
-      });
-    }
-
-    if (!metrics.hasDynamicContent) {
-      metrics.issues.push({
-        type: 'dynamic-content',
-        message: 'Component lacks dynamic content announcements',
-        severity: 'warning',
-      });
-    }
-  }
-
-  private getLocation(node: ts.Node): { file: string; line: number; column: number } {
-    if (!node.getSourceFile()) {
-      return { file: '', line: 0, column: 0 };
-    }
-
-    const { line, character } = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
+  /**
+   * Analyzes accessibility features in source code
+   * @param sourceCode - The source code to analyze
+   * @returns Accessibility analysis results
+   */
+  public analyze(sourceCode: string): AccessibilityInfo {
     return {
-      file: node.getSourceFile().fileName,
-      line: line + 1,
-      column: character + 1,
+      hasAccessibilityIssues: this.checkAccessibilityIssues(sourceCode),
+      issues: this.findAccessibilityIssues(sourceCode),
+      hasRoles: this.hasRoles(sourceCode),
+      hasLabels: this.hasLabels(sourceCode),
+      hasFocusableElements: this.hasFocusableElements(sourceCode),
+      hasAriaAttributes: this.hasAriaAttributes(sourceCode),
+      hasKeyboardSupport: this.hasKeyboardSupport(sourceCode),
+      hasSemanticHTML: this.hasSemanticHTML(sourceCode),
+      hasTextAlternatives: this.hasTextAlternatives(sourceCode),
+      hasFocusManagement: this.hasFocusManagement(sourceCode),
+      hasColorContrast: this.hasColorContrast(sourceCode),
+      hasDynamicContent: this.hasDynamicContent(sourceCode),
+      hasFormElements: this.hasFormElements(sourceCode),
+      hasInteractiveElements: this.hasInteractiveElements(sourceCode),
+      hasHeadings: this.hasHeadings(sourceCode),
+      hasLists: this.hasLists(sourceCode),
+      hasTables: this.hasTables(sourceCode),
+      hasIframes: this.hasIframes(sourceCode),
+      hasMedia: this.hasMedia(sourceCode),
     };
+  }
+
+  /**
+   * Checks if the source code has any accessibility issues
+   * @param sourceCode - The source code to analyze
+   * @returns true if accessibility issues are found
+   */
+  private checkAccessibilityIssues(sourceCode: string): boolean {
+    return this.findAccessibilityIssues(sourceCode).length > 0;
+  }
+
+  /**
+   * Finds all accessibility issues in the source code
+   * @param sourceCode - The source code to analyze
+   * @returns Array of accessibility issues
+   */
+  private findAccessibilityIssues(sourceCode: string): AccessibilityIssue[] {
+    const issues: AccessibilityIssue[] = [];
+
+    if (!this.hasRoles(sourceCode)) {
+      issues.push({
+        type: 'missing-role',
+        message: 'No ARIA roles found',
+        severity: 'warning',
+      });
+    }
+
+    if (!this.hasLabels(sourceCode)) {
+      issues.push({
+        type: 'missing-label',
+        message: 'No labels or ARIA labels found',
+        severity: 'warning',
+      });
+    }
+
+    if (!this.hasKeyboardSupport(sourceCode)) {
+      issues.push({
+        type: 'keyboard-navigation',
+        message: 'No keyboard navigation support found',
+        severity: 'warning',
+      });
+    }
+
+    return issues;
+  }
+
+  /**
+   * Checks if the source code contains ARIA roles
+   * @param sourceCode - The source code to analyze
+   * @returns true if ARIA roles are found
+   */
+  private hasRoles(sourceCode: string): boolean {
+    return /role=["'][a-zA-Z-]+["']/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains labels or ARIA labels
+   * @param sourceCode - The source code to analyze
+   * @returns true if labels are found
+   */
+  private hasLabels(sourceCode: string): boolean {
+    return /(label=|aria-label=)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains focusable elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if focusable elements are found
+   */
+  private hasFocusableElements(sourceCode: string): boolean {
+    return /(tabindex=|focus\(|blur\(|onfocus|onblur)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains ARIA attributes
+   * @param sourceCode - The source code to analyze
+   * @returns true if ARIA attributes are found
+   */
+  private hasAriaAttributes(sourceCode: string): boolean {
+    return /aria-[a-zA-Z-]+=/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains keyboard support
+   * @param sourceCode - The source code to analyze
+   * @returns true if keyboard support is found
+   */
+  private hasKeyboardSupport(sourceCode: string): boolean {
+    return /(keydown|keyup|keypress|onkey)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code uses semantic HTML elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if semantic HTML is found
+   */
+  private hasSemanticHTML(sourceCode: string): boolean {
+    return /<(main|nav|article|section|header|footer|aside|figure|figcaption|time|mark|details|summary)>/.test(
+      sourceCode,
+    );
+  }
+
+  /**
+   * Checks if the source code contains text alternatives
+   * @param sourceCode - The source code to analyze
+   * @returns true if text alternatives are found
+   */
+  private hasTextAlternatives(sourceCode: string): boolean {
+    return /(alt=|aria-label=|aria-describedby=)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains focus management
+   * @param sourceCode - The source code to analyze
+   * @returns true if focus management is found
+   */
+  private hasFocusManagement(sourceCode: string): boolean {
+    return /(focus\(|blur\(|onfocus|onblur|tabindex=)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code has color contrast considerations
+   * @param sourceCode - The source code to analyze
+   * @returns true if color contrast is considered
+   */
+  private hasColorContrast(sourceCode: string): boolean {
+    return /(color:|background-color:|contrast|opacity)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains dynamic content
+   * @param sourceCode - The source code to analyze
+   * @returns true if dynamic content is found
+   */
+  private hasDynamicContent(sourceCode: string): boolean {
+    return /(innerHTML|outerHTML|insertAdjacentHTML)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains form elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if form elements are found
+   */
+  private hasFormElements(sourceCode: string): boolean {
+    return /<(input|select|textarea|button|form)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains interactive elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if interactive elements are found
+   */
+  private hasInteractiveElements(sourceCode: string): boolean {
+    return /(onclick|onkey|onfocus|onblur|onchange|onsubmit)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains heading elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if heading elements are found
+   */
+  private hasHeadings(sourceCode: string): boolean {
+    return /<h[1-6]/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains list elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if list elements are found
+   */
+  private hasLists(sourceCode: string): boolean {
+    return /<(ul|ol|dl)/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains table elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if table elements are found
+   */
+  private hasTables(sourceCode: string): boolean {
+    return /<table/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains iframe elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if iframe elements are found
+   */
+  private hasIframes(sourceCode: string): boolean {
+    return /<iframe/.test(sourceCode);
+  }
+
+  /**
+   * Checks if the source code contains media elements
+   * @param sourceCode - The source code to analyze
+   * @returns true if media elements are found
+   */
+  private hasMedia(sourceCode: string): boolean {
+    return /<(img|video|audio|canvas)/.test(sourceCode);
   }
 }

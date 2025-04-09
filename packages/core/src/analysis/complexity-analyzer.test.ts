@@ -1,4 +1,5 @@
 import { describe, expect, test, beforeEach } from '@jest/globals';
+
 import { ComplexityAnalyzer } from './complexityAnalyzer.js';
 
 describe('ComplexityAnalyzer', () => {

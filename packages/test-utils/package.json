@@ -6,15 +6,21 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "vitest": "^1.6.1"
   },
   "devDependencies": {
+    "@mcp/eslint-config": "workspace:*",
     "@mcp/tsconfig": "workspace:*",
     "@types/jsdom": "^21.1.7",
     "@vitest/coverage-v8": "^1.6.1",
+    "eslint": "^8.56.0",
+    "eslint-import-resolver-typescript": "^4.3.1",
+    "eslint-plugin-import": "^2.29.1",
     "jsdom": "^26.0.0",
     "typescript": "^5.0.0",
     "xstate": "^5.19.2"

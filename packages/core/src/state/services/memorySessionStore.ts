@@ -14,13 +14,23 @@
  * @module memorySessionStore
  */
 
-import { SessionData, SessionStore } from "./types.js";
-import { v4 as uuidv4 } from "uuid";
+import type { ISessionStore, ISessionData } from '@mcp/types';
+import { v4 as uuidv4 } from 'uuid';
+
+/**
+ * Error class for memory session store operations
+ */
+export class MemorySessionStoreError extends Error {
+  constructor(message: string, public readonly code: string) {
+    super(message);
+    this.name = 'MemorySessionStoreError';
+  }
+}
 
 /**
  * Memory Session Store Options
  */
-export interface MemorySessionStoreOptions {
+interface IMemorySessionStoreOptions {
   /**
    * Key prefix for session keys (default: "memory:")
    */
@@ -38,249 +48,310 @@ export interface MemorySessionStoreOptions {
 }
 
 /**
- * In-memory session store implementation
- *
- * Provides non-persistent storage of tool sessions using JavaScript Map,
- * with support for TTL management, and locking. Not suitable for production
- * use or distributed environments.
+ * Interface for session data with TTL
  */
-export class MemorySessionStore implements SessionStore {
-  private readonly sessions: Map<string, any> = new Map();
-  private readonly locks: Map<
-    string,
-    { token: string; timeout: NodeJS.Timeout }
-  > = new Map();
-  private readonly timeouts: Map<string, NodeJS.Timeout> = new Map();
+interface ISessionDataWithTtl<T extends ISessionData = ISessionData> {
+  data: T;
+  ttl: number;
+  timeout: NodeJS.Timeout;
+}
+
+/**
+ * Interface for lock data
+ */
+interface ILockData {
+  token: string;
+  timeout: NodeJS.Timeout;
+}
+
+/**
+ * In-memory implementation of the SessionStore interface.
+ * This implementation is suitable for development and testing.
+ */
+export class MemorySessionStore<T extends ISessionData = ISessionData> implements ISessionStore<T> {
+  private sessions: Map<string, ISessionDataWithTtl<T>> = new Map();
+  private locks: Map<string, ILockData> = new Map();
   private readonly prefix: string;
   private readonly defaultTtl: number;
   private readonly lockTimeout: number;
 
   /**
-   * Create a new memory session store
-   *
-   * @param options Memory session store options
+   * Creates a new MemorySessionStore
+   * @param options Configuration options
    */
-  constructor(options: MemorySessionStoreOptions = {}) {
-    const {
-      prefix = "memory:",
-      defaultTtl = 3600,
-      lockTimeout = 30000,
-    } = options;
+  constructor(options: IMemorySessionStoreOptions = {}) {
+    this.prefix = options.prefix || 'memory:';
+    this.defaultTtl = options.defaultTtl || 3600;
+    this.lockTimeout = options.lockTimeout || 30000;
+  }
 
-    this.prefix = prefix;
-    this.defaultTtl = defaultTtl;
-    this.lockTimeout = lockTimeout;
+  private getKey(sessionId: string): string {
+    return `${this.prefix}${sessionId}`;
+  }
+
+  private clearSessionTimeout(session: ISessionDataWithTtl<T>): void {
+    if (session.timeout) {
+      clearTimeout(session.timeout);
+    }
+  }
+
+  private setSessionTimeout(key: string, ttl: number): void {
+    const session = this.sessions.get(key);
+    if (session) {
+      this.clearSessionTimeout(session);
+      session.timeout = setTimeout(() => {
+        this.sessions.delete(key);
+      }, ttl * 1000);
+    }
   }
 
   /**
    * Get session data by ID
-   *
    * @param sessionId Unique session identifier
    * @returns Promise resolving to session data or null if not found
-   * @throws Error if operation fails
    */
-  async getSession<T = SessionData>(sessionId: string): Promise<T | null> {
+  async getSession(sessionId: string): Promise<T | null> {
     try {
-      const key = this.getSessionKey(sessionId);
-      const data = this.sessions.get(key);
-      return data ? (data as T) : null;
-    } catch (err) {
-      console.error(`Error retrieving session ${sessionId}:`, err);
-      throw new Error(
-        `Memory session operation failed: ${
-          err instanceof Error ? err.message : String(err)
-        }`
+      const key = this.getKey(sessionId);
+      const session = this.sessions.get(key);
+      if (!session) {
+        return null;
+      }
+      return session.data;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to get session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'GET_SESSION_ERROR',
       );
     }
   }
 
   /**
    * Set session data
-   *
    * @param sessionId Unique session identifier
    * @param data Session data to store
    * @param ttl Optional TTL override (in seconds)
-   * @throws Error if operation fails
    */
-  async setSession<T = SessionData>(
-    sessionId: string,
-    data: T,
-    ttl?: number
-  ): Promise<void> {
+  async setSession(sessionId: string, data: T, ttl?: number): Promise<void> {
     try {
-      const key = this.getSessionKey(sessionId);
-      const sessionTtl = ttl || this.defaultTtl;
+      const key = this.getKey(sessionId);
+      const sessionTtl = ttl ?? this.defaultTtl;
 
       // Clear any existing timeout
-      this.clearSessionTimeout(sessionId);
-
-      // Store the session data
-      this.sessions.set(key, data);
-
-      // Set TTL timeout if not infinite
-      if (sessionTtl > 0) {
-        this.setSessionTimeout(sessionId, sessionTtl);
+      const existingSession = this.sessions.get(key);
+      if (existingSession) {
+        this.clearSessionTimeout(existingSession);
       }
-    } catch (err) {
-      console.error(`Error saving session ${sessionId}:`, err);
-      throw new Error(
-        `Memory session operation failed: ${
-          err instanceof Error ? err.message : String(err)
-        }`
+
+      // Create new session with timeout
+      const session: ISessionDataWithTtl<T> = {
+        data,
+        ttl: sessionTtl,
+        timeout: setTimeout(() => {
+          this.sessions.delete(key);
+        }, sessionTtl * 1000),
+      };
+
+      this.sessions.set(key, session);
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to set session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'SET_SESSION_ERROR',
       );
     }
   }
 
   /**
-   * Clear a session by ID
-   *
-   * @param sessionId Unique session identifier
-   * @throws Error if operation fails
+   * Removes a session from memory
+   * @param sessionId The ID of the session to remove
    */
   async clearSession(sessionId: string): Promise<void> {
     try {
-      const key = this.getSessionKey(sessionId);
-      this.clearSessionTimeout(sessionId);
-      this.sessions.delete(key);
-    } catch (err) {
-      console.error(`Error deleting session ${sessionId}:`, err);
-      throw new Error(
-        `Memory session operation failed: ${
-          err instanceof Error ? err.message : String(err)
-        }`
+      const key = this.getKey(sessionId);
+      const session = this.sessions.get(key);
+      if (session) {
+        this.clearSessionTimeout(session);
+        this.sessions.delete(key);
+      }
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to clear session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'CLEAR_SESSION_ERROR',
       );
     }
   }
 
   /**
-   * List all active session IDs
-   *
-   * @returns Promise resolving to array of session IDs
+   * Deletes a session from memory
+   * @param sessionId The ID of the session to delete
+   */
+  async deleteSession(sessionId: string): Promise<void> {
+    try {
+      const key = this.getKey(sessionId);
+      const session = this.sessions.get(key);
+      if (session) {
+        this.clearSessionTimeout(session);
+        this.sessions.delete(key);
+      }
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to delete session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'DELETE_SESSION_ERROR',
+      );
+    }
+  }
+
+  /**
+   * Gets all active session IDs
+   * @returns Array of session IDs
    */
   async getSessions(): Promise<string[]> {
     try {
-      const prefixLength = this.prefix.length;
-      return Array.from(this.sessions.keys()).map((key) =>
-        key.substring(prefixLength)
+      return Array.from(this.sessions.keys()).map(key => key.slice(this.prefix.length));
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to get sessions: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'GET_SESSIONS_ERROR',
       );
-    } catch (err) {
-      console.error("Error listing sessions:", err);
-      return [];
     }
   }
 
   /**
-   * Acquire a lock on a session
-   *
-   * @param sessionId Unique session identifier
-   * @param timeout Lock timeout in milliseconds
-   * @returns Promise resolving to a lock token if successful, null otherwise
+   * Clears all sessions from memory
    */
-  async acquireLock(
-    sessionId: string,
-    timeout?: number
-  ): Promise<string | null> {
-    const lockKey = this.getLockKey(sessionId);
-    const lockTimeoutMs = timeout || this.lockTimeout;
-
-    // If lock already exists, return null
-    if (this.locks.has(lockKey)) {
-      return null;
+  async clear(): Promise<void> {
+    try {
+      // Clear all timeouts
+      for (const session of this.sessions.values()) {
+        this.clearSessionTimeout(session);
+      }
+      this.sessions.clear();
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to clear sessions: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'CLEAR_SESSIONS_ERROR',
+      );
     }
-
-    // Create a new lock with token
-    const token = uuidv4();
-
-    // Create timeout to automatically release lock
-    const timeoutHandle = setTimeout(() => {
-      this.locks.delete(lockKey);
-    }, lockTimeoutMs);
-
-    // Store the lock
-    this.locks.set(lockKey, { token, timeout: timeoutHandle });
-
-    return token;
   }
 
   /**
-   * Release a lock on a session
-   *
-   * @param sessionId Unique session identifier
-   * @param token Lock token from acquireLock
-   * @returns Promise resolving to true if successful, false if token didn't match
+   * Acquires a lock on a session
+   * @param sessionId The ID of the session to lock
+   * @param timeout Optional timeout in milliseconds
+   * @returns Lock token if successful, null if lock could not be acquired
    */
-  async releaseLock(sessionId: string, token: string): Promise<boolean> {
-    const lockKey = this.getLockKey(sessionId);
-    const lock = this.locks.get(lockKey);
+  async acquireLock(sessionId: string, timeout?: number): Promise<string | null> {
+    try {
+      const lockTimeout = timeout || this.lockTimeout;
+      const lockToken = uuidv4(); // Use UUID instead of Math.random()
 
-    if (!lock) {
-      return false;
+      // Check if lock already exists
+      if (this.locks.has(sessionId)) {
+        return null;
+      }
+
+      const timeoutId = setTimeout(() => {
+        this.locks.delete(sessionId);
+      }, lockTimeout);
+
+      this.locks.set(sessionId, { token: lockToken, timeout: timeoutId });
+      return lockToken;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to acquire lock: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'ACQUIRE_LOCK_ERROR',
+      );
     }
-
-    if (lock.token !== token) {
-      return false;
-    }
-
-    // Clear timeout and delete lock
-    clearTimeout(lock.timeout);
-    this.locks.delete(lockKey);
-
-    return true;
   }
 
   /**
-   * Extend the TTL of a session
-   *
-   * @param sessionId Unique session identifier
+   * Releases a lock on a session
+   * @param sessionId The ID of the session
+   * @param lockToken The lock token to release
+   * @returns True if the lock was released, false otherwise
+   */
+  async releaseLock(sessionId: string, lockToken: string): Promise<boolean> {
+    try {
+      const lock = this.locks.get(sessionId);
+      if (lock && lock.token === lockToken) {
+        clearTimeout(lock.timeout);
+        this.locks.delete(sessionId);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to release lock: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'RELEASE_LOCK_ERROR',
+      );
+    }
+  }
+
+  /**
+   * Extends the TTL of a session
+   * @param sessionId ID of the session
    * @param ttl New TTL in seconds
-   * @returns Promise resolving to true if successful, false if session does not exist
+   * @returns True if successful, false if session doesn't exist
    */
   async extendSessionTtl(sessionId: string, ttl: number): Promise<boolean> {
-    const key = this.getSessionKey(sessionId);
-
-    if (!this.sessions.has(key)) {
-      return false;
+    try {
+      const key = this.getKey(sessionId);
+      const session = this.sessions.get(key);
+      if (!session) {
+        return false;
+      }
+      this.setSessionTimeout(key, ttl);
+      session.ttl = ttl;
+      return true;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to extend session TTL: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'EXTEND_TTL_ERROR',
+      );
     }
-
-    this.clearSessionTimeout(sessionId);
-    this.setSessionTimeout(sessionId, ttl);
-
-    return true;
   }
 
   /**
-   * Get the remaining TTL of a session
-   *
-   * @param sessionId Unique session identifier
-   * @returns Promise resolving to TTL in seconds, or null if session doesn't exist
+   * Gets the remaining TTL for a session
+   * @param sessionId ID of the session
+   * @returns Remaining TTL in seconds, or null if session doesn't exist
    */
   async getSessionTtl(sessionId: string): Promise<number | null> {
-    // We can't actually determine the exact TTL in the memory implementation
-    // as JavaScript's setTimeout doesn't provide access to the remaining time
-    // This is a limitation of the memory implementation
-    const key = this.getSessionKey(sessionId);
-    return this.sessions.has(key) ? this.defaultTtl : null;
+    try {
+      const key = this.getKey(sessionId);
+      const session = this.sessions.get(key);
+      if (!session) {
+        return null;
+      }
+      return session.ttl;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to get session TTL: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'GET_TTL_ERROR',
+      );
+    }
   }
 
   /**
-   * Create a session if it doesn't exist
-   *
-   * @param sessionId Unique session identifier
-   * @param initialState Initial state to set if session doesn't exist
-   * @returns Promise resolving to existing or newly created session data
+   * Creates a session if it doesn't exist, or returns the existing session
+   * @param sessionId The ID of the session
+   * @param initialState The initial state if the session needs to be created
+   * @returns The session state (either existing or newly created)
    */
-  async createSessionIfNotExists<T = SessionData>(
-    sessionId: string,
-    initialState: T
-  ): Promise<T> {
-    const existingSession = await this.getSession<T>(sessionId);
-
-    if (existingSession) {
-      return existingSession;
+  async createSessionIfNotExists(sessionId: string, initialState: T): Promise<T> {
+    try {
+      const session = await this.getSession(sessionId);
+      if (!session) {
+        await this.setSession(sessionId, initialState);
+        return initialState;
+      }
+      return session;
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to create session: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'CREATE_SESSION_ERROR',
+      );
     }
-
-    await this.setSession(sessionId, initialState);
-    return initialState;
   }
 
   /**
@@ -288,57 +359,19 @@ export class MemorySessionStore implements SessionStore {
    * No-op for memory implementation since there's no connection to close
    */
   async disconnect(): Promise<void> {
-    // No-op for memory implementation
-  }
-
-  /**
-   * Get the internal key for a session
-   *
-   * @param sessionId Session ID
-   * @returns Prefixed key
-   */
-  private getSessionKey(sessionId: string): string {
-    return `${this.prefix}${sessionId}`;
-  }
-
-  /**
-   * Get the internal key for a session lock
-   *
-   * @param sessionId Session ID
-   * @returns Prefixed lock key
-   */
-  private getLockKey(sessionId: string): string {
-    return `lock:${this.prefix}${sessionId}`;
-  }
-
-  /**
-   * Set a session timeout for automatic cleanup
-   *
-   * @param sessionId Session ID
-   * @param ttl TTL in seconds
-   */
-  private setSessionTimeout(sessionId: string, ttl: number): void {
-    const key = this.getSessionKey(sessionId);
-
-    const timeout = setTimeout(() => {
-      this.sessions.delete(key);
-      this.timeouts.delete(sessionId);
-    }, ttl * 1000);
-
-    this.timeouts.set(sessionId, timeout);
-  }
-
-  /**
-   * Clear a session timeout
-   *
-   * @param sessionId Session ID
-   */
-  private clearSessionTimeout(sessionId: string): void {
-    const timeout = this.timeouts.get(sessionId);
-
-    if (timeout) {
-      clearTimeout(timeout);
-      this.timeouts.delete(sessionId);
+    try {
+      // Clear all timeouts
+      for (const session of this.sessions.values()) {
+        this.clearSessionTimeout(session);
+      }
+      for (const lock of this.locks.values()) {
+        clearTimeout(lock.timeout);
+      }
+    } catch (error) {
+      throw new MemorySessionStoreError(
+        `Failed to disconnect: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'DISCONNECT_ERROR',
+      );
     }
   }
 }

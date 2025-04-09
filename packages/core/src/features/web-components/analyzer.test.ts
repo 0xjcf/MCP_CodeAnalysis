@@ -3,10 +3,11 @@
  * Tests core functionality and basic component analysis
  */
 
-import { WebComponentsAnalyzer } from './analyzer.js';
 import { LitElement } from 'lit';
 import { html } from 'lit-html';
 import { describe, it, expect, beforeEach } from 'vitest';
+
+import { WebComponentsAnalyzer } from './analyzer.js';
 
 // MEMORY_ANCHOR: {test} test_component_definition
 /**

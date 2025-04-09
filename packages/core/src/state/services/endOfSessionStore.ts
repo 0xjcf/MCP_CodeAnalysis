@@ -6,12 +6,26 @@
  * session summaries, metrics, and context for future reference.
  */
 
-import { SessionStore } from './types.js';
-import { v4 as uuidv4 } from 'uuid';
+import type { ISessionStore, ISessionData } from '@mcp/types';
 import { Redis } from 'ioredis';
+import { v4 as uuidv4 } from 'uuid';
+
 import { RedisSessionStore } from './redisSessionStore.js';
 
-export interface EndOfSessionData {
+/**
+ * Error class for end of session store operations
+ */
+export class EndOfSessionStoreError extends Error {
+  constructor(message: string, public readonly code: string) {
+    super(message);
+    this.name = 'EndOfSessionStoreError';
+  }
+}
+
+/**
+ * Interface for end of session data
+ */
+export interface IEndOfSessionData extends Record<string, unknown> {
   session_id?: string;
   timestamp: string;
   status: 'completed' | 'in_progress';
@@ -69,120 +83,197 @@ export interface EndOfSessionData {
   };
 }
 
-interface ListRecordsOptions {
+/**
+ * Type alias for end of session data
+ */
+export type EndOfSessionData = IEndOfSessionData;
+
+/**
+ * Interface for list records options
+ */
+interface IListRecordsOptions {
   limit?: number;
   offset?: number;
-  filter?: Record<string, any>;
 }
 
-interface SessionRecord {
+/**
+ * Interface for session record
+ */
+interface ISessionRecord {
   id: string;
   timestamp: number;
-  data: Record<string, any>;
+  data: IEndOfSessionData;
 }
 
+/**
+ * End of session store implementation
+ */
 export class EndOfSessionStore {
-  private sessionStore: SessionStore;
-  private readonly prefix: string;
-  private redis: Redis;
+  private sessionStore: ISessionStore;
   private sessionId: string;
+  private readonly prefix: string;
 
+  /**
+   * Creates a new EndOfSessionStore
+   * @param options Configuration options
+   */
   constructor(options: { redisUrl: string; sessionId: string; prefix?: string }) {
-    const url = new URL(options.redisUrl);
-    this.redis = new Redis({
-      host: url.hostname,
-      port: parseInt(url.port),
-      password: url.password || undefined,
-    });
-    this.sessionId = options.sessionId;
-    this.prefix = options.prefix || 'mcp:end-of-session:';
-    this.sessionStore = new RedisSessionStore({
-      redisUrl: options.redisUrl,
-      prefix: this.prefix,
-      defaultTtl: 3600,
-      lockTimeout: 30000,
-    });
+    try {
+      this.sessionId = options.sessionId;
+      this.prefix = options.prefix || 'eos:';
+      this.sessionStore = new RedisSessionStore({
+        redisUrl: options.redisUrl,
+        prefix: this.prefix,
+      });
+    } catch (error) {
+      throw new EndOfSessionStoreError(
+        `Failed to initialize EndOfSessionStore: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'INITIALIZATION_ERROR',
+      );
+    }
   }
 
   /**
-   * Save end-of-session data
-   * @param data The end-of-session data to save
-   * @returns The session ID
+   * Get the current session ID
    */
-  async saveEndOfSession(data: EndOfSessionData): Promise<string> {
-    const sessionId = data.session_id || `${this.prefix}${uuidv4()}`;
-    await this.sessionStore.setSession(sessionId, data);
-    return sessionId;
+  getSessionId(): string {
+    return this.sessionId;
   }
 
   /**
-   * Retrieve end-of-session data
-   * @param sessionId The session ID to retrieve
-   * @returns The end-of-session data or null if not found
+   * Get the underlying session store
    */
-  async getEndOfSession(sessionId: string): Promise<EndOfSessionData | null> {
-    return this.sessionStore.getSession<EndOfSessionData>(sessionId);
+  getStore(): ISessionStore {
+    return this.sessionStore;
   }
 
   /**
-   * List all end-of-session records
-   * @returns Array of session IDs
+   * Save end of session data
+   */
+  async saveEndOfSession(data: IEndOfSessionData): Promise<string> {
+    try {
+      const sessionId = data.session_id
+        ? data.session_id.startsWith(this.prefix)
+          ? data.session_id
+          : `${this.prefix}${data.session_id}`
+        : `${this.prefix}${uuidv4()}`;
+
+      const sessionData: ISessionData = {
+        id: sessionId,
+        createdAt: Date.now(),
+        lastAccessed: Date.now(),
+        data,
+      };
+
+      await this.sessionStore.setSession(sessionId, sessionData);
+      return sessionId;
+    } catch (error) {
+      throw new EndOfSessionStoreError(
+        `Failed to save end of session data: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'SAVE_ERROR',
+      );
+    }
+  }
+
+  /**
+   * Get end of session data
+   */
+  async getEndOfSession(sessionId: string): Promise<IEndOfSessionData | null> {
+    try {
+      const sessionData = await this.sessionStore.getSession(sessionId);
+      return (sessionData?.data as IEndOfSessionData) ?? null;
+    } catch (error) {
+      throw new EndOfSessionStoreError(
+        `Failed to get end of session data: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'GET_ERROR',
+      );
+    }
+  }
+
+  /**
+   * List all end of session IDs
    */
   async listEndOfSessions(): Promise<string[]> {
     try {
       const sessions = await this.sessionStore.getSessions();
-      return sessions;
+      // Remove the prefix from session IDs if they have it
+      return sessions.map(sessionId =>
+        sessionId.startsWith(this.prefix) ? sessionId.slice(this.prefix.length) : sessionId,
+      );
     } catch (error) {
-      console.error('Error listing end-of-session records:', error);
-      throw new Error('Failed to list end-of-session records');
+      throw new EndOfSessionStoreError(
+        `Failed to list end of sessions: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'LIST_ERROR',
+      );
     }
   }
 
   /**
-   * Delete end-of-session data
-   * @param sessionId The session ID to delete
+   * Delete end of session data
    */
   async deleteEndOfSession(sessionId: string): Promise<void> {
-    await this.sessionStore.clearSession(sessionId);
-  }
-
-  /**
-   * Clear all end-of-session data
-   */
-  async clearAll(): Promise<void> {
-    const sessions = await this.listEndOfSessions();
-    await Promise.all(sessions.map(id => this.deleteEndOfSession(id)));
-  }
-
-  async listRecords(options: ListRecordsOptions = {}): Promise<SessionRecord[]> {
     try {
-      const { limit = 10, offset = 0, filter = {} } = options;
-      const records = await this.redis.zrange(this.getRecordsKey(), offset, offset + limit - 1);
-
-      return records
-        .map((record: string) => {
-          try {
-            const parsed = JSON.parse(record);
-            // Apply filters if provided
-            if (Object.keys(filter).length > 0) {
-              return Object.entries(filter).every(([key, value]) => parsed[key] === value)
-                ? parsed
-                : null;
-            }
-            return parsed;
-          } catch (error) {
-            console.error('Failed to parse record:', error);
-            return null;
-          }
-        })
-        .filter((record): record is SessionRecord => record !== null);
+      await this.sessionStore.deleteSession(sessionId);
     } catch (error) {
-      console.error('Failed to list records:', error);
-      throw new Error('Failed to list records');
+      throw new EndOfSessionStoreError(
+        `Failed to delete end of session data: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'DELETE_ERROR',
+      );
     }
   }
 
-  private getRecordsKey(): string {
-    return `session:records:${this.sessionId}`;
+  /**
+   * Clear all end of session data
+   */
+  async clearAll(): Promise<void> {
+    try {
+      await this.sessionStore.clear();
+    } catch (error) {
+      throw new EndOfSessionStoreError(
+        `Failed to clear all end of session data: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+        'CLEAR_ERROR',
+      );
+    }
+  }
+
+  /**
+   * List session records with options
+   */
+  async listRecords(options: IListRecordsOptions = {}): Promise<ISessionRecord[]> {
+    try {
+      const { limit = 10, offset = 0 } = options;
+      const sessions = await this.listEndOfSessions();
+      const records: ISessionRecord[] = [];
+
+      for (const sessionId of sessions.slice(offset, offset + limit)) {
+        const data = await this.getEndOfSession(sessionId);
+        if (data) {
+          records.push({
+            id: sessionId,
+            timestamp: new Date(data.timestamp).getTime(),
+            data,
+          });
+        }
+      }
+
+      return records;
+    } catch (error) {
+      throw new EndOfSessionStoreError(
+        `Failed to list records: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        'LIST_RECORDS_ERROR',
+      );
+    }
   }
 }

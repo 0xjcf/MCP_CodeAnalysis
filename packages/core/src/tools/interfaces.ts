@@ -1,9 +1,9 @@
-import { ToolState } from '../state/interfaces/toolExecutionService.js';
+import type { ToolState } from '../state/interfaces/toolExecutionService.js';
 
 /**
  * Result of tool execution
  */
-export interface ToolResult<T = any> {
+export interface IToolResult<T = any> {
   /**
    * Result data from the tool execution
    */
@@ -23,7 +23,7 @@ export interface ToolResult<T = any> {
 /**
  * Interface for MCP tool definition
  */
-export interface Tool<P = any, R = any> {
+export interface ITool<P = any, R = any> {
   /**
    * Unique ID for the tool
    */
@@ -66,19 +66,19 @@ export interface Tool<P = any, R = any> {
    * @param state Current state (optional)
    * @returns Tool execution result
    */
-  execute(params: P, state?: ToolState): Promise<ToolResult<R>>;
+  execute(params: P, state?: ToolState): Promise<IToolResult<R>>;
 }
 
 /**
  * Manager for tool registration and discovery
  */
-export interface ToolRegistry {
+export interface IToolRegistry {
   /**
    * Register a new tool
    *
    * @param tool Tool to register
    */
-  registerTool(tool: Tool): void;
+  registerTool(tool: ITool): void;
 
   /**
    * Get a tool by ID
@@ -86,14 +86,14 @@ export interface ToolRegistry {
    * @param id Tool ID
    * @returns Tool or undefined if not found
    */
-  getTool(id: string): Tool | undefined;
+  getTool(id: string): ITool | undefined;
 
   /**
    * Get all registered tools
    *
    * @returns Map of all registered tools
    */
-  getAllTools(): Map<string, Tool>;
+  getAllTools(): Map<string, ITool>;
 
   /**
    * Get tools by category
@@ -101,7 +101,7 @@ export interface ToolRegistry {
    * @param category Category name
    * @returns Array of tools in the category
    */
-  getToolsByCategory(category: string): Tool[];
+  getToolsByCategory(category: string): ITool[];
 
   /**
    * Unregister a tool

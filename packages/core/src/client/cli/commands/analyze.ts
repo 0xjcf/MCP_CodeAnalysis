@@ -1,11 +1,13 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import figures from 'figures';
-import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
-import { formatOutput } from '../utils/formatters.js';
 import fs from 'fs';
 import path from 'path';
+
+import chalk from 'chalk';
+import type { Command } from 'commander';
+import figures from 'figures';
+import ora from 'ora';
+
+import { formatOutput } from '../utils/formatters.js';
+import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
 import { detectCurrentProject, getProjectInfo, getChangedFiles } from '../utils/project-detector.js';
 
 export function registerAnalyzeCommands(program: Command) {

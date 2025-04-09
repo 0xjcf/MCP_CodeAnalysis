@@ -5,15 +5,18 @@
  * which provides a way to integrate MCP tools with XState state machines.
  */
 
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { z } from 'zod';
+
 import {
   createStatefulTool,
   getSession,
   clearSession,
   getSessionIds,
 } from '../state/helpers/statefulTool.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
+import type { IToolResult } from '../tools/interfaces.js';
+
 
 // Create a type for our mock server
 type MockServer = {
@@ -21,12 +24,30 @@ type MockServer = {
 };
 
 // Define the handler type
-type ToolHandler = ((params: Record<string, any>) => Promise<Record<string, unknown>>) & {
+type ToolHandler = ((
+  params: Record<string, any>,
+  extra: Record<string, any>,
+) => Promise<IToolResult<Record<string, unknown>>>) & {
   mockReset: () => void;
   mockImplementation: (
-    fn: (params: Record<string, any>) => Promise<Record<string, unknown>>,
+    fn: (
+      params: Record<string, any>,
+      extra: Record<string, any>,
+    ) => Promise<IToolResult<Record<string, unknown>>>,
   ) => void;
 };
+
+interface IMockRedisClient {
+  get: ReturnType<typeof vi.fn>;
+  set: ReturnType<typeof vi.fn>;
+  del: ReturnType<typeof vi.fn>;
+  keys: ReturnType<typeof vi.fn>;
+  mget: ReturnType<typeof vi.fn>;
+  mset: ReturnType<typeof vi.fn>;
+  mdel: ReturnType<typeof vi.fn>;
+  ttl: ReturnType<typeof vi.fn>;
+  expire: ReturnType<typeof vi.fn>;
+}
 
 describe('Stateful Tool', () => {
   // Mock server and handler to be used in multiple tests
@@ -43,12 +64,23 @@ describe('Stateful Tool', () => {
       tool: vi.fn(),
     };
 
-    handler = vi.fn().mockImplementation(async (params: Record<string, any>) => ({
-      success: true,
-      data: 'test result',
-      status: 'success',
-      timestamp: new Date().toISOString(),
-    }));
+    handler = vi
+      .fn()
+      .mockImplementation(async (params: Record<string, any>, extra: Record<string, any>) => ({
+        result: {
+          data: 'test result',
+          status: 'success',
+          metadata: {
+            tool: 'testTool',
+            version: '1.0.0',
+            executionTime: 0,
+            timestamp: new Date().toISOString(),
+          },
+          context: {
+            sessionId: 'test-session',
+          },
+        },
+      }));
   });
 
   afterEach(() => {
@@ -114,17 +146,26 @@ describe('Stateful Tool', () => {
       await toolHandler({ param1: 'test', param2: 42, sessionId: 'test-session' });
 
       // Verify the handler was called with the correct parameters
-      expect(handler).toHaveBeenCalledWith({ param1: 'test', param2: 42 });
+      expect(handler).toHaveBeenCalledWith({ param1: 'test', param2: 42 }, expect.any(Object));
     });
 
     it('should return an MCP-formatted response', async () => {
       // Set up a specific result for this test
       handler.mockReset();
       handler.mockImplementation(async () => ({
-        success: true,
-        data: 'test result',
-        status: 'success',
-        timestamp: new Date().toISOString(),
+        result: {
+          data: 'test result',
+          status: 'success',
+          metadata: {
+            tool: 'testTool',
+            version: '1.0.0',
+            executionTime: 0,
+            timestamp: new Date().toISOString(),
+          },
+          context: {
+            sessionId: 'test-session',
+          },
+        },
       }));
 
       // Extract the handler function from the tool call
@@ -165,7 +206,10 @@ describe('Stateful Tool', () => {
       expect(response).toHaveProperty('content');
       expect(response.content).toBeInstanceOf(Array);
       expect(response.content[0]).toHaveProperty('type', 'text');
-      expect(response.content[0]).toHaveProperty('text', 'Test error');
+
+      // Parse the error response
+      const errorResponse = JSON.parse(response.content[0].text);
+      expect(errorResponse.status.message).toBe('Test error');
       expect(response).toHaveProperty('isError', true);
     });
   });

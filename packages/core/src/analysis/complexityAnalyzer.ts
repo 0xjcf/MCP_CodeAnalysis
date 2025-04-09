@@ -1,4 +1,4 @@
-interface ComplexityResult {
+interface IComplexityResult {
   complexity: {
     cyclomatic: number;
     cognitive: number;
@@ -45,7 +45,7 @@ export class ComplexityAnalyzer {
     };
   }
 
-  public analyze(code: string): ComplexityResult {
+  public analyze(code: string): IComplexityResult {
     const complexity = this.calculateComplexity(code);
     return {
       complexity,

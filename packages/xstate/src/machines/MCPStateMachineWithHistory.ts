@@ -9,14 +9,11 @@ type MCPEvent =
   | { type: 'ERROR'; error: string };
 
 // Define the context type
-interface MCPContext {
+interface IMCPContext {
   history: string[];
   error?: string;
   previousState?: string;
 }
-
-// Define the state type
-type MCPState = 'idle' | 'running' | 'paused' | 'stopped' | 'error';
 
 // TODO: Properly type the actions with XState v5's type system
 // Current limitations:
@@ -26,7 +23,7 @@ type MCPState = 'idle' | 'running' | 'paused' | 'stopped' | 'error';
 
 export const MCPStateMachineWithHistory = setup({
   types: {
-    context: {} as MCPContext,
+    context: {} as IMCPContext,
     events: {} as MCPEvent,
   },
   actions: {
@@ -38,17 +35,17 @@ export const MCPStateMachineWithHistory = setup({
             ? currentState === 'error'
               ? 'idle'
               : currentState === 'idle'
-                ? 'running'
-                : 'running'
+              ? 'running'
+              : 'running'
             : event.type === 'PAUSE'
-              ? 'paused'
-              : event.type === 'RESUME'
-                ? 'running'
-                : event.type === 'STOP'
-                  ? 'stopped'
-                  : event.type === 'ERROR'
-                    ? 'error'
-                    : currentState;
+            ? 'paused'
+            : event.type === 'RESUME'
+            ? 'running'
+            : event.type === 'STOP'
+            ? 'stopped'
+            : event.type === 'ERROR'
+            ? 'error'
+            : currentState;
 
         return [...context.history, nextState];
       },
@@ -65,7 +62,7 @@ export const MCPStateMachineWithHistory = setup({
       previousState: ({ self }) => String(self.getSnapshot().value),
     }),
     clearError: assign({
-      error: undefined,
+      error: () => '',
     }),
     updateHistoryFromError: assign({
       history: ({ context }) => {

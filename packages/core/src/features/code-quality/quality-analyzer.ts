@@ -1,10 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
+
 import { glob } from 'glob';
+
 import { analyzeCodeMetrics } from '../code-metrics/metrics-analyzer.js';
 
 // Issue interface
-interface QualityIssue {
+interface IQualityIssue {
   type: string;
   severity: 'error' | 'warning' | 'info';
   file: string;
@@ -16,23 +18,23 @@ interface QualityIssue {
 }
 
 // Rule interface for extensibility
-interface QualityRule {
+interface IQualityRule {
   id: string;
   name: string;
   description: string;
   languages: string[];
   severity: 'error' | 'warning' | 'info';
-  analyze: (content: string, filePath: string, lineIndex?: number) => QualityIssue[];
+  analyze: (content: string, filePath: string, lineIndex?: number) => IQualityIssue[];
 }
 
 // Result interface
-interface QualityAnalysisResult {
+interface IQualityAnalysisResult {
   issueCount: {
     errors: number;
     warnings: number;
     info: number;
   };
-  issues: QualityIssue[];
+  issues: IQualityIssue[];
   summary: {
     byFile: Record<string, { errors: number; warnings: number; info: number }>;
     byRule: Record<string, { errors: number; warnings: number; info: number }>;
@@ -44,7 +46,7 @@ interface QualityAnalysisResult {
 }
 
 // Rule registry - extensible rule collection
-const ruleRegistry: QualityRule[] = [
+const ruleRegistry: IQualityRule[] = [
   // JavaScript/TypeScript rules
   {
     id: 'no-console',
@@ -53,7 +55,7 @@ const ruleRegistry: QualityRule[] = [
     languages: ['js', 'jsx', 'ts', 'tsx'],
     severity: 'warning',
     analyze: (content, filePath) => {
-      const issues: QualityIssue[] = [];
+      const issues: IQualityIssue[] = [];
       const lines = content.split('\n');
 
       lines.forEach((line, i) => {
@@ -80,7 +82,7 @@ const ruleRegistry: QualityRule[] = [
     languages: ['js', 'jsx', 'ts', 'tsx', 'py', 'java', 'go', 'rb'],
     severity: 'info',
     analyze: (content, filePath) => {
-      const issues: QualityIssue[] = [];
+      const issues: IQualityIssue[] = [];
       const lines = content.split('\n');
 
       lines.forEach((line, i) => {
@@ -106,7 +108,7 @@ const ruleRegistry: QualityRule[] = [
     languages: ['js', 'jsx', 'ts', 'tsx', 'java'],
     severity: 'warning',
     analyze: (content, filePath) => {
-      const issues: QualityIssue[] = [];
+      const issues: IQualityIssue[] = [];
       const lines = content.split('\n');
 
       for (let i = 0; i < lines.length; i++) {
@@ -149,6 +151,7 @@ const ruleRegistry: QualityRule[] = [
     languages: ['*'],
     severity: 'info',
     analyze: (content, filePath) => {
+      const issues: IQualityIssue[] = [];
       const issues: QualityIssue[] = [];
       const lines = content.split('\n');
 

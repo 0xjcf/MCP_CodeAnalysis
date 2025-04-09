@@ -4,6 +4,47 @@
  */
 
 /**
+ * Type definition for metadata in responses
+ */
+export interface IResponseMetadata {
+  source?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Type definition for error details
+ */
+export interface IErrorDetails {
+  [key: string]: unknown;
+}
+
+/**
+ * Type definition for success response
+ */
+export interface ISuccessResponse<T> {
+  status: { success: true; message?: string };
+  data: T;
+  metadata?: IResponseMetadata;
+}
+
+/**
+ * Type definition for error response
+ */
+export interface IErrorResponse {
+  status: { success: false; message: string };
+  error: { message: string; code: string; details?: IErrorDetails };
+}
+
+/**
+ * Type definition for partial response
+ */
+export interface IPartialResponse<T> {
+  status: { success: true; partial: true; message?: string };
+  data: T;
+  progress: { percentage?: number; message?: string };
+}
+
+/**
  * Creates a standardized success response
  * @param data The data to include in the response
  * @param source The source identifier (optional)
@@ -13,19 +54,19 @@
 export function createSuccessResponse<T>(
   data: T,
   source?: string,
-  metadata?: Record<string, any>
-): {
-  status: { success: true; message?: string };
-  data: T;
-  metadata?: Record<string, any>;
-} {
+  metadata?: IResponseMetadata,
+): ISuccessResponse<T> {
+  const responseMetadata: IResponseMetadata = {};
+  if (source) responseMetadata.source = source;
+  if (metadata) Object.assign(responseMetadata, metadata);
+
   return {
     status: {
       success: true,
-      message: 'Operation completed successfully'
+      message: 'Operation completed successfully',
     },
     data,
-    ...(metadata ? { metadata: { source, ...metadata } } : { metadata: { source } })
+    metadata: Object.keys(responseMetadata).length > 0 ? responseMetadata : undefined,
   };
 }
 
@@ -39,21 +80,18 @@ export function createSuccessResponse<T>(
 export function createErrorResponse(
   message: string,
   code: string,
-  details?: any
-): {
-  status: { success: false; message: string };
-  error: { message: string; code: string; details?: any };
-} {
+  details?: IErrorDetails,
+): IErrorResponse {
   return {
     status: {
       success: false,
-      message
+      message,
     },
     error: {
       message,
       code,
-      ...(details !== undefined ? { details } : {})
-    }
+      ...(details ? { details } : {}),
+    },
   };
 }
 
@@ -67,22 +105,18 @@ export function createErrorResponse(
 export function createPartialResponse<T>(
   data: T,
   percentage?: number,
-  progressMessage?: string
-): {
-  status: { success: true; partial: true; message?: string };
-  data: T;
-  progress: { percentage?: number; message?: string };
-} {
+  progressMessage?: string,
+): IPartialResponse<T> {
   return {
     status: {
       success: true,
       partial: true,
-      message: progressMessage || 'Operation in progress'
+      message: progressMessage || 'Operation in progress',
     },
     data,
     progress: {
-      percentage,
-      message: progressMessage
-    }
+      ...(percentage !== undefined ? { percentage } : {}),
+      ...(progressMessage ? { message: progressMessage } : {}),
+    },
   };
-} 
+}

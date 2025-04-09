@@ -160,6 +160,7 @@ export interface ShadowDOMUsage {
   component: string;
   mode: 'open' | 'closed';
   delegatesFocus?: boolean;
+  slots?: string[];
 }
 
 export interface Property {
@@ -168,6 +169,7 @@ export interface Property {
   defaultValue?: string;
   isPublic: boolean;
   isReadonly: boolean;
+  required?: boolean;
 }
 
 export interface OptimizationSuggestion {
@@ -196,7 +198,7 @@ export interface AccessibilityIssue {
     | 'interactive-elements'
     | 'semantic-html';
   message: string;
-  severity: 'error' | 'warning' | 'info';
+  severity: 'info' | 'warning' | 'error';
 }
 
 export interface AccessibilityInfo {

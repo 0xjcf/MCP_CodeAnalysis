@@ -13,8 +13,9 @@
  * are most appropriate for a given task.
  */
 
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
+
 import { getToolRegistry } from '../registry/index.js';
 import { createSuccessResponse, createErrorResponse } from '../utils/responses.js';
 
@@ -50,7 +51,7 @@ import { createSuccessResponse, createErrorResponse } from '../utils/responses.j
  * };
  * ```
  */
-export interface ToolMetadata {
+interface IToolMetadata {
   /** Unique name of the tool */
   name: string;
   /** Detailed description of what the tool does */
@@ -220,7 +221,7 @@ export function registerToolDiscoveryFeatures(server: McpServer) {
  * console.log(`Found ${tools.length} tools`);
  * ```
  */
-function getAvailableTools(server: McpServer): ToolMetadata[] {
+function getAvailableTools(server: McpServer): IToolMetadata[] {
   const registry = getToolRegistry();
   const tools = registry.getAllTools();
 
@@ -244,7 +245,7 @@ function getAvailableTools(server: McpServer): ToolMetadata[] {
 /**
  * Interface representing a relationship between tools
  */
-interface ToolRelationship {
+interface IToolRelationship {
   source: string;
   target: string;
   type: string;
@@ -254,9 +255,9 @@ interface ToolRelationship {
 /**
  * Generate relationships between tools based on their metadata
  */
-function generateToolRelationships(tools: ToolMetadata[]): {
+function generateToolRelationships(tools: IToolMetadata[]): {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
-  edges: ToolRelationship[];
+  edges: IToolRelationship[];
 } {
   const nodes = tools.map(tool => ({
     id: tool.name,
@@ -267,7 +268,7 @@ function generateToolRelationships(tools: ToolMetadata[]): {
 
   // A simple algorithm to infer relationships between tools
   // In a real implementation, this would be more sophisticated
-  const edges: ToolRelationship[] = [];
+  const edges: IToolRelationship[] = [];
 
   // Group tools by category
   const categoriesMap: Record<string, string[]> = {};
@@ -340,7 +341,7 @@ function generateToolRelationships(tools: ToolMetadata[]): {
  */
 function generateMermaidDiagram(relationships: {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
-  edges: ToolRelationship[];
+  edges: IToolRelationship[];
 }): string {
   let mermaid = 'graph TD;\n';
 
@@ -375,7 +376,7 @@ function generateMermaidDiagram(relationships: {
  */
 function generateDotDiagram(relationships: {
   nodes: { id: string; name: string; category: string; tags: string[] }[];
-  edges: ToolRelationship[];
+  edges: IToolRelationship[];
 }): string {
   let dot = 'digraph ToolRelationships {\n';
 

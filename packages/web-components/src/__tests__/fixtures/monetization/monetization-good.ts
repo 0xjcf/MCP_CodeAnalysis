@@ -65,7 +65,12 @@ export class GoodMonetization extends HTMLElement {
     const button = this._shadow.querySelector('button');
     if (button) {
       button.addEventListener('click', this.handleUpgrade);
-      button.addEventListener('keydown', this.handleKeyDown);
+      this.addEventListener('keydown', (event: Event) => {
+        const keyboardEvent = event as KeyboardEvent;
+        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+          this.handlePurchase();
+        }
+      });
     }
   }
 
@@ -73,10 +78,8 @@ export class GoodMonetization extends HTMLElement {
     // Handle upgrade flow
   };
 
-  private handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      this.handleUpgrade();
-    }
+  private handlePurchase = () => {
+    // Handle purchase flow
   };
 }
 

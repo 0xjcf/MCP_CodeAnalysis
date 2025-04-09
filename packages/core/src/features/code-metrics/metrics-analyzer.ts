@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-interface FileMetrics {
+interface IFileMetrics {
   filePath: string;
   language: string;
   lineCount: number;
@@ -17,25 +17,25 @@ interface FileMetrics {
   }[];
 }
 
-interface ProjectMetrics {
+interface IProjectMetrics {
   totalFiles: number;
   totalLines: number;
   totalCodeLines: number;
   totalCommentLines: number;
   averageComplexity: number;
   filesByLanguage: Record<string, number>;
-  files?: FileMetrics[];
+  files?: IFileMetrics[];
 }
 
 /**
  * Analyze code metrics for a repository
  */
-export async function analyzeCodeMetrics(repositoryPath: string): Promise<ProjectMetrics> {
+export async function analyzeCodeMetrics(repositoryPath: string): Promise<IProjectMetrics> {
   // Find all code files
   const files = await findCodeFiles(repositoryPath);
 
   // Analyze each file
-  const fileMetrics: FileMetrics[] = [];
+  const fileMetrics: IFileMetrics[] = [];
   let totalComplexity = 0;
 
   for (const file of files) {

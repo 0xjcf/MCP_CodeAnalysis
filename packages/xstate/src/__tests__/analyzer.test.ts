@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { XStateAnalyzer, XStateAnalysisData } from '../analyzer.js';
-import { AnalysisOptions } from '@mcp/types';
+
+import { XStateAnalyzer } from '../analyzer.js';
+import type { IXStateAnalysisData } from '../types.js';
 
 describe('XStateAnalyzer', () => {
   describe('Simple State Machines', () => {
@@ -30,18 +31,18 @@ describe('XStateAnalyzer', () => {
       const result = await analyzer.analyze({ sourceCode });
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      const data = result.data as XStateAnalysisData;
+      const data = result.data as IXStateAnalysisData;
       expect(data.states).toEqual(['idle', 'running']);
       expect(data.events).toEqual(['START', 'STOP']);
       expect(data.transitions).toEqual([
         { source: 'idle', target: 'running', event: 'START' },
         { source: 'running', target: 'idle', event: 'STOP' },
       ]);
-      expect(data.performance).toBeDefined();
-      expect(data.performance.stateCount).toBe(2);
-      expect(data.performance.transitionCount).toBe(2);
-      expect(data.performance.serviceCount).toBe(0);
-      expect(data.performance.complexity).toBe('low');
+      expect(data.metrics).toBeDefined();
+      expect(data.metrics.stateCount).toBe(2);
+      expect(data.metrics.transitionCount).toBe(2);
+      expect(data.metrics.serviceCount).toBe(0);
+      expect(data.metrics.complexityLevel).toBe('low');
     });
 
     it('should handle invalid source code', async () => {
@@ -75,11 +76,11 @@ describe('XStateAnalyzer', () => {
       const result = await analyzer.analyze({ sourceCode });
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      const data = result.data as XStateAnalysisData;
+      const data = result.data as IXStateAnalysisData;
       expect(data.states).toHaveLength(0);
       expect(data.transitions).toHaveLength(0);
       expect(data.services).toHaveLength(0);
-      expect(data.performance.complexity).toBe('low');
+      expect(data.metrics.complexityLevel).toBe('low');
     });
   });
 });

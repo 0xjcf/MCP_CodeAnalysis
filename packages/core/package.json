@@ -1,7 +1,7 @@
 {
   "name": "@mcp/core",
   "version": "0.0.1",
-  "description": "Core package for Model Context Protocol",
+  "description": "Core functionality for MCP packages",
   "type": "module",
   "exports": {
     ".": {
@@ -14,11 +14,11 @@
     "start": "pnpm build && node dist/server-main.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@mcp/shared": "workspace:*",
     "@mcp/types": "workspace:*",
+    "@mcp/utils": "workspace:*",
     "@mcp/xstate": "workspace:^",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "@types/glob": "^8.1.0",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/express": "^5.0.1",
-    "@types/node": "^20.17.27",
+    "@types/node": "^20.11.19",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "chalk": "^5.4.1",
@@ -45,6 +45,7 @@
     "ora": "^8.2.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
+    "testcontainers": "^10.24.0",
     "typescript": "^5.3.3",
     "uuid": "^11.1.0",
     "vitest": "^1.2.2",

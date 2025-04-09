@@ -1,6 +1,7 @@
+import type { Database } from "sqlite";
+
+import type { Insight, MemoryQuery, InsightCategory, InsightType } from "../../types/memory.js";
 import { createDatabase } from "../../utils/database.js";
-import { Insight, MemoryQuery, InsightCategory, InsightType } from "../../types/memory.js";
-import { Database } from "sqlite";
 
 // Initialize database connection
 let db: Database | undefined; // Will be initialized on first use

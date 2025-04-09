@@ -4,42 +4,61 @@
  */
 
 /**
+ * Represents a tool parameter schema
+ */
+export interface IToolParameterSchema {
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array';
+  description?: string;
+  required?: boolean;
+  default?: unknown;
+  enum?: unknown[];
+  properties?: Record<string, IToolParameterSchema>;
+  items?: IToolParameterSchema;
+}
+
+/**
  * Represents a tool that can be executed
  */
-export interface Tool {
+export interface ITool {
   name: string;
   description: string;
-  parameterSchema?: Record<string, any>;
-  [key: string]: any;
+  parameterSchema?: Record<string, IToolParameterSchema>;
+  category?: string;
+  tags?: string[];
+  timeout?: number;
+  rateLimit?: {
+    maxRequests: number;
+    windowMs: number;
+  };
 }
 
 /**
  * Interface for tool execution services
  */
-export interface ToolExecution {
+export interface IToolExecution {
   initializeState(): Promise<void>;
-  selectTool(tool: Tool): Promise<void>;
+  selectTool(tool: ITool): Promise<void>;
   setParameters(parameters: Record<string, unknown>): Promise<void>;
-  execute(options?: ToolExecutionOptions): Promise<ToolExecutionResponse>;
+  execute(options?: IToolExecutionOptions): Promise<IToolExecutionResponse>;
   cancel(): Promise<void>;
   reset(): Promise<void>;
   dispose(): Promise<void>;
-  getContext(): ToolMachineContext;
+  getContext(): IToolMachineContext;
 }
 
 /**
  * Context for the tool execution state machine
  */
-export interface ToolMachineContext {
+export interface IToolMachineContext {
   toolName: string | null;
-  parameters: Record<string, any> | null;
-  result: any | null;
+  parameters: Record<string, unknown> | null;
+  result: unknown | null;
   error: Error | null;
   sessionId: string | null;
   selectedTool: string | null;
   history: Array<{
     tool: string;
-    result: any;
+    result: unknown;
     timestamp: string;
   }>;
 }
@@ -47,7 +66,7 @@ export interface ToolMachineContext {
 /**
  * Options for tool execution
  */
-export interface ToolExecutionOptions {
+export interface IToolExecutionOptions {
   timeout?: number;
   retries?: number;
   signal?: AbortSignal;
@@ -56,24 +75,24 @@ export interface ToolExecutionOptions {
 /**
  * Response from a tool execution
  */
-export interface ToolExecutionResponse {
+export interface IToolExecutionResponse {
   status: {
     success: boolean;
     message?: string;
   };
-  data?: any;
+  data?: unknown;
   error?: {
     message: string;
     code: string;
-    details?: any;
+    details?: unknown;
   };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
  * Event to select a tool
  */
-export interface ToolSelectEvent {
+export interface IToolSelectEvent {
   type: 'SELECT_TOOL';
   toolName: string;
 }
@@ -81,7 +100,7 @@ export interface ToolSelectEvent {
 /**
  * Event to set parameters
  */
-export interface SetParametersEvent {
+export interface ISetParametersEvent {
   type: 'SET_PARAMETERS';
   parameters: Record<string, unknown>;
 }
@@ -89,7 +108,7 @@ export interface SetParametersEvent {
 /**
  * Event to update execution status
  */
-export interface ExecutionStatusEvent {
+export interface IExecutionStatusEvent {
   type: 'EXECUTING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
-  payload?: any;
-} 
+  payload?: unknown;
+}

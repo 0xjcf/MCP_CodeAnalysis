@@ -3,227 +3,264 @@
  *
  * This service implements the XState-based state management layer for MCP SDK tools.
  * It serves as the core execution engine for stateful tools, managing tool state,
- * parameter validation, execution flow, and result tracking. The service:
- *
- * - Integrates with the MCP SDK tool callback system
- * - Provides a stateful wrapper around tool execution
- * - Manages tool execution history and context
- * - Handles error states and recovery
- *
- * The ToolExecutionService is used by the statefulTool helper to provide
- * persistence between tool invocations in the MCP infrastructure.
- *
- * @module toolService
+ * parameter validation, execution flow, and result tracking.
  */
 
-import { createActor } from "xstate";
-import {
-  toolMachine,
-  type ToolMachineContext,
-} from "../machines/toolMachine.js";
-import { ToolResponse } from "../../types/responses.js";
-import {
-  createSuccessResponse,
-  createErrorResponse,
-} from "../../utils/responses.js";
+// External imports
+import type { ITool, IExecutionResult } from '@mcp/types';
+import { v4 as uuid } from 'uuid';
+import type { Actor} from 'xstate';
+import { createActor } from 'xstate';
 
-/**
- * Execution result interface for MCP tool integration
- *
- * Defines the structure of results returned by tool executions.
- * This format aligns with MCP SDK expectations for tool responses,
- * including context for stateful operations and status information.
- */
-export interface ExecutionResult<T = any> {
-  /**
-   * The result data returned by the tool
-   */
-  data: T;
+// Internal type imports
+import type {
+  IToolExecutionService,
+  IToolExecutionResult,
+} from '../interfaces/toolExecutionService.js';
 
-  /**
-   * Execution context information that can be used for
-   * tracking state and managing tool sessions
-   */
-  context?: Record<string, any>;
+// Internal imports
+import { toolMachine } from '../machines/toolMachine.js';
+import type { ToolHandler } from '../machines/toolMachine.types.js';
 
-  /**
-   * Status of the execution (success, error, etc.)
-   */
-  status: "success" | "error" | "cancelled" | "pending";
-
-  /**
-   * Error message if the execution failed
-   */
-  error?: string;
-
-  /**
-   * Timestamp when the execution completed
-   */
-  timestamp: string;
-}
-
-/**
- * Service for executing tools with state management
- *
- * This class provides the implementation for stateful tool execution
- * in the MCP SDK ecosystem. It uses XState for state management and
- * provides a simple interface for tool execution with context
- * persistence between invocations.
- */
-export class ToolExecutionService {
+export class ToolExecutionService implements IToolExecutionService {
+  private actor: Actor<typeof toolMachine>;
+  private tools: Map<string, ITool>;
   private sessionId: string;
-  private actor: ReturnType<typeof createActor>;
+  private startTime: number;
+  private selectedTool: { name: string; handler: ToolHandler | null } | null = null;
+  private parameters: Record<string, unknown> | null = null;
+  private history: Array<{
+    tool: string;
+    parameters: Record<string, unknown>;
+    result: any;
+    timestamp: string;
+  }> = [];
 
-  /**
-   * Create a new tool execution service
-   *
-   * @param sessionId Unique identifier for this execution session (will generate one if not provided)
-   */
   constructor(sessionId?: string) {
-    this.sessionId = sessionId || crypto.randomUUID();
-
-    // Create an actor from the machine
-    this.actor = createActor(toolMachine, {
-      input: {
-        sessionId: this.sessionId,
-      },
-    });
-
-    // Start the actor
-    this.actor.start();
+    this.actor = createActor(toolMachine).start();
+    this.tools = new Map<string, ITool>();
+    this.sessionId = sessionId || uuid();
+    this.startTime = Date.now();
   }
 
-  /**
-   * Get the current session ID
-   *
-   * @returns Session ID for this execution service
-   */
   getSessionId(): string {
     return this.sessionId;
   }
 
-  /**
-   * Select a tool for execution
-   *
-   * @param toolName Name of the tool to select
-   */
-  selectTool(toolName: string): void {
-    this.actor.send({ type: "SELECT_TOOL", toolName });
-    // Wait for the state to update
-    const currentState = this.actor.getSnapshot();
-    if (currentState.context.toolName !== toolName) {
-      // Force an update if the state didn't change
-      const updatedContext = {
-        ...currentState.context,
-        toolName,
-        selectedTool: toolName,
-        parameters: null,
-        result: null,
-        error: null,
-      };
-      // Apply changes directly to the context
-      Object.assign(this.actor.getSnapshot().context, updatedContext);
-    }
+  selectTool(toolName: string, handler?: ToolHandler): void {
+    this.selectedTool = {
+      name: toolName,
+      handler: handler ?? null,
+    };
+    this.parameters = null;
+    this.actor.send({ type: 'SELECT_TOOL', tool: toolName, handler: handler ?? null });
   }
 
-  /**
-   * Set parameters for the selected tool
-   *
-   * @param parameters Parameters to pass to the tool
-   */
-  setParameters(parameters: Record<string, any>): void {
-    this.actor.send({ type: "SET_PARAMETERS", parameters });
-  }
-
-  /**
-   * Execute the selected tool with the provided parameters
-   *
-   * This method runs the tool through its execution lifecycle
-   * and returns a properly formatted result for MCP SDK integration.
-   *
-   * @param executeFunction Function that executes the tool logic
-   * @returns Promise that resolves with the execution result
-   */
-  async execute<T>(
-    executeFunction: (params: Record<string, any>) => Promise<T>
-  ): Promise<ToolResponse<T>> {
-    // Get the current state
+  getContext(): {
+    toolName: string | null;
+    selectedTool: { name: string; handler: ToolHandler | null } | null;
+    parameters: Record<string, unknown> | null;
+    result: any;
+    error: Error | null;
+    history: Array<any>;
+  } {
     const snapshot = this.actor.getSnapshot();
-    const { toolName, parameters } = snapshot.context;
+    return {
+      toolName: this.selectedTool?.name || null,
+      selectedTool: this.selectedTool,
+      parameters: this.parameters,
+      result: snapshot.context.result,
+      error: snapshot.context.error,
+      history: this.history,
+    };
+  }
 
-    // Check if we have a tool selected
-    if (!toolName) {
-      // Important: throw an error directly instead of returning a rejected promise
-      throw new Error("No tool selected");
+  setParameters(parameters: Record<string, unknown>): void {
+    if (this.parameters === null) {
+      this.parameters = parameters;
+      this.actor.send({ type: 'SET_PARAMETERS', parameters });
+    }
+  }
+
+  setToolHandler(handler: ToolHandler): void {
+    if (this.selectedTool) {
+      this.selectedTool.handler = handler;
+    }
+  }
+
+  async execute(handler?: ToolHandler): Promise<IExecutionResult> {
+    if (!this.selectedTool) {
+      throw new Error('No tool selected');
     }
 
-    // Now execute the tool
+    const executeHandler = handler || this.selectedTool.handler;
+    if (!executeHandler) {
+      throw new Error('No tool handler provided');
+    }
+
     try {
-      const result = await executeFunction(parameters || {});
+      const result = await executeHandler(this.parameters || {});
 
-      // Convert raw result to standard response if needed
-      const standardResult =
-        (result as any)?.data !== undefined &&
-        (result as any)?.status !== undefined &&
-        (result as any)?.metadata !== undefined
-          ? (result as ToolResponse<T>)
-          : createSuccessResponse(result, toolName);
+      const executionResult: IExecutionResult & { metadata?: any } = {
+        data: result.result,
+        context: { tool: this.selectedTool.name },
+        status: 'success',
+        timestamp: Date.now(),
+        metadata: {
+          status: 'success',
+          context: { tool: this.selectedTool.name },
+        },
+      };
 
-      this.actor.send({
-        type: "RECEIVED_RESULT",
-        result: standardResult,
+      this.history.push({
+        tool: this.selectedTool.name,
+        parameters: this.parameters || {},
+        result: executionResult,
+        timestamp: new Date().toISOString(),
       });
 
-      return standardResult;
+      this.actor.send({ type: 'RECEIVED_RESULT', result: executionResult });
+      return executionResult;
     } catch (error) {
-      // Create a standardized error
-      const errorMessage =
-        error instanceof Error
-          ? error.message.replace(/^Error:\s*/, "")
-          : String(error);
-
+      const errorResult: IExecutionResult & { metadata?: any } = {
+        data: null,
+        context: { tool: this.selectedTool.name },
+        status: 'error',
+        error: error instanceof Error ? error : new Error(String(error)),
+        timestamp: Date.now(),
+        metadata: {
+          status: 'error',
+          context: { tool: this.selectedTool.name },
+        },
+      };
       this.actor.send({
-        type: "ERROR",
-        error: new Error(errorMessage),
+        type: 'ERROR',
+        error: error instanceof Error ? error : new Error(String(error)),
       });
-
       throw error;
     }
   }
 
-  /**
-   * Cancel the current execution
-   */
   cancel(): void {
-    this.actor.send({ type: "CANCEL" });
+    this.actor.send({ type: 'CANCEL' });
   }
 
-  /**
-   * Reset the execution state
-   */
-  reset(): void {
-    this.actor.send({ type: "RESET" });
-  }
-
-  /**
-   * Get the current context of the tool execution
-   *
-   * @returns Current context object with parameters, results, etc.
-   */
-  getContext(): ToolMachineContext {
-    return this.actor.getSnapshot().context;
-  }
-
-  /**
-   * Get the execution history for this session
-   *
-   * @returns Array of previous execution results
-   */
   getHistory(): Array<{
     tool: string;
-    result: ToolResponse<any>;
+    parameters: Record<string, unknown>;
+    result: any;
     timestamp: string;
   }> {
-    return this.getContext().history;
+    return this.history;
+  }
+
+  async executeTool(
+    toolId: string,
+    params: Record<string, unknown>,
+    sessionId?: string,
+    useCached = false,
+  ): Promise<IToolExecutionResult> {
+    try {
+      const tool = this.tools.get(toolId);
+      if (!tool) {
+        return {
+          executionId: uuid(),
+          toolId,
+          sessionId: sessionId || this.sessionId,
+          params,
+          result: null,
+          error: `Tool ${toolId} not found`,
+          status: 'error',
+          executionTimeMs: 0,
+          timestamp: new Date().toISOString(),
+          fromCache: false,
+        };
+      }
+
+      const executionId = uuid();
+      const startTime = Date.now();
+
+      this.actor.send({ type: 'SELECT_TOOL', tool: toolId, handler: null });
+      this.actor.send({ type: 'SET_PARAMETERS', parameters: params });
+
+      const result = await tool.execute(params);
+      const executionTimeMs = Date.now() - startTime;
+
+      if ('error' in result && result.error) {
+        return {
+          executionId,
+          toolId,
+          sessionId: sessionId || this.sessionId,
+          params,
+          result: null,
+          error: result.error,
+          status: 'error',
+          executionTimeMs,
+          timestamp: new Date().toISOString(),
+          fromCache: useCached,
+        };
+      }
+
+      const executionResult: IExecutionResult<unknown> = {
+        data: result.result,
+        context: {},
+        status: 'success',
+        timestamp: Date.now(),
+      };
+
+      this.actor.send({ type: 'RECEIVED_RESULT', result: executionResult });
+
+      return {
+        executionId,
+        toolId,
+        sessionId: sessionId || this.sessionId,
+        params,
+        result: result.result,
+        status: 'success',
+        executionTimeMs,
+        timestamp: new Date().toISOString(),
+        fromCache: useCached,
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.actor.send({ type: 'ERROR', error: new Error(errorMessage) });
+
+      return {
+        executionId: uuid(),
+        toolId,
+        sessionId: sessionId || this.sessionId,
+        params,
+        result: null,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        status: 'error',
+        executionTimeMs: 0,
+        timestamp: new Date().toISOString(),
+        fromCache: false,
+      };
+    }
+  }
+
+  getTools(): Map<string, ITool> {
+    return this.tools;
+  }
+
+  async invalidateToolCache(toolId: string, sessionId?: string): Promise<void> {
+    // Implementation not required for now
+  }
+
+  async clearSession(sessionId: string): Promise<void> {
+    // Implementation not required for now
+  }
+
+  async disconnect(): Promise<void> {
+    this.actor.stop();
+  }
+
+  async getStats(): Promise<any> {
+    return {
+      activeSessions: 1,
+      totalTools: this.tools.size,
+      lastUpdated: new Date(),
+    };
   }
 }

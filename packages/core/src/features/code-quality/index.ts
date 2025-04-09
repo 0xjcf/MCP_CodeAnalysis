@@ -1,5 +1,6 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
+
 import { analyzeCodeQuality, getQualityRules } from "./quality-analyzer.js";
 
 export function registerCodeQualityTools(server: McpServer) {

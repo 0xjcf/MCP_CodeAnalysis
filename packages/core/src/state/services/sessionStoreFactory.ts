@@ -11,9 +11,21 @@
  * - Configurable session options
  */
 
-import { SessionStore } from './types.js';
-import { RedisSessionStore } from './redisSessionStore.js';
+import type { ISessionStore, ISessionData } from '@mcp/types';
+import { Redis } from 'ioredis';
+
 import { MemorySessionStore } from './memorySessionStore.js';
+import { RedisSessionStore } from './redisSessionStore.js';
+
+/**
+ * Error class for session store factory operations
+ */
+export class SessionStoreFactoryError extends Error {
+  constructor(message: string, public readonly code: string) {
+    super(message);
+    this.name = 'SessionStoreFactoryError';
+  }
+}
 
 /**
  * Enum defining the available session store types
@@ -23,7 +35,10 @@ export enum SessionStoreType {
   Memory = 'memory',
 }
 
-export interface SessionStoreFactoryOptions {
+/**
+ * Interface for session store factory options
+ */
+export interface ISessionStoreFactoryOptions {
   /**
    * Redis connection URL (default: redis://localhost:6379)
    */
@@ -56,103 +71,156 @@ export interface SessionStoreFactoryOptions {
 }
 
 /**
- * Check if Redis is available at the given URL
- *
- * @param redisUrl Redis connection URL
- * @returns Promise resolving to true if Redis is available, false otherwise
+ * Type guard for ISessionStoreFactoryOptions
+ */
+export function isSessionStoreFactoryOptions(value: unknown): value is ISessionStoreFactoryOptions {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const options = value as ISessionStoreFactoryOptions;
+  return (
+    (!('redisUrl' in options) || typeof options.redisUrl === 'string') &&
+    (!('prefix' in options) || typeof options.prefix === 'string') &&
+    (!('defaultTtl' in options) || typeof options.defaultTtl === 'number') &&
+    (!('lockTimeout' in options) || typeof options.lockTimeout === 'number') &&
+    (!('preferMemory' in options) || typeof options.preferMemory === 'boolean') &&
+    (!('verbose' in options) || typeof options.verbose === 'boolean')
+  );
+}
+
+/**
+ * Validates session store factory options
+ * @param options Options to validate
+ * @throws SessionStoreFactoryError if options are invalid
+ */
+function validateOptions(options: ISessionStoreFactoryOptions): void {
+  if (!isSessionStoreFactoryOptions(options)) {
+    throw new SessionStoreFactoryError('Invalid session store factory options', 'INVALID_OPTIONS');
+  }
+
+  if (options.defaultTtl !== undefined && options.defaultTtl <= 0) {
+    throw new SessionStoreFactoryError('Default TTL must be positive', 'INVALID_TTL');
+  }
+
+  if (options.lockTimeout !== undefined && options.lockTimeout <= 0) {
+    throw new SessionStoreFactoryError('Lock timeout must be positive', 'INVALID_LOCK_TIMEOUT');
+  }
+}
+
+/**
+ * Checks if Redis is available at the given URL
+ * @param redisUrl Optional Redis URL to check
+ * @returns Promise that resolves to true if Redis is available
  */
 export async function isRedisAvailable(redisUrl?: string): Promise<boolean> {
-  // If no Redis URL provided, Redis is not available
-  if (!redisUrl) {
-    return false;
-  }
-
+  let redis: Redis | null = null;
   try {
-    return await RedisSessionStore.isRedisAvailable(redisUrl);
+    redis = new Redis(redisUrl || 'redis://localhost:6379');
+    await redis.ping();
+    return true;
   } catch (error) {
     return false;
+  } finally {
+    if (redis) {
+      await redis.quit();
+    }
   }
 }
 
 /**
- * Create a session store with automatic backend detection
- *
- * This function will attempt to use Redis if a URL is provided and
- * if Redis is available. If Redis is unavailable or if memory is
- * preferred, it will fall back to the memory session store.
- *
- * @param options Session store options
- * @returns Promise resolving to a SessionStore instance
+ * Creates a session store based on the provided options
+ * @param options Session store factory options
+ * @returns Promise that resolves to a session store instance
  */
-export async function createSessionStore(
-  options: SessionStoreFactoryOptions = {},
-): Promise<SessionStore> {
-  const redisUrl = options.redisUrl || 'redis://localhost:6379';
-  const preferMemory = options.preferMemory || false;
-  const verbose = options.verbose || false;
-
-  // If memory store is preferred, use it directly
-  if (preferMemory) {
-    if (verbose) {
-      console.log('Using memory session store (explicitly preferred)');
-    }
-    return createMemorySessionStore(options);
-  }
-
-  // Try to use Redis if available
+export async function createSessionStore<T extends ISessionData = ISessionData>(
+  options: ISessionStoreFactoryOptions = {},
+): Promise<ISessionStore<T>> {
   try {
-    const redisAvailable = await isRedisAvailable(redisUrl);
+    validateOptions(options);
+    const { redisUrl = 'redis://localhost:6379', preferMemory = false, verbose = false } = options;
 
+    if (preferMemory) {
+      if (verbose) {
+        console.log('Creating memory session store (preferred)');
+      }
+      return createMemorySessionStore<T>(options);
+    }
+
+    const redisAvailable = await isRedisAvailable(redisUrl);
     if (redisAvailable) {
       if (verbose) {
-        console.log(`Using Redis session store (${redisUrl})`);
+        console.log('Creating Redis session store');
       }
-      return createRedisSessionStore(options);
-    } else {
-      if (verbose) {
-        console.log(`Redis not available at ${redisUrl}, falling back to memory session store`);
-      }
-      return createMemorySessionStore(options);
+      return createRedisSessionStore<T>(options);
     }
-  } catch (error) {
+
     if (verbose) {
-      console.warn(
-        `Error checking Redis availability: ${error}, falling back to memory session store`,
-      );
+      console.log('Redis not available, falling back to memory session store');
     }
-    return createMemorySessionStore(options);
+    return createMemorySessionStore<T>(options);
+  } catch (error) {
+    throw new SessionStoreFactoryError(
+      `Failed to create session store: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      'CREATE_STORE_ERROR',
+    );
   }
 }
 
 /**
- * Create a memory session store
- *
- * @param options Session store options
- * @returns A MemorySessionStore instance
+ * Creates a memory session store
+ * @param options Session store factory options
+ * @returns Memory session store instance
  */
-export function createMemorySessionStore(
-  options: SessionStoreFactoryOptions = {},
-): MemorySessionStore {
-  return new MemorySessionStore({
-    prefix: options.prefix || 'mcp:session:',
-    defaultTtl: options.defaultTtl || 3600,
-    lockTimeout: options.lockTimeout || 30000,
-  });
+export function createMemorySessionStore<T extends ISessionData = ISessionData>(
+  options: ISessionStoreFactoryOptions = {},
+): MemorySessionStore<T> {
+  try {
+    validateOptions(options);
+    const { prefix = 'mcp:session:', defaultTtl = 3600, lockTimeout = 30000 } = options;
+    return new MemorySessionStore<T>({
+      prefix,
+      defaultTtl,
+      lockTimeout,
+    });
+  } catch (error) {
+    throw new SessionStoreFactoryError(
+      `Failed to create memory session store: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+      'CREATE_MEMORY_STORE_ERROR',
+    );
+  }
 }
 
 /**
- * Create a Redis session store
- *
- * @param options Session store options
- * @returns A RedisSessionStore instance
+ * Creates a Redis session store
+ * @param options Session store factory options
+ * @returns Redis session store instance
  */
-export function createRedisSessionStore(
-  options: SessionStoreFactoryOptions = {},
-): RedisSessionStore {
-  return new RedisSessionStore({
-    redisUrl: options.redisUrl || 'redis://localhost:6379',
-    prefix: options.prefix || 'mcp:session:',
-    defaultTtl: options.defaultTtl || 3600,
-    lockTimeout: options.lockTimeout || 30000,
-  });
+export function createRedisSessionStore<T extends ISessionData = ISessionData>(
+  options: ISessionStoreFactoryOptions = {},
+): RedisSessionStore<T> {
+  try {
+    validateOptions(options);
+    const {
+      redisUrl = 'redis://localhost:6379',
+      prefix = 'mcp:session:',
+      defaultTtl = 3600,
+      lockTimeout = 30000,
+    } = options;
+    return new RedisSessionStore<T>({
+      redisUrl,
+      prefix,
+      defaultTtl,
+      lockTimeout,
+    });
+  } catch (error) {
+    throw new SessionStoreFactoryError(
+      `Failed to create Redis session store: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+      'CREATE_REDIS_STORE_ERROR',
+    );
+  }
 }

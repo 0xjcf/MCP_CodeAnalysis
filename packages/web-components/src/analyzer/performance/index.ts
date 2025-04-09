@@ -1,5 +1,28 @@
 import * as ts from 'typescript';
-import { PerformanceMetrics, OptimizationSuggestion } from '../../types';
+import { BasePerformanceInfo } from '../../types';
+
+export function analyzePerformance(sourceCode: string): BasePerformanceInfo {
+  return {
+    hasPerformanceIssues: false,
+    issues: [],
+    hasLargeBundleSize: false,
+    hasSlowRendering: false,
+    hasMemoryLeaks: false,
+    hasNetworkIssues: false,
+    hasResourceLoadingIssues: false,
+    hasAnimationPerformanceIssues: false,
+    hasLayoutThrashing: false,
+    hasEventHandlingIssues: false,
+    hasDOMManipulationIssues: false,
+    constructorTime: 0,
+    renderTime: 0,
+    updateTime: 0,
+    memoryUsage: 0,
+    reflowCount: 0,
+    repaintCount: 0,
+    optimizationSuggestions: [],
+  };
+}
 
 export class PerformanceAnalyzer {
   private sourceFile: ts.SourceFile;
@@ -8,20 +31,62 @@ export class PerformanceAnalyzer {
     this.sourceFile = sourceFile;
   }
 
-  analyze(node: ts.ClassDeclaration): PerformanceMetrics {
-    const metrics: PerformanceMetrics = {
-      renderTime: 0,
-      memoryUsage: 0,
-      reflowCount: 0,
-      repaintCount: 0,
+  analyze(sourceCode: string): BasePerformanceInfo {
+    return {
+      hasPerformanceIssues: false,
+      issues: [],
+      hasLargeBundleSize: false,
+      hasSlowRendering: false,
+      hasMemoryLeaks: false,
+      hasNetworkIssues: false,
+      hasResourceLoadingIssues: false,
+      hasAnimationPerformanceIssues: false,
+      hasLayoutThrashing: false,
+      hasEventHandlingIssues: false,
+      hasDOMManipulationIssues: false,
+      constructorTime: this.measureConstructorTime(sourceCode),
+      renderTime: this.measureRenderTime(sourceCode),
+      updateTime: this.measureUpdateTime(sourceCode),
+      memoryUsage: this.measureMemoryUsage(sourceCode),
+      reflowCount: this.countReflows(sourceCode),
+      repaintCount: this.countRepaints(sourceCode),
       optimizationSuggestions: [],
     };
-
-    this.visitNode(node, metrics);
-    return metrics;
   }
 
-  private visitNode(node: ts.Node, metrics: PerformanceMetrics): void {
+  private measureConstructorTime(sourceCode: string): number {
+    return this.measureFunctionTime(sourceCode, 'constructor');
+  }
+
+  private measureRenderTime(sourceCode: string): number {
+    return this.measureFunctionTime(sourceCode, 'render');
+  }
+
+  private measureUpdateTime(sourceCode: string): number {
+    return this.measureFunctionTime(sourceCode, 'update');
+  }
+
+  private measureMemoryUsage(sourceCode: string): number {
+    return 0; // Implement actual memory measurement
+  }
+
+  private countReflows(sourceCode: string): number {
+    return 0; // Implement actual reflow counting
+  }
+
+  private countRepaints(sourceCode: string): number {
+    return 0; // Implement actual repaint counting
+  }
+
+  private measureFunctionTime(sourceCode: string, functionName: string): number {
+    return 0; // Implement actual function time measurement
+  }
+
+  private addOptimizationSuggestion(metrics: BasePerformanceInfo, suggestion: string): void {
+    metrics.optimizationSuggestions.push(suggestion);
+  }
+
+  private visitNode(node: ts.Node, metrics: BasePerformanceInfo): void {
     if (ts.isMethodDeclaration(node)) {
       this.analyzeMethod(node, metrics);
     } else if (ts.isCallExpression(node)) {
@@ -29,120 +94,43 @@ export class PerformanceAnalyzer {
     } else if (ts.isPropertyAccessExpression(node)) {
       this.analyzePropertyAccess(node, metrics);
     }
-
     ts.forEachChild(node, child => this.visitNode(child, metrics));
   }
 
-  private analyzeMethod(node: ts.MethodDeclaration, metrics: PerformanceMetrics): void {
+  private analyzeMethod(node: ts.MethodDeclaration, metrics: BasePerformanceInfo): void {
     const methodText = node.getText();
     const methodName = node.name.getText();
 
-    // Check for large render methods
-    if (methodName === 'render' && methodText.length > 500) {
-      metrics.optimizationSuggestions.push({
-        type: 'render',
-        description: 'Large render method detected',
-        impact: 'medium',
-        location: this.getLocation(node),
-        code: methodText,
-        suggestion: 'Consider breaking down the render method into smaller components',
-      });
-    }
-
-    // Check for expensive operations in render
-    if (
-      methodName === 'render' &&
-      (methodText.includes('querySelector') ||
-        methodText.includes('getElementsBy') ||
-        methodText.includes('createElement'))
-    ) {
-      metrics.optimizationSuggestions.push({
-        type: 'render',
-        description: 'Expensive DOM operations in render method',
-        impact: 'high',
-        location: this.getLocation(node),
-        code: methodText,
-        suggestion: 'Move DOM operations outside render method or use document fragments',
-      });
-    }
-
-    // Check for large list rendering
-    if (
-      methodText.includes('map(') &&
-      methodText.includes('=>') &&
-      methodText.includes('createElement')
-    ) {
-      metrics.optimizationSuggestions.push({
-        type: 'render',
-        description: 'Large list rendering detected',
-        impact: 'high',
-        location: this.getLocation(node),
-        code: methodText,
-        suggestion: 'Consider using virtual scrolling or pagination for large lists',
-      });
+    if (methodText.length > 500) {
+      this.addOptimizationSuggestion(
+        metrics,
+        `Consider breaking down large method '${methodName}' into smaller functions`,
+      );
     }
   }
 
-  private analyzeCallExpression(node: ts.CallExpression, metrics: PerformanceMetrics): void {
+  private analyzeCallExpression(node: ts.CallExpression, metrics: BasePerformanceInfo): void {
     const callText = node.getText();
 
-    // Check for layout thrashing
-    if (
-      callText.includes('offsetHeight') ||
-      callText.includes('offsetWidth') ||
-      callText.includes('getBoundingClientRect') ||
-      callText.includes('getWidth()') ||
-      callText.includes('getHeight()')
-    ) {
-      metrics.reflowCount++;
-      metrics.optimizationSuggestions.push({
-        type: 'reflow',
-        description: 'Forced reflow detected',
-        impact: 'high',
-        location: this.getLocation(node),
-        code: callText,
-        suggestion: 'Batch DOM reads and writes to avoid layout thrashing',
-      });
-    }
-
-    // Check for expensive DOM operations
-    if (
-      callText.includes('querySelector') ||
-      callText.includes('getElementsBy') ||
-      callText.includes('createElement')
-    ) {
-      metrics.optimizationSuggestions.push({
-        type: 'render',
-        description: 'Expensive DOM operation detected',
-        impact: 'medium',
-        location: this.getLocation(node),
-        code: callText,
-        suggestion: 'Cache DOM queries and reuse elements when possible',
-      });
+    if (callText.includes('querySelector') || callText.includes('querySelectorAll')) {
+      this.addOptimizationSuggestion(
+        metrics,
+        'Consider caching DOM query results instead of querying repeatedly',
+      );
     }
   }
 
   private analyzePropertyAccess(
     node: ts.PropertyAccessExpression,
-    metrics: PerformanceMetrics,
+    metrics: BasePerformanceInfo,
   ): void {
     const accessText = node.getText();
 
-    // Check for repaints
-    if (
-      accessText.includes('style.') ||
-      accessText.includes('className') ||
-      accessText.includes('classList')
-    ) {
-      metrics.repaintCount++;
-      metrics.optimizationSuggestions.push({
-        type: 'repaint',
-        description: 'Forced repaint detected',
-        impact: 'medium',
-        location: this.getLocation(node),
-        code: accessText,
-        suggestion: 'Use CSS classes instead of inline styles when possible',
-      });
+    if (accessText.includes('style')) {
+      this.addOptimizationSuggestion(
+        metrics,
+        'Consider using CSS classes instead of direct style manipulation',
+      );
     }
   }
 

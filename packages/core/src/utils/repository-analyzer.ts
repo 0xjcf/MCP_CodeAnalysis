@@ -1,10 +1,12 @@
 import { execSync } from "child_process";
-import fs from "fs";
-import path from "path";
 import crypto from "crypto";
+import fs from "fs";
 import os from "os";
+import path from "path";
+
+import type { Database } from "sqlite";
+
 import { createDatabase } from "./database.js";
-import { Database } from "sqlite";
 
 let repoCacheDb: Database | undefined; // Will be initialized in getRepository
 

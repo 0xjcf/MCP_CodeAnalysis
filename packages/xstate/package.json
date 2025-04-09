@@ -13,11 +13,13 @@
     "build": "tsc",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "@mcp/shared": "workspace:*",
+    "@mcp/core": "workspace:*",
+    "@mcp/registry": "workspace:*",
     "@mcp/types": "workspace:*",
+    "@xstate/fsm": "^2.0.0",
     "@modelcontextprotocol/sdk": "^1.8.0",
     "@xstate/inspect": "^0.8.0",
     "xstate": "^5.6.2",

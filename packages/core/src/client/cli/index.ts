@@ -1,22 +1,23 @@
 #!/usr/bin/env node
-import { Command } from 'commander';
-import chalk from 'chalk';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 import { fileURLToPath } from 'url';
+
+import chalk from 'chalk';
+import { Command } from 'commander';
 
 // Import commands
 import { registerAnalyzeCommands } from './commands/analyze.js';
-import { registerMetricsCommands } from './commands/metrics.js';
-import { registerDependencyCommands } from './commands/dependencies.js';
-import { registerInsightsCommands } from './commands/insights.js';
-import { registerVisualizationCommands } from './commands/visualization.js';
-import { registerKnowledgeGraphCommands } from './commands/knowledge-graph.js';
-import { registerSocioTechnicalCommands } from './commands/socio-technical.js';
 import { registerConfigCommands } from './commands/config.js';
-import { registerWatchCommands } from './commands/watch.js';
+import { registerDependencyCommands } from './commands/dependencies.js';
 import { registerIdeCommands } from './commands/ide.js';
+import { registerInsightsCommands } from './commands/insights.js';
+import { registerKnowledgeGraphCommands } from './commands/knowledge-graph.js';
+import { registerMetricsCommands } from './commands/metrics.js';
 import { registerQualityCommands } from './commands/quality.js';
+import { registerSocioTechnicalCommands } from './commands/socio-technical.js';
+import { registerVisualizationCommands } from './commands/visualization.js';
+import { registerWatchCommands } from './commands/watch.js';
 
 // Import utilities
 import { loadConfig } from './utils/config.js';

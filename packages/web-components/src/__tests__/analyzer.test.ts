@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { WebComponentsAnalyzerImpl } from '../analyzer';
+import { WebComponentAnalysisResult } from '../types';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 

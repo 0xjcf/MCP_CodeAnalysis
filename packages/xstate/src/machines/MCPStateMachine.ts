@@ -9,13 +9,13 @@ type MCPEvent =
   | { type: 'ERROR'; error: string };
 
 // Define the context type
-interface MCPContext {
+interface IMCPContext {
   error?: string;
 }
 
 export const MCPStateMachine = setup({
   types: {
-    context: {} as MCPContext,
+    context: {} as IMCPContext,
     events: {} as MCPEvent,
   },
   actions: {

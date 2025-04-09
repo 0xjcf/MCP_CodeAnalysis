@@ -10,8 +10,8 @@
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint --config .eslintrc.json src --ext .ts,.tsx",
-    "lint:fix": "eslint --config .eslintrc.json src --ext .ts,.tsx --fix",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint \"./src/**/*.{js,jsx,ts,tsx}\" --fix",
     "clean": "rimraf dist"
   },
   "dependencies": {

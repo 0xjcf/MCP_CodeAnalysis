@@ -4,20 +4,21 @@
   "description": "Model Context Protocol Monorepo",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r build",
-    "test": "pnpm -r --filter=!@mcp/types test",
-    "test:watch": "pnpm -r --filter=!@mcp/types test:watch",
-    "lint": "pnpm -r lint"
+    "build": "pnpm --filter=@mcp/types build && pnpm --filter=@mcp/core build && pnpm --filter=@mcp/xstate build && pnpm --filter=@mcp/registry build && pnpm -r --filter=!@mcp/types --filter=!@mcp/core --filter=!@mcp/xstate --filter=!@mcp/registry build",
+    "test": "pnpm -r --filter=!@mcp/types --filter=!@mcp/utils test",
+    "test:watch": "pnpm -r --filter=!@mcp/types --filter=!@mcp/utils test:watch",
+    "lint": "pnpm -r --filter=!@mcp/types lint"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
     "@types/node": "^20.11.19",
-    "@typescript-eslint/eslint-plugin": "^7.0.1",
-    "@typescript-eslint/parser": "^7.0.1",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
+    "eslint-plugin-import": "^2.29.1",
+    "typescript": "^5.8.2",
     "vitest": "^1.2.2"
   }
 }

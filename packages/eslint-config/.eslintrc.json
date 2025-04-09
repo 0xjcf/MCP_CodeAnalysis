@@ -1,0 +1,12 @@
+{
+  "extends": ["./index.cjs"],
+  "parserOptions": {
+    "sourceType": "commonjs"
+  },
+  "overrides": [
+    {
+      "files": ["*.js", "*.cjs"],
+      "parser": "espree"
+    }
+  ]
+}

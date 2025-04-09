@@ -1,17 +1,26 @@
-import { Shared } from '@ignite/core';
-import { LitElement, html } from 'lit';
+// Memory leak test component
+export class TestComponent extends HTMLElement {
+  private _shadow: ShadowRoot;
+  private listeners: Array<() => void> = [];
 
-@Shared('test-component')
-export class TestComponent extends LitElement {
-  private listeners: EventListener[] = [];
+  constructor() {
+    super();
+    this._shadow = this.attachShadow({ mode: 'open' });
+  }
 
   connectedCallback() {
-    super.connectedCallback();
+    this.render();
 
     // Add event listeners without cleanup
+    const handleClick = () => this.handleClick();
+    const handleInput = () => this.handleInput();
+
+    this.addEventListener('click', handleClick);
+    this.addEventListener('input', handleInput);
+
     this.listeners.push(
-      this.addEventListener('click', this.handleClick),
-      this.addEventListener('input', this.handleInput),
+      () => this.removeEventListener('click', handleClick),
+      () => this.removeEventListener('input', handleInput),
     );
   }
 
@@ -28,7 +37,7 @@ export class TestComponent extends LitElement {
   }
 
   render() {
-    return html`
+    this._shadow.innerHTML = `
       <div>
         <button>Click me</button>
         <input type="text" />
@@ -36,3 +45,6 @@ export class TestComponent extends LitElement {
     `;
   }
 }
+
+// Define the custom element
+customElements.define('test-component', TestComponent);

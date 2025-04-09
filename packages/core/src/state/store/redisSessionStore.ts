@@ -1,63 +1,154 @@
+// Import types first
+import type { IRedisSessionStoreOptions, ISessionData, ISessionStore } from '@mcp/types';
+import type { Redis as RedisType, RedisOptions } from 'ioredis';
+
+// Then value imports
 import { Redis } from 'ioredis';
-import { SessionStore, SessionData } from '../services/types.js';
 import { v4 as uuidv4 } from 'uuid';
 
-export interface RedisSessionStoreOptions {
-  /**
-   * Redis connection URL (e.g., redis://localhost:6379)
-   */
-  redisUrl: string;
+/**
+ * Error codes for Redis session store operations
+ */
+export enum RedisSessionStoreErrorCode {
+  INITIALIZATION_FAILED = 'INITIALIZATION_FAILED',
+  REDIS_URL_MISSING = 'REDIS_URL_MISSING',
+  SESSION_NOT_FOUND = 'SESSION_NOT_FOUND',
+  INVALID_SESSION_DATA = 'INVALID_SESSION_DATA',
+  REDIS_ERROR = 'REDIS_ERROR',
+  LOCK_ACQUISITION_FAILED = 'LOCK_ACQUISITION_FAILED',
+  LOCK_RELEASE_FAILED = 'LOCK_RELEASE_FAILED',
+  CONNECTION_ERROR = 'CONNECTION_ERROR',
+  OPERATION_TIMEOUT = 'OPERATION_TIMEOUT',
+}
 
-  /**
-   * Key prefix for Redis keys (default: "mcp:")
-   */
-  prefix?: string;
+/**
+ * Custom error class for Redis session store operations
+ */
+export class RedisSessionStoreError extends Error {
+  constructor(
+    public readonly code: RedisSessionStoreErrorCode,
+    message: string,
+    public readonly cause?: unknown,
+  ) {
+    super(message);
+    this.name = 'RedisSessionStoreError';
+  }
 
-  /**
-   * Default TTL for sessions in seconds (default: 3600)
-   */
-  defaultTtl?: number;
+  static fromError(code: RedisSessionStoreErrorCode, error: unknown): RedisSessionStoreError {
+    if (error instanceof RedisSessionStoreError) {
+      return error;
+    }
+    return new RedisSessionStoreError(
+      code,
+      error instanceof Error ? error.message : 'Unknown error',
+      error,
+    );
+  }
+}
 
-  /**
-   * Default lock timeout in milliseconds (default: 30000)
-   */
-  lockTimeout?: number;
+/**
+ * Type guard for Redis errors
+ */
+function isRedisError(error: unknown): error is Error {
+  return error instanceof Error;
 }
 
 /**
  * Redis-backed implementation of the SessionStore interface.
  * Provides session management with TTL support and distributed locking.
  */
-export class RedisSessionStore implements SessionStore {
-  private redis: Redis;
-  private prefix: string;
-  private defaultTtl: number;
-  private lockTimeout: number;
-  private readonly releaseLockScript = `
-    if redis.call("get", KEYS[1]) == ARGV[1] then
-      return redis.call("del", KEYS[1])
-    else
-      return 0
-    end
-  `;
+export class RedisSessionStore implements ISessionStore {
+  private readonly redis: RedisType;
+  private readonly prefix: string;
+  private readonly defaultTtl: number;
+  private readonly lockTimeout: number;
+  private readonly releaseLockScript: string;
+  private readonly maxRetries: number;
+  private readonly retryDelay: number;
+  private isConnected: boolean = false;
 
   /**
    * Creates a new RedisSessionStore
    * @param options Configuration options for the Redis session store
+   * @throws {RedisSessionStoreError} If Redis connection fails
    */
-  constructor(options: RedisSessionStoreOptions) {
-    this.redis = new Redis(options.redisUrl);
-    this.prefix = options.prefix || 'mcp:session:';
-    this.defaultTtl = options.defaultTtl || 3600; // 1 hour default
-    this.lockTimeout = options.lockTimeout || 30000; // 30 seconds default
+  constructor(options: IRedisSessionStoreOptions) {
+    if (!options.redisUrl) {
+      throw new RedisSessionStoreError(
+        RedisSessionStoreErrorCode.REDIS_URL_MISSING,
+        'Redis URL is required',
+      );
+    }
 
-    // Handle Redis client events
-    this.redis.on('error', (err: Error) => {
-      console.error('Redis client error:', err);
+    this.prefix = options.prefix ?? 'mcp:';
+    this.defaultTtl = options.defaultTtl ?? 3600; // 1 hour
+    this.lockTimeout = options.lockTimeout ?? 30000; // 30 seconds
+    this.maxRetries = options.retryStrategy?.maxRetries ?? 3;
+    this.retryDelay = options.retryStrategy?.retryDelay ?? 1000;
+
+    const redisOptions: RedisOptions = {
+      ...options.redisOptions,
+      retryStrategy: (times: number): number => {
+        if (times > this.maxRetries) {
+          return -1; // Stop retrying
+        }
+        return Math.min(times * this.retryDelay, 2000);
+      },
+      reconnectOnError: (err: Error) => {
+        const targetError = 'READONLY';
+        if (err.message.includes(targetError)) {
+          return true;
+        }
+        return false;
+      },
+    };
+
+    try {
+      this.redis = new Redis(options.redisUrl, redisOptions);
+      this.setupEventHandlers();
+    } catch (error) {
+      throw RedisSessionStoreError.fromError(
+        RedisSessionStoreErrorCode.INITIALIZATION_FAILED,
+        error,
+      );
+    }
+
+    this.releaseLockScript = `
+      if redis.call("get", KEYS[1]) == ARGV[1] then
+        return redis.call("del", KEYS[1])
+      else
+        return 0
+      end
+    `;
+  }
+
+  private setupEventHandlers(): void {
+    this.redis.on('connect', () => {
+      this.isConnected = true;
+    });
+
+    this.redis.on('error', (error: Error) => {
+      this.isConnected = false;
+      throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.CONNECTION_ERROR, error);
+    });
+
+    this.redis.on('reconnecting', () => {
+      this.isConnected = false;
     });
   }
 
-  private getKey(sessionId: string): string {
+  private async ensureConnection(): Promise<void> {
+    if (!this.isConnected) {
+      try {
+        await this.redis.ping();
+        this.isConnected = true;
+      } catch (error) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.CONNECTION_ERROR, error);
+      }
+    }
+  }
+
+  private getSessionKey(sessionId: string): string {
     return `${this.prefix}${sessionId}`;
   }
 
@@ -65,146 +156,317 @@ export class RedisSessionStore implements SessionStore {
     return `${this.prefix}lock:${sessionId}`;
   }
 
+  private async executeWithRetry<T>(
+    operation: () => Promise<T>,
+    maxRetries: number = this.maxRetries,
+  ): Promise<T> {
+    let lastError: Error | null = null;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        await this.ensureConnection();
+        return await operation();
+      } catch (error) {
+        lastError = error as Error;
+        if (i < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, this.retryDelay));
+        }
+      }
+    }
+
+    throw RedisSessionStoreError.fromError(
+      RedisSessionStoreErrorCode.OPERATION_TIMEOUT,
+      lastError instanceof Error
+        ? lastError.message
+        : `Operation failed after ${maxRetries} retries`,
+    );
+  }
+
+  private isValidSessionData(data: unknown): data is ISessionData {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'id' in data &&
+      typeof (data as { id: unknown }).id === 'string' &&
+      'createdAt' in data &&
+      typeof (data as { createdAt: unknown }).createdAt === 'number' &&
+      'updatedAt' in data &&
+      typeof (data as { updatedAt: unknown }).updatedAt === 'number'
+    );
+  }
+
   /**
    * Retrieves a session from Redis
    * @param sessionId The ID of the session to retrieve
    * @returns The session data or null if not found
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
-  async getSession<T = SessionData>(sessionId: string): Promise<T | null> {
-    const data = await this.redis.get(this.getKey(sessionId));
-    return data ? JSON.parse(data) : null;
+  async getSession<T extends ISessionData>(sessionId: string): Promise<T | null> {
+    try {
+      const data = await this.redis.get(this.getSessionKey(sessionId));
+      if (!data) {
+        return null;
+      }
+
+      const parsedData = JSON.parse(data);
+      if (!this.isValidSessionData(parsedData)) {
+        throw new RedisSessionStoreError(
+          RedisSessionStoreErrorCode.INVALID_SESSION_DATA,
+          'Invalid session data format',
+        );
+      }
+
+      return parsedData as T;
+    } catch (error) {
+      throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+    }
   }
 
   /**
    * Stores a session in Redis
-   * @param sessionId The ID of the session
+   * @param sessionId The ID of the session to store
    * @param data The session data to store
-   * @param ttl Optional TTL in seconds (uses default if not provided)
+   * @param ttl Optional TTL in milliseconds
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
-  async setSession<T = SessionData>(sessionId: string, data: T, ttl?: number): Promise<void> {
-    const key = this.getKey(sessionId);
-    const ttlValue = ttl || this.defaultTtl;
-    await this.redis.setex(key, ttlValue, JSON.stringify(data));
-  }
+  async setSession<T extends ISessionData = ISessionData>(
+    sessionId: string,
+    data: T,
+    ttl?: number,
+  ): Promise<void> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      const serializedData = JSON.stringify(data);
+      const actualTtl = Math.floor((ttl ?? this.defaultTtl) / 1000); // Convert to seconds
 
-  /**
-   * Removes a session from Redis
-   * @param sessionId The ID of the session to remove
-   */
-  async deleteSession(sessionId: string): Promise<void> {
-    await this.redis.del(this.getKey(sessionId));
-  }
-
-  /**
-   * Removes a session from Redis
-   * @param sessionId The ID of the session to remove
-   */
-  async clearSession(sessionId: string): Promise<void> {
-    await this.deleteSession(sessionId);
-  }
-
-  /**
-   * Gets all active session IDs
-   * @returns Array of session IDs
-   */
-  async getSessions(): Promise<string[]> {
-    const keys = await this.redis.keys(`${this.prefix}*`);
-    return keys.map(key => key.slice(this.prefix.length));
-  }
-
-  /**
-   * Clears all sessions from Redis
-   */
-  async clear(): Promise<void> {
-    const keys = await this.redis.keys(`${this.prefix}*`);
-    if (keys.length > 0) {
-      await this.redis.del(...keys);
+      await this.redis.setex(key, actualTtl, serializedData);
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
     }
   }
 
   /**
-   * Acquires a distributed lock on a session
-   * @param sessionId The ID of the session to lock
-   * @param timeout Optional timeout in milliseconds (uses default if not provided)
-   * @returns Lock token if successful, null if lock could not be acquired
+   * Deletes a session from Redis
+   * @param sessionId The ID of the session to delete
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
-  async acquireLock(sessionId: string, timeout?: number): Promise<string | null> {
-    const lockTimeout = timeout || this.lockTimeout;
-    const lockToken = uuidv4();
-    const lockKey = this.getLockKey(sessionId);
-
-    // Try to set the lock key with NX option (only if it doesn't exist)
-    const result = await this.redis.set(lockKey, lockToken, 'PX', lockTimeout, 'NX');
-
-    return result === 'OK' ? lockToken : null;
+  async deleteSession(sessionId: string): Promise<void> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      await this.redis.del(key);
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
   }
 
   /**
-   * Releases a distributed lock
-   * @param sessionId The ID of the session
-   * @param token The lock token returned from acquireLock
-   * @returns True if the lock was released, false if the token doesn't match
+   * Clears all data for a session
+   * @param sessionId The ID of the session to clear
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
-  async releaseLock(sessionId: string, token: string): Promise<boolean> {
-    const lockKey = this.getLockKey(sessionId);
+  async clearSession(sessionId: string): Promise<void> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      await this.redis.del(key);
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
+  }
 
-    // Use the Lua script to atomically check and release the lock
-    const result = await this.redis.eval(
-      this.releaseLockScript,
-      1, // Number of keys
-      lockKey,
-      token,
-    );
+  /**
+   * Gets all session IDs
+   * @returns Array of session IDs
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async getSessions(): Promise<string[]> {
+    try {
+      const pattern = `${this.prefix}*`;
+      const keys = await this.redis.keys(pattern);
+      return keys.map((key: string) => key.slice(this.prefix.length));
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
+  }
 
-    return result === 1;
+  /**
+   * Clears all sessions
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async clear(): Promise<void> {
+    try {
+      const pattern = `${this.prefix}*`;
+      const keys = await this.redis.keys(pattern);
+
+      if (keys.length > 0) {
+        await this.redis.del(...keys);
+      }
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Acquires a lock for a session
+   * @param sessionId The ID of the session to lock
+   * @param timeout Optional timeout in milliseconds
+   * @returns Lock token if successful, null if failed
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async acquireLock(sessionId: string, timeout?: number): Promise<string | null> {
+    try {
+      const key = this.getLockKey(sessionId);
+      const lockId = uuidv4();
+      const lockTimeout = timeout ?? this.lockTimeout;
+
+      const acquired = await this.redis.set(key, lockId, 'PX', lockTimeout, 'NX');
+      return acquired ? lockId : null;
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(
+          RedisSessionStoreErrorCode.LOCK_ACQUISITION_FAILED,
+          error,
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Releases a lock for a session
+   * @param sessionId The ID of the session to unlock
+   * @param lockToken The token received when acquiring the lock
+   * @returns True if lock was released, false if token didn't match
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async releaseLock(sessionId: string, lockId: string): Promise<boolean> {
+    try {
+      const key = this.getLockKey(sessionId);
+      const result = (await this.redis.eval(this.releaseLockScript, 1, key, lockId)) as number;
+      return result === 1;
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(
+          RedisSessionStoreErrorCode.LOCK_RELEASE_FAILED,
+          error,
+        );
+      }
+      throw error;
+    }
   }
 
   /**
    * Extends the TTL of a session
-   * @param sessionId ID of the session
-   * @param ttl New TTL in seconds
-   * @returns True if successful, false if session doesn't exist
-   */
-  async extendSessionTtl(sessionId: string, ttl: number): Promise<boolean> {
-    const sessionKey = this.getKey(sessionId);
-    const result = await this.redis.expire(sessionKey, ttl);
-    return result === 1;
-  }
-
-  /**
-   * Gets the remaining TTL for a session
-   * @param sessionId ID of the session
-   * @returns Remaining TTL in seconds, or null if session doesn't exist
-   */
-  async getSessionTtl(sessionId: string): Promise<number | null> {
-    const sessionKey = this.getKey(sessionId);
-    const ttl = await this.redis.ttl(sessionKey);
-    return ttl >= 0 ? ttl : null;
-  }
-
-  /**
-   * Creates a session if it doesn't exist, or returns the existing session
    * @param sessionId The ID of the session
-   * @param initialState The initial state if the session needs to be created
-   * @returns The session state (either existing or newly created)
+   * @param ttl Optional new TTL in milliseconds
+   * @returns True if TTL was extended, false if session doesn't exist
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
-  async createSessionIfNotExists<T = SessionData>(sessionId: string, initialState: T): Promise<T> {
-    const key = this.getKey(sessionId);
-    const exists = await this.redis.exists(key);
+  async extendSessionTtl(sessionId: string, ttl?: number): Promise<boolean> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      const actualTtl = ttl ?? this.defaultTtl;
+      const exists = await this.redis.exists(key);
 
-    if (!exists) {
-      await this.setSession(sessionId, initialState);
-      return initialState;
+      if (exists) {
+        await this.redis.expire(key, actualTtl);
+        return true;
+      }
+
+      return false;
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
     }
-
-    const data = await this.getSession<T>(sessionId);
-    return data || initialState;
   }
 
   /**
-   * Closes the Redis connection
+   * Gets the remaining TTL of a session in milliseconds
+   * @param sessionId The ID of the session
+   * @returns TTL in milliseconds, -2 if key doesn't exist, -1 if no TTL
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async getSessionTtl(sessionId: string): Promise<number> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      const ttl = await this.redis.ttl(key);
+      return ttl;
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Creates a new session if it doesn't exist
+   * @param sessionId The ID of the session
+   * @param data The session data
+   * @param ttl Optional TTL in milliseconds
+   * @returns The session data
+   * @throws {RedisSessionStoreError} If Redis operation fails
+   */
+  async createSessionIfNotExists<T extends ISessionData = ISessionData>(
+    sessionId: string,
+    data: T,
+    ttl?: number,
+  ): Promise<T> {
+    try {
+      const key = this.getSessionKey(sessionId);
+      const serializedData = JSON.stringify(data);
+      const actualTtl = ttl ?? this.defaultTtl;
+
+      const created = await this.redis.set(key, serializedData, 'EX', actualTtl, 'NX');
+
+      if (!created) {
+        const existingData = await this.redis.get(key);
+        if (!existingData) {
+          throw new RedisSessionStoreError(
+            RedisSessionStoreErrorCode.SESSION_NOT_FOUND,
+            'Session not found',
+          );
+        }
+        return JSON.parse(existingData) as T;
+      }
+
+      return data;
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Disconnects from Redis
+   * @throws {RedisSessionStoreError} If Redis operation fails
    */
   async disconnect(): Promise<void> {
-    await this.redis.quit();
+    try {
+      await this.redis.quit();
+    } catch (error) {
+      if (isRedisError(error)) {
+        throw RedisSessionStoreError.fromError(RedisSessionStoreErrorCode.REDIS_ERROR, error);
+      }
+      throw error;
+    }
   }
 }

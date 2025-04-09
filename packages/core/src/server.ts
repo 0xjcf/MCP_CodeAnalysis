@@ -1,8 +1,13 @@
-import express from 'express';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import type { McpServer } from '@mcp/types';
+import { McpServer as SdkMcpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import express, { json } from 'express';
 
-const server = new McpServer(
+import { adaptServer } from './adapters/server-adapter.js';
+import { Logger } from './utils/logger.js';
+
+// Create SDK server instance
+const sdkServer = new SdkMcpServer(
   {
     name: 'mcp-code-analysis',
     version: '1.0.0',
@@ -15,6 +20,10 @@ const server = new McpServer(
     },
   },
 );
+
+// Create adapted server that implements our local McpServer interface
+const server: McpServer = adaptServer(sdkServer);
+const logger = new Logger('MCP Server');
 
 const app = express();
 
@@ -46,8 +55,8 @@ app.get('/mcp', (_req, res) => {
   const transport = new SSEServerTransport('/messages', res);
   activeTransport = transport;
 
-  server.connect(transport).catch(err => {
-    console.error('Failed to connect server to SSE transport:', err);
+  server.connect(transport).catch((err: Error) => {
+    logger.error('Failed to connect server to SSE transport', err);
     activeTransport = null;
     res.end();
   });
@@ -59,7 +68,7 @@ app.get('/mcp', (_req, res) => {
 });
 
 // Client message endpoint
-app.post('/messages', express.json(), async (req, res) => {
+app.post('/messages', json(), async (req, res) => {
   try {
     if (!activeTransport) {
       res.status(400).json({ error: 'No SSE connection established' });
@@ -67,20 +76,22 @@ app.post('/messages', express.json(), async (req, res) => {
     }
     await activeTransport.handlePostMessage(req, res);
   } catch (error) {
-    console.error('Error handling client message:', error);
+    logger.error(
+      'Error handling client message',
+      error instanceof Error ? error : new Error(String(error)),
+    );
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-async function start() {
+async function start(): Promise<void> {
   const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-  return new Promise<void>((resolve, reject) => {
-    app
-      .listen(port, () => {
-        console.log(`MCP Server running at http://localhost:${port}`);
-        resolve();
-      })
-      .on('error', reject);
+  await new Promise<void>((resolve, reject) => {
+    const server = app.listen(port, () => {
+      logger.info(`Server running at http://localhost:${port}`);
+      resolve();
+    });
+    server.on('error', reject);
   });
 }
 

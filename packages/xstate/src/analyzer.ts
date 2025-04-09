@@ -3,243 +3,250 @@
  * @module @mcp/xstate
  */
 
-import { Analyzer, AnalysisOptions, AnalysisResult } from '@mcp/types';
-import { createMachine, AnyStateMachine } from 'xstate';
+import {
+  createMachine,
+  type StateNodeConfig,
+  ProvidedActor,
+  ParameterizedObject,
+  EventObject,
+  AnyEventObject,
+} from 'xstate';
 
-export interface XStateAnalysisData {
-  machineDefinition?: object;
-  states: string[];
-  events: string[];
-  transitions: Array<{
-    source: string;
-    target: string;
-    event: string;
-  }>;
-  services: Array<{
-    name: string;
-    type: string;
-    implementation?: string;
-  }>;
-  guards: Array<{
-    name: string;
-    implementation?: string;
-  }>;
-  actions: Array<{
-    name: string;
-    implementation?: string;
-  }>;
-  performance: {
-    stateCount: number;
-    transitionCount: number;
-    serviceCount: number;
-    complexity: 'low' | 'medium' | 'high';
-  };
+import type { IXStateAnalysisData, IAnalyzerOptions, IAnalyzerResult } from './types.js';
+
+interface MachineContext {
+  [key: string]: unknown;
 }
 
-export class XStateAnalyzer implements Analyzer {
-  private options: AnalysisOptions;
+type MachineConfig = StateNodeConfig<
+  MachineContext,
+  AnyEventObject,
+  ProvidedActor,
+  ParameterizedObject,
+  ParameterizedObject,
+  string,
+  string,
+  string,
+  EventObject,
+  EventObject
+>;
 
-  constructor(options: AnalysisOptions = { sourceCode: '' }) {
-    this.options = {
-      strict: true,
-      verbose: false,
-      timeout: 5000,
-      ...options,
-    };
+type TransitionConfig = string | Array<unknown> | Record<string, unknown>;
+
+export class XStateAnalyzer {
+  constructor() {}
+
+  private parseMachineConfig(sourceCode: string): MachineConfig {
+    if (!sourceCode || typeof sourceCode !== 'string') {
+      throw new Error('Invalid source code: must be a non-empty string');
+    }
+
+    // Try to parse as JSON first
+    try {
+      const parsed = JSON.parse(sourceCode);
+      if (typeof parsed !== 'object' || parsed === null) {
+        throw new Error('Invalid machine configuration: must be an object');
+      }
+      return parsed as MachineConfig;
+    } catch {
+      // Not JSON, try to extract machine config
+      const cleanSource = sourceCode
+        .replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '') // Remove comments
+        .replace(/\s+/g, ' ') // Normalize whitespace
+        .trim();
+
+      // Find the machine configuration
+      const match = cleanSource.match(/createMachine\s*\(\s*({[^]*?})\s*\)/);
+      if (!match) {
+        // Try to find just the configuration object
+        const configMatch = cleanSource.match(/(?:machine\s*=\s*)?({[^]*})/);
+        if (!configMatch) {
+          throw new Error('No machine configuration found');
+        }
+        const parsed = this.parseConfig(configMatch[1] || '{}');
+        if (typeof parsed !== 'object' || parsed === null) {
+          throw new Error('Invalid machine configuration: must be an object');
+        }
+        return parsed;
+      }
+      const parsed = this.parseConfig(match[1] || '{}');
+      if (typeof parsed !== 'object' || parsed === null) {
+        throw new Error('Invalid machine configuration: must be an object');
+      }
+      return parsed;
+    }
   }
 
-  async analyze(options: AnalysisOptions): Promise<AnalysisResult> {
+  private parseConfig(configStr: string): MachineConfig {
+    if (!configStr || typeof configStr !== 'string') {
+      throw new Error('Invalid configuration string');
+    }
+
+    // Convert JavaScript object literal to valid JSON
+    const jsonStr = configStr
+      .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":') // Quote property names
+      .replace(/'/g, '"') // Convert single quotes to double quotes
+      .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+      .replace(/undefined/g, 'null'); // Convert undefined to null
+
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (typeof parsed !== 'object' || parsed === null) {
+        throw new Error('Invalid machine configuration: must be an object');
+      }
+      return parsed as MachineConfig;
+    } catch (error) {
+      throw new Error(
+        `Invalid machine configuration: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  private getTransitionTarget(transition: TransitionConfig, defaultState: string): string {
+    if (typeof transition === 'string') {
+      return transition;
+    }
+
+    if (Array.isArray(transition) && transition.length > 0) {
+      const firstTransition = transition[0];
+      if (typeof firstTransition === 'string') {
+        return firstTransition;
+      }
+
+      if (firstTransition && typeof firstTransition === 'object') {
+        const target = (firstTransition as Record<string, unknown>).target;
+        if (Array.isArray(target) && target.length > 0) {
+          const firstTarget = target[0];
+          if (firstTarget && typeof firstTarget === 'object' && 'key' in firstTarget) {
+            const key = (firstTarget as { key?: string }).key;
+            return key || defaultState;
+          }
+        }
+        if (typeof target === 'string') {
+          return target;
+        }
+        return defaultState;
+      }
+      return defaultState;
+    }
+
+    if (transition && typeof transition === 'object') {
+      const target = (transition as Record<string, unknown>).target;
+      if (Array.isArray(target) && target.length > 0) {
+        const firstTarget = target[0];
+        if (firstTarget && typeof firstTarget === 'object' && 'key' in firstTarget) {
+          const key = (firstTarget as { key?: string }).key;
+          return key || defaultState;
+        }
+      }
+      if (typeof target === 'string') {
+        return target;
+      }
+      return defaultState;
+    }
+
+    return defaultState;
+  }
+
+  async analyze(options: IAnalyzerOptions): Promise<IAnalyzerResult> {
     try {
       const { sourceCode } = options;
-      const machine = this.parseStateMachine(sourceCode);
-      const analysis = this.analyzeStateMachine(machine);
 
-      // Calculate performance metrics
-      const stateCount = analysis.states.length;
-      const transitionCount = analysis.transitions.length;
-      const serviceCount = analysis.services.length;
-      const complexity =
-        stateCount + transitionCount + serviceCount <= 5
-          ? 'low'
-          : stateCount + transitionCount + serviceCount <= 15
-            ? 'medium'
-            : 'high';
+      if (!sourceCode || typeof sourceCode !== 'string') {
+        return {
+          success: false,
+          error: 'Invalid source code: must be a non-empty string',
+        };
+      }
+
+      // Parse the machine configuration
+      const config = await Promise.resolve(this.parseMachineConfig(sourceCode));
+
+      if (!config || typeof config !== 'object') {
+        return {
+          success: false,
+          error: 'Failed to parse machine configuration',
+        };
+      }
+
+      const machine = createMachine(config);
+
+      // Analyze the machine
+      const states = Object.keys(machine.states || {});
+      const events = new Set<string>();
+      const transitions: IXStateAnalysisData['transitions'] = [];
+      const services: IXStateAnalysisData['services'] = [];
+      const guards: IXStateAnalysisData['guards'] = [];
+      const actions: IXStateAnalysisData['actions'] = [];
+
+      // Analyze each state
+      for (const state of states) {
+        const stateNode = machine.states?.[state];
+        if (!stateNode) continue;
+
+        // Analyze transitions
+        if (stateNode.on) {
+          for (const [event, transition] of Object.entries(stateNode.on)) {
+            events.add(event);
+            const target = this.getTransitionTarget(transition as TransitionConfig, state);
+            transitions.push({
+              source: state,
+              target,
+              event,
+            });
+          }
+        }
+      }
+
+      // Calculate metrics
+      const stateCount = states.length;
+      const transitionCount = transitions.length;
+      const serviceCount = services.length;
+      const guardCount = guards.length;
+      const actionCount = actions.length;
+      const complexityScore = this.calculateComplexityScore(
+        stateCount,
+        transitionCount,
+        serviceCount,
+      );
+      const complexityLevel =
+        complexityScore < 10 ? 'low' : complexityScore < 20 ? 'medium' : 'high';
 
       return {
         success: true,
         data: {
-          ...analysis,
-          performance: {
+          states,
+          events: Array.from(events),
+          transitions,
+          services,
+          guards,
+          actions,
+          metrics: {
             stateCount,
             transitionCount,
             serviceCount,
-            complexity,
+            guardCount,
+            actionCount,
+            complexityScore,
+            complexityLevel,
           },
         },
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
 
-  private parseStateMachine(source: string): AnyStateMachine {
-    try {
-      // Create a temporary module context
-      const moduleContext = {
-        exports: {} as Record<string, unknown>,
-        createMachine,
-      };
-
-      // Extract the machine definition from the source code
-      const machineDefMatch = source.match(/createMachine\(\s*({[\s\S]*})\s*\)/);
-      if (!machineDefMatch) {
-        throw new Error('No state machine definition found in source code');
-      }
-
-      const machineConfig = machineDefMatch[1];
-
-      // Wrap the machine config in a module-like structure
-      const wrappedSource = `
-        const exports = moduleContext.exports;
-        const createMachine = moduleContext.createMachine;
-        exports.machine = createMachine(${machineConfig});
-      `;
-
-      // Evaluate the source code in the context
-      const fn = new Function('moduleContext', wrappedSource);
-      fn(moduleContext);
-
-      // Find the state machine definition
-      let machine: AnyStateMachine | undefined;
-
-      // Check exports object
-      if (moduleContext.exports.machine && typeof moduleContext.exports.machine === 'object') {
-        machine = moduleContext.exports.machine as AnyStateMachine;
-      }
-
-      if (!machine) {
-        throw new Error('No state machine found in source code');
-      }
-
-      // Ensure the machine is properly initialized
-      if (!machine.states) {
-        throw new Error('Invalid state machine: missing states');
-      }
-
-      return machine;
-    } catch (error) {
-      throw new Error(
-        `Failed to parse state machine: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  }
-
-  private analyzeStateMachine(machine: AnyStateMachine): XStateAnalysisData {
-    const states = Object.keys(machine.states);
-    const transitions: XStateAnalysisData['transitions'] = [];
-    const services: XStateAnalysisData['services'] = [];
-    const guards: XStateAnalysisData['guards'] = [];
-    const actions: XStateAnalysisData['actions'] = [];
-    const events = new Set<string>();
-
-    // Helper function to extract actions from a transition config
-    const extractActions = (config: any) => {
-      if (!config || !config.actions) return [];
-      return Array.isArray(config.actions) ? config.actions : [config.actions];
-    };
-
-    // Analyze each state
-    for (const state of states) {
-      const stateNode = machine.states[state];
-
-      // Analyze transitions
-      if (stateNode.on) {
-        for (const [event, transition] of Object.entries(stateNode.on)) {
-          events.add(event);
-          const transitionConfig = Array.isArray(transition) ? transition[0] : transition;
-          const target =
-            typeof transitionConfig.target === 'string'
-              ? transitionConfig.target
-              : Array.isArray(transitionConfig.target)
-                ? transitionConfig.target[0]
-                : state;
-
-          transitions.push({
-            source: state,
-            target: typeof target === 'string' ? target : target.key,
-            event,
-          });
-
-          // Collect actions from transitions
-          const transitionActions = extractActions(transitionConfig);
-          for (const action of transitionActions) {
-            if (!actions.some(a => a.name === String(action))) {
-              actions.push({
-                name: String(action),
-              });
-            }
-          }
-        }
-      }
-
-      // Analyze services
-      if (stateNode.invoke) {
-        const serviceConfigs = Array.isArray(stateNode.invoke)
-          ? stateNode.invoke
-          : [stateNode.invoke];
-
-        for (const service of serviceConfigs) {
-          const serviceName = typeof service.src === 'string' ? service.src : 'anonymous';
-
-          services.push({
-            name: serviceName,
-            type: typeof service.src === 'string' ? 'external' : 'internal',
-            implementation: typeof service.src === 'string' ? service.src : undefined,
-          });
-
-          // Collect actions from service callbacks
-          if (typeof service.onDone === 'object') {
-            const doneActions = extractActions(service.onDone);
-            for (const action of doneActions) {
-              if (!actions.some(a => a.name === String(action))) {
-                actions.push({
-                  name: String(action),
-                });
-              }
-            }
-          }
-
-          if (typeof service.onError === 'object') {
-            const errorActions = extractActions(service.onError);
-            for (const action of errorActions) {
-              if (!actions.some(a => a.name === String(action))) {
-                actions.push({
-                  name: String(action),
-                });
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return {
-      machineDefinition: machine,
-      states,
-      events: Array.from(events),
-      transitions,
-      services,
-      guards,
-      actions,
-      performance: {
-        stateCount: states.length,
-        transitionCount: transitions.length,
-        serviceCount: services.length,
-        complexity: 'low',
-      },
-    };
+  private calculateComplexityScore(
+    stateCount: number,
+    transitionCount: number,
+    serviceCount: number,
+  ): number {
+    return Math.round(
+      (stateCount * 2 + transitionCount * 1.5 + serviceCount * 3) / (stateCount || 1),
+    );
   }
 }

@@ -84,18 +84,17 @@ export class GoodComponent extends HTMLElement {
     const button = this._shadow.querySelector('button');
     if (button) {
       button.addEventListener('click', this.handleClick);
-      button.addEventListener('keydown', this.handleKeyDown);
+      this.addEventListener('keydown', (event: Event) => {
+        const keyboardEvent = event as KeyboardEvent;
+        if (keyboardEvent.key === 'Enter' || keyboardEvent.key === ' ') {
+          this.handleClick();
+        }
+      });
     }
   }
 
   private handleClick = () => {
     // Handle click with keyboard support
-  };
-
-  private handleKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      this.handleClick();
-    }
   };
 }
 

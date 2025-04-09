@@ -1,18 +1,18 @@
 import { z } from 'zod';
 
-export interface AnalysisOptions {
+export interface IAnalysisOptions {
   sourceCode: string;
   [key: string]: unknown;
 }
 
-export interface AnalysisResult {
+export interface IAnalysisResult {
   success: boolean;
   data?: unknown;
   error?: string;
 }
 
-export interface Analyzer {
-  analyze(options: AnalysisOptions): Promise<AnalysisResult>;
+export interface IAnalyzer {
+  analyze(options: IAnalysisOptions): Promise<IAnalysisResult>;
 }
 
 export const analysisOptionsSchema = z

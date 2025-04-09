@@ -1,37 +1,52 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
+interface TableData {
+  [key: string]: string | number;
+}
+
 // Define a basic DataTable component using vanilla JavaScript
 class DataTable extends HTMLElement {
   private _shadow: ShadowRoot;
   private _title: string = '';
-  private _data: any[] = [];
+  private _data: TableData[] = [];
+  private _columns: string[] = [];
 
   constructor() {
     super();
     this._shadow = this.attachShadow({ mode: 'open' });
   }
 
-  static get observedAttributes() {
-    return ['title'];
+  static get observedAttributes(): string[] {
+    return ['title', 'data'];
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.render();
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (name === 'title' && oldValue !== newValue) {
       this._title = newValue;
       this.render();
     }
+    if (name === 'data' && oldValue !== newValue) {
+      try {
+        this._data = JSON.parse(newValue) as TableData[];
+        this._columns = this._data.length > 0 ? Object.keys(this._data[0]) : [];
+      } catch (error) {
+        console.error('Invalid data format:', error);
+      }
+      this.render();
+    }
   }
 
-  get data(): any[] {
+  get data(): TableData[] {
     return this._data;
   }
 
-  set data(value: any[]) {
+  set data(value: TableData[]) {
     this._data = value;
+    this._columns = this._data.length > 0 ? Object.keys(this._data[0]) : [];
     this.render();
   }
 
@@ -44,40 +59,39 @@ class DataTable extends HTMLElement {
     this.render();
   }
 
-  private render() {
+  private render(): void {
     if (!this._shadow) return;
 
     this._shadow.innerHTML = `
       <style>
+        :host {
+          display: block;
+          font-family: Arial, sans-serif;
+        }
         table {
           width: 100%;
           border-collapse: collapse;
+          margin-top: 1rem;
         }
         th, td {
-          padding: 8px;
-          border: 1px solid #ddd;
+          padding: 0.5rem;
           text-align: left;
+          border: 1px solid #ddd;
         }
         th {
-          background-color: #f4f4f4;
+          background-color: #f5f5f5;
         }
         tr:hover {
-          background-color: #f5f5f5;
+          background-color: #f9f9f9;
           cursor: pointer;
         }
       </style>
       <div>
-        ${this._title ? `<h2>${this._title}</h2>` : ''}
+        <h2>${this._title}</h2>
         <table>
           <thead>
             <tr>
-              ${
-                this._data.length > 0
-                  ? Object.keys(this._data[0])
-                      .map(key => `<th>${key}</th>`)
-                      .join('')
-                  : ''
-              }
+              ${this._columns.map(header => `<th>${header}</th>`).join('')}
             </tr>
           </thead>
           <tbody>
@@ -85,9 +99,7 @@ class DataTable extends HTMLElement {
               .map(
                 (row, index) => `
               <tr data-index="${index}">
-                ${Object.values(row)
-                  .map(value => `<td>${value}</td>`)
-                  .join('')}
+                ${this._columns.map(header => `<td>${row[header]}</td>`).join('')}
               </tr>
             `,
               )
@@ -97,17 +109,20 @@ class DataTable extends HTMLElement {
       </div>
     `;
 
-    // Add click handlers to rows
-    this._shadow.querySelectorAll('tbody tr').forEach(row => {
-      row.addEventListener('click', e => {
-        const index = (e.currentTarget as HTMLElement).dataset.index;
-        this.dispatchEvent(
-          new CustomEvent('row-select', {
-            bubbles: true,
-            composed: true,
-            detail: { index },
-          }),
-        );
+    // Add click event listeners to rows
+    const rows = this._shadow.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+      row.addEventListener('click', () => {
+        const index = row.getAttribute('data-index');
+        if (index !== null) {
+          this.dispatchEvent(
+            new CustomEvent('row-select', {
+              detail: { index },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        }
       });
     });
   }
@@ -124,18 +139,20 @@ describe('DataTable Component', () => {
     container = document.createElement('div');
     document.body.appendChild(container);
     dataTable = document.createElement('data-table') as DataTable;
-    container.appendChild(dataTable);
+    container.appendChild(dataTable as Node);
 
     // Wait for the component to be fully initialized
     await new Promise(resolve => setTimeout(resolve, 0));
   });
 
   afterEach(() => {
-    document.body.removeChild(container);
+    if (container && container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
   });
 
   it('should render with title and data', async () => {
-    const testData = [
+    const testData: TableData[] = [
       { name: 'John', age: 30 },
       { name: 'Jane', age: 25 },
     ];
@@ -158,7 +175,7 @@ describe('DataTable Component', () => {
   });
 
   it('should handle row selection', async () => {
-    const testData = [
+    const testData: TableData[] = [
       { name: 'John', age: 30 },
       { name: 'Jane', age: 25 },
     ];

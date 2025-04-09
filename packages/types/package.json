@@ -1,23 +1,32 @@
 {
   "name": "@mcp/types",
   "version": "0.1.0",
-  "private": true,
+  "type": "module",
+  "description": "Shared TypeScript types for MCP packages",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "test": "vitest",
-    "lint": "eslint src --ext .ts"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint \"./src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "ioredis": "^5.3.2"
   },
   "devDependencies": {
-    "@mcp/eslint-config": "workspace:*",
-    "@mcp/tsconfig": "workspace:*",
-    "@types/node": "^20.0.0",
-    "eslint": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2"
   }
 }

@@ -2,27 +2,27 @@
  * Component-related type definitions for the MCP platform
  */
 
-export interface ComponentNode {
+export interface IComponentNode {
   id: string;
   name: string;
-  type: "web-component" | "custom-element" | "shadow-root";
-  properties: ComponentProperty[];
-  events: ComponentEvent[];
-  methods: ComponentMethod[];
-  relationships: ComponentRelationship[];
-  metadata: ComponentMetadata;
+  type: 'web-component' | 'custom-element' | 'shadow-root';
+  properties: IComponentProperty[];
+  events: IComponentEvent[];
+  methods: IComponentMethod[];
+  relationships: IComponentRelationship[];
+  metadata: IComponentMetadata;
 }
 
-export interface ComponentProperty {
+export interface IComponentProperty {
   name: string;
   type: string;
   required: boolean;
   defaultValue?: any;
   description?: string;
-  validation?: PropertyValidation;
+  validation?: IPropertyValidation;
 }
 
-export interface ComponentEvent {
+export interface IComponentEvent {
   name: string;
   type: string;
   bubbles: boolean;
@@ -30,27 +30,27 @@ export interface ComponentEvent {
   description?: string;
 }
 
-export interface ComponentMethod {
+export interface IComponentMethod {
   name: string;
-  parameters: Parameter[];
+  parameters: IParameter[];
   returnType: string;
   description?: string;
   isPrivate: boolean;
 }
 
-export interface ComponentRelationship {
-  type: "parent-child" | "composition" | "dependency" | "event";
+export interface IComponentRelationship {
+  type: 'parent-child' | 'composition' | 'dependency' | 'event';
   source: string;
   target: string;
   description?: string;
 }
 
-export interface ComponentMetadata {
+export interface IComponentMetadata {
   version: string;
   author?: string;
   lastModified: Date;
   tags: string[];
-  complexity: "low" | "medium" | "high";
+  complexity: 'low' | 'medium' | 'high';
   performance: {
     renderTime?: number;
     memoryUsage?: number;
@@ -68,19 +68,19 @@ export interface ComponentMetadata {
   };
 }
 
-export interface PropertyValidation {
-  type: "string" | "number" | "boolean" | "array" | "object" | "custom";
-  rules?: ValidationRule[];
+export interface IPropertyValidation {
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'custom';
+  rules?: IValidationRule[];
   customValidator?: string;
 }
 
-export interface ValidationRule {
+export interface IValidationRule {
   type: string;
   value?: any;
   message?: string;
 }
 
-export interface Parameter {
+export interface IParameter {
   name: string;
   type: string;
   required: boolean;

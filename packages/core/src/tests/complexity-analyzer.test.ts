@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { analyzeCode, getMetrics } from '../features/basic-analysis/analyzer.js';
 
 describe('Complexity Analyzer Edge Cases', () => {

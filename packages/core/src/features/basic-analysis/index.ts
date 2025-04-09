@@ -1,12 +1,16 @@
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { z } from 'zod';
-import { analyzeRepository, analyzeCode, getMetrics } from './analyzer.js';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
+
+import { getToolRegistry } from '../../registry/index.js';
+import { CodeAnalysisResult } from '../../types/responses.js';
 import { getRepository } from '../../utils/repository-analyzer.js';
 import { createSuccessResponse, createErrorResponse } from '../../utils/responses.js';
-import { CodeAnalysisResult } from '../../types/responses.js';
-import { getToolRegistry } from '../../registry/index.js';
+
+import { analyzeRepository, analyzeCode, getMetrics } from './analyzer.js';
+
 
 /**
  * Register basic code analysis features with the MCP server

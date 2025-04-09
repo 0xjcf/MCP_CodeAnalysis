@@ -8,225 +8,323 @@
  * @module redisToolExecutionService
  */
 
-import { RedisSessionStore, type RedisSessionStoreOptions } from '../../redisSessionStore.js';
-import { ToolExecutionService, type ExecutionResult } from './toolService.js';
-import { ToolResponse } from '../../types/responses.js';
-import { Tool } from '../../tools/interfaces.js';
+// Import types first
+import type {
+  IRedisSessionStoreOptions,
+  ISessionData,
+  ISessionStore,
+  IToolResponse,
+} from '@mcp/types';
+
+
+// Then value imports
+import { Redis } from 'ioredis';
 import { v4 as uuidv4 } from 'uuid';
 
-interface SessionData {
-  state: { value: string };
-  context: Record<string, any>;
-}
+import type { ITool } from '../../tools/interfaces.js';
+import { Logger } from '../../utils/logger.js';
+import type { IToolExecutionResult } from '../interfaces/toolExecutionService.js';
+import type { IToolMachineContext } from '../machines/toolMachine.types.js';
 
-export interface RedisToolExecutionServiceOptions {
-  /**
-   * Redis connection URL (e.g., redis://localhost:6379)
-   */
-  redisUrl: string;
+import { RedisSessionStore } from './redisSessionStore.js';
+import { ToolExecutionService } from './toolService.js';
+import type { ToolParameters } from './types.js';
 
-  /**
-   * Key prefix for Redis keys (default: "mcp:tool:")
-   */
-  prefix?: string;
-
-  /**
-   * Default TTL for tool state in seconds (default: 3600)
-   */
-  defaultTtl?: number;
-
-  /**
-   * Service ID for the tool execution (optional)
-   */
-  serviceId?: string;
-
-  /**
-   * Session ID for the tool execution (optional)
-   */
-  sessionId?: string;
-
-  /**
-   * Map of available tools
-   */
-  tools: Map<string, Tool<any, any>>;
+/**
+ * Interface for tool execution service session data
+ */
+interface IToolExecutionSessionData extends ISessionData {
+  id: string;
+  createdAt: number;
+  lastAccessed: number;
+  data: {
+    serviceId: string;
+    state: string;
+    lastUpdated: number;
+    lockToken?: string;
+    tools?: Map<string, ITool>;
+    history?: Array<{
+      tool: string;
+      result: IToolResponse<unknown>;
+      timestamp: string;
+    }>;
+  };
 }
 
 /**
- * Redis-backed implementation of the ToolExecutionService
+ * Interface for Redis tool execution service options
+ */
+interface IRedisToolExecutionServiceOptions extends IRedisSessionStoreOptions {
+  sessionId?: string;
+  serviceId?: string;
+  tools?: Map<string, ITool>;
+}
+
+/**
+ * Interface for service statistics
+ */
+interface IServiceStats {
+  activeSessions: number;
+  totalTools: number;
+  lastUpdated: number;
+}
+
+/**
+ * Interface for tool execution metadata
+ */
+interface IToolExecutionMetadata {
+  tool: string;
+  version: string;
+  executionTime: number;
+  timestamp: string;
+  error?: string;
+}
+
+/**
+ * Redis-backed implementation of the tool execution service
  */
 export class RedisToolExecutionService extends ToolExecutionService {
-  private sessionStore: RedisSessionStore;
-  private serviceId: string;
-  private isInitialized = false;
+  private readonly redis: Redis;
+  private readonly sessionStore: RedisSessionStore;
+  private readonly serviceId: string;
   private lockToken: string | null = null;
 
-  constructor(options: RedisToolExecutionServiceOptions) {
-    super(options.sessionId || uuidv4());
+  constructor(options: IRedisToolExecutionServiceOptions) {
+    super(options.sessionId);
+    this.redis = new Redis(options.redisUrl);
+    this.sessionStore = new RedisSessionStore(options);
     this.serviceId = options.serviceId || uuidv4();
-    const url = new URL(options.redisUrl);
-    this.sessionStore = new RedisSessionStore({
-      host: url.hostname,
-      port: parseInt(url.port),
-      keyPrefix: options.prefix || 'mcp:tool:',
-      ttl: options.defaultTtl || 3600,
-      db: 0,
-      password: url.password || undefined,
-    });
-  }
-
-  /**
-   * Initializes the service state from Redis
-   */
-  public async initializeState(): Promise<void> {
-    try {
-      const exists = await this.sessionStore.exists(this.serviceId);
-      if (!exists) {
-        await this.acquireLock();
-        try {
-          await this.sessionStore.set(this.serviceId, {
-            success: true,
-            data: {
-              state: { value: 'idle' },
-              context: { sessionId: this.serviceId },
-            },
-          });
-        } finally {
-          await this.releaseLock();
-        }
+    if (options.tools) {
+      for (const [id, tool] of options.tools) {
+        this.registerTool(id, tool);
       }
-
-      const session = await this.sessionStore.get(this.serviceId);
-      if (session && session.data) {
-        const sessionData = session.data as SessionData;
-        const context = this.getContext();
-        if (context.toolName) {
-          await this.selectTool(context.toolName);
-          if (context.parameters) {
-            await this.setParameters(context.parameters);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Failed to initialize state:', error);
-      throw new Error('Redis operation failed');
     }
   }
 
+  private registerTool(id: string, tool: ITool): void {
+    super.getTools().set(id, tool);
+  }
+
   /**
-   * Override selectTool to persist state changes
+   * Initialize the service
    */
-  async selectTool(toolName: string): Promise<void> {
-    await this.acquireLock();
-    try {
-      await super.selectTool(toolName);
-      await this.sessionStore.set(this.serviceId, {
-        success: true,
+  public async initialize(): Promise<void> {
+    const session = await this.sessionStore.getSession(this.serviceId);
+    if (!session) {
+      const now = Date.now();
+      await this.sessionStore.setSession(this.serviceId, {
+        id: this.serviceId,
+        createdAt: now,
+        lastAccessed: now,
         data: {
-          state: { value: 'tool_selected' },
-          context: this.getContext(),
+          serviceId: this.serviceId,
+          state: 'idle',
+          lastUpdated: now,
+          tools: super.getTools(),
+          history: [],
         },
       });
-      await this.sessionStore.extendSessionTtl(this.serviceId);
-    } finally {
-      await this.releaseLock();
     }
   }
 
   /**
-   * Override setParameters to persist state changes
+   * Get the current session data
    */
-  async setParameters(parameters: Record<string, any>): Promise<void> {
-    await this.acquireLock();
-    try {
-      await super.setParameters(parameters);
-      await this.sessionStore.set(this.serviceId, {
-        success: true,
+  public async getSessionData(): Promise<IToolExecutionSessionData | null> {
+    const session = await this.sessionStore.getSession(this.serviceId);
+    return session as IToolExecutionSessionData | null;
+  }
+
+  /**
+   * Update the session data
+   */
+  public async updateSessionData(data: Partial<IToolExecutionSessionData['data']>): Promise<void> {
+    const currentData = await this.getSessionData();
+    if (currentData) {
+      await this.sessionStore.setSession(this.serviceId, {
+        ...currentData,
+        lastAccessed: Date.now(),
         data: {
-          state: { value: 'parameters_set' },
-          context: this.getContext(),
+          ...currentData.data,
+          ...data,
+          lastUpdated: Date.now(),
         },
       });
-      await this.sessionStore.extendSessionTtl(this.serviceId);
-    } finally {
-      await this.releaseLock();
     }
   }
 
   /**
-   * Override execute to persist state changes
+   * Acquire a lock on the session
    */
-  async execute<T>(
-    executeFunction: (params: Record<string, any>) => Promise<T>,
-  ): Promise<ToolResponse<T>> {
-    await this.acquireLock();
-    try {
-      const result = await super.execute(executeFunction);
-      await this.sessionStore.set(this.serviceId, {
-        success: true,
-        data: {
-          state: { value: 'executed' },
-          context: this.getContext(),
-        },
-      });
-      await this.sessionStore.extendSessionTtl(this.serviceId);
-      return result;
-    } finally {
-      await this.releaseLock();
-    }
-  }
-
-  /**
-   * Override reset to persist state changes
-   */
-  async reset(): Promise<void> {
-    await this.acquireLock();
-    try {
-      await super.reset();
-      await this.sessionStore.set(this.serviceId, {
-        success: true,
-        data: {
-          state: { value: 'idle' },
-          context: this.getContext(),
-        },
-      });
-      await this.sessionStore.extendSessionTtl(this.serviceId);
-    } finally {
-      await this.releaseLock();
-    }
-  }
-
-  /**
-   * Acquires a lock for state modification
-   */
-  private async acquireLock(): Promise<void> {
+  public async acquireLock(): Promise<boolean> {
     this.lockToken = await this.sessionStore.acquireLock(this.serviceId);
-    if (!this.lockToken) {
-      throw new Error('Failed to acquire lock');
-    }
-  }
-
-  /**
-   * Releases the state modification lock
-   */
-  private async releaseLock(): Promise<void> {
     if (this.lockToken) {
-      await this.sessionStore.releaseLock(this.serviceId, this.lockToken);
-      this.lockToken = null;
+      await this.updateSessionData({ lockToken: this.lockToken });
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Release the session lock
+   */
+  public async releaseLock(): Promise<boolean> {
+    if (this.lockToken) {
+      const result = await this.sessionStore.releaseLock(this.serviceId, this.lockToken);
+      if (result) {
+        await this.updateSessionData({ lockToken: undefined });
+        this.lockToken = null;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Execute a tool with the given parameters and session ID
+   */
+  public override async executeTool(
+    toolId: string,
+    params: Record<string, unknown>,
+    sessionId?: string,
+    useCached = false,
+  ): Promise<IToolExecutionResult> {
+    const tool = super.getTools().get(toolId);
+    if (!tool) {
+      return {
+        executionId: uuidv4(),
+        toolId,
+        sessionId: sessionId || this.serviceId,
+        params,
+        result: null,
+        error: `Tool ${toolId} not found`,
+        status: 'error',
+        executionTimeMs: 0,
+        timestamp: new Date().toISOString(),
+        fromCache: false,
+      };
+    }
+
+    const executionId = uuidv4();
+    const startTime = Date.now();
+
+    try {
+      // Execute tool
+      const result = await tool.execute({ toolId, params });
+
+      const executionResult: IToolExecutionResult = {
+        executionId,
+        toolId,
+        sessionId: sessionId || this.serviceId,
+        params,
+        result,
+        status: 'success',
+        executionTimeMs: Date.now() - startTime,
+        timestamp: new Date().toISOString(),
+        fromCache: useCached,
+      };
+
+      // Update history
+      const currentData = await this.getSessionData();
+      if (currentData) {
+        const history = currentData.data.history || [];
+        history.push({
+          tool: toolId,
+          result: {
+            data: result,
+            status: { success: true, code: 200 },
+            metadata: {
+              tool: toolId,
+              version: '1.0.0',
+              executionTime: executionResult.executionTimeMs,
+              timestamp: executionResult.timestamp,
+            } as IToolExecutionMetadata,
+          },
+          timestamp: executionResult.timestamp,
+        });
+        await this.updateSessionData({ history });
+      }
+
+      return executionResult;
+    } catch (error) {
+      const errorResult: IToolExecutionResult = {
+        executionId,
+        toolId,
+        sessionId: sessionId || this.serviceId,
+        params,
+        result: null,
+        error: error instanceof Error ? error.message : String(error),
+        status: 'error',
+        executionTimeMs: Date.now() - startTime,
+        timestamp: new Date().toISOString(),
+        fromCache: useCached,
+      };
+
+      // Update history with error
+      const currentData = await this.getSessionData();
+      if (currentData) {
+        const history = currentData.data.history || [];
+        history.push({
+          tool: toolId,
+          result: {
+            data: null,
+            status: { success: false, code: 500 },
+            metadata: {
+              tool: toolId,
+              version: '1.0.0',
+              executionTime: errorResult.executionTimeMs,
+              timestamp: errorResult.timestamp,
+              error: errorResult.error,
+            } as IToolExecutionMetadata,
+          },
+          timestamp: errorResult.timestamp,
+        });
+        await this.updateSessionData({ history });
+      }
+
+      return errorResult;
     }
   }
 
   /**
-   * Closes the Redis connection
+   * Get registered tools
    */
-  public async close(): Promise<void> {
-    try {
-      if (this.lockToken) {
-        await this.releaseLock();
-      }
-      await this.sessionStore.close();
-    } catch (error) {
-      console.error('Error closing Redis tool execution service:', error);
-      throw new Error('Failed to close Redis tool execution service');
-    }
+  public override getTools(): Map<string, ITool> {
+    return super.getTools();
+  }
+
+  /**
+   * Invalidate tool cache
+   */
+  public override async invalidateToolCache(toolId: string, sessionId?: string): Promise<void> {
+    // No caching in this implementation yet
+    return;
+  }
+
+  /**
+   * Clear session data
+   */
+  public override async clearSession(sessionId: string): Promise<void> {
+    await this.sessionStore.deleteSession(sessionId);
+  }
+
+  /**
+   * Disconnect from Redis
+   */
+  public override async disconnect(): Promise<void> {
+    await this.redis.quit();
+    await this.sessionStore.disconnect();
+  }
+
+  /**
+   * Get service statistics
+   */
+  public override async getStats(): Promise<IServiceStats> {
+    const currentData = await this.getSessionData();
+    return {
+      activeSessions: 1,
+      totalTools: super.getTools().size,
+      lastUpdated: currentData?.data.lastUpdated || Date.now(),
+    };
   }
 }

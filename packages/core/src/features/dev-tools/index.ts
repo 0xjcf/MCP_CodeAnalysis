@@ -12,11 +12,13 @@
  * - Understanding the current state of the project
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
+import { execSync } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { join, resolve } from "path";
-import { execSync } from "child_process";
+
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
 import {
   createSuccessResponse,
   createErrorResponse,

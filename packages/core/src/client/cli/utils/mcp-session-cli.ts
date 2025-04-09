@@ -5,11 +5,14 @@
  * It uses the McpSessionClient to interact with the MCP server.
  */
 
-import { Command } from 'commander';
-import { McpSessionClient } from './mcp-session-client.js';
-import chalk from 'chalk';
-import ora from 'ora';
 import { readFile } from 'fs/promises';
+
+import chalk from 'chalk';
+import { Command } from 'commander';
+import ora from 'ora';
+
+import { McpSessionClient } from './mcp-session-client.js';
+
 
 const program = new Command();
 

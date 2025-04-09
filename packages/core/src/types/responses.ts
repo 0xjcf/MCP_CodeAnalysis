@@ -13,7 +13,7 @@
  * - Support for context data to enable multi-step workflows
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 /**
  * Base response schema that all tool responses must follow
@@ -48,40 +48,28 @@ import { z } from "zod";
  * ```
  */
 export const ToolResponseSchema = z.object({
-  data: z
-    .any()
-    .describe("The actual response data - can be any valid JSON value"),
+  data: z.unknown().describe('The actual response data - can be any valid JSON value'),
   metadata: z.object({
-    tool: z.string().describe("Name of the tool that generated this response"),
-    version: z.string().describe("Version of the tool"),
-    executionTime: z
-      .number()
-      .describe("Time taken to execute the tool (in milliseconds)"),
-    timestamp: z
-      .string()
-      .describe("ISO timestamp of when the response was generated"),
+    tool: z.string().describe('Name of the tool that generated this response'),
+    version: z.string().describe('Version of the tool'),
+    executionTime: z.number().describe('Time taken to execute the tool (in milliseconds)'),
+    timestamp: z.string().describe('ISO timestamp of when the response was generated'),
   }),
   status: z.object({
-    success: z.boolean().describe("Whether the operation succeeded"),
-    code: z.number().describe("HTTP-like status code (200, 400, 500, etc.)"),
+    success: z.boolean().describe('Whether the operation succeeded'),
+    code: z.number().describe('HTTP-like status code (200, 400, 500, etc.)'),
     message: z
       .string()
       .optional()
-      .describe("Optional status message, especially useful for errors"),
+      .describe('Optional status message, especially useful for errors'),
   }),
   context: z
     .object({
-      sessionId: z
-        .string()
-        .optional()
-        .describe("Session identifier for related operations"),
-      relatedResults: z
-        .array(z.string())
-        .optional()
-        .describe("References to related result IDs"),
+      sessionId: z.string().optional().describe('Session identifier for related operations'),
+      relatedResults: z.array(z.string()).optional().describe('References to related result IDs'),
     })
     .optional()
-    .describe("Optional context for chaining operations"),
+    .describe('Optional context for chaining operations'),
 });
 
 /**
@@ -121,7 +109,7 @@ export const ToolResponseSchema = z.object({
  * };
  * ```
  */
-export type ToolResponse<T = any> = z.infer<typeof ToolResponseSchema> & {
+export type ToolResponse<T = unknown> = z.infer<typeof ToolResponseSchema> & {
   data: T;
 };
 
@@ -143,20 +131,16 @@ export type ToolResponse<T = any> = z.infer<typeof ToolResponseSchema> & {
  * ```
  */
 export const ComplexityMetricsSchema = z.object({
-  cyclomatic: z.number().describe("Cyclomatic complexity score"),
-  cognitive: z.number().describe("Cognitive complexity score"),
-  maintainability: z.number().describe("Maintainability index"),
+  cyclomatic: z.number().describe('Cyclomatic complexity score'),
+  cognitive: z.number().describe('Cognitive complexity score'),
+  maintainability: z.number().describe('Maintainability index'),
 });
 
 export const CodeAnalysisResultSchema = z.object({
-  functions: z
-    .array(z.string())
-    .describe("List of functions found in the code"),
-  classes: z.array(z.string()).describe("List of classes found in the code"),
-  imports: z.array(z.string()).describe("List of imports found in the code"),
-  complexity: ComplexityMetricsSchema.optional().describe(
-    "Detailed complexity metrics"
-  ),
+  functions: z.array(z.string()).describe('List of functions found in the code'),
+  classes: z.array(z.string()).describe('List of classes found in the code'),
+  imports: z.array(z.string()).describe('List of imports found in the code'),
+  complexity: ComplexityMetricsSchema.optional().describe('Detailed complexity metrics'),
 });
 
 export type CodeAnalysisResult = z.infer<typeof CodeAnalysisResultSchema>;
@@ -190,40 +174,28 @@ export const DependencyAnalysisResultSchema = z.object({
   graph: z.object({
     nodes: z.array(
       z.object({
-        id: z.string().describe("Unique identifier for the node"),
-        name: z.string().describe("Name of the dependency or module"),
-        type: z
-          .string()
-          .describe("Type of dependency (package, module, file, etc.)"),
-        version: z
-          .string()
-          .optional()
-          .describe("Version of the dependency if applicable"),
-      })
+        id: z.string().describe('Unique identifier for the node'),
+        name: z.string().describe('Name of the dependency or module'),
+        type: z.string().describe('Type of dependency (package, module, file, etc.)'),
+        version: z.string().optional().describe('Version of the dependency if applicable'),
+      }),
     ),
     edges: z.array(
       z.object({
-        source: z.string().describe("ID of the source node"),
-        target: z.string().describe("ID of the target node"),
+        source: z.string().describe('ID of the source node'),
+        target: z.string().describe('ID of the target node'),
         type: z
           .string()
           .optional()
-          .describe("Type of relationship (imports, requires, uses, etc.)"),
-      })
+          .describe('Type of relationship (imports, requires, uses, etc.)'),
+      }),
     ),
   }),
-  directDependencies: z
-    .array(z.string())
-    .describe("List of direct dependencies"),
-  transitiveDependencies: z
-    .array(z.string())
-    .optional()
-    .describe("List of indirect dependencies"),
+  directDependencies: z.array(z.string()).describe('List of direct dependencies'),
+  transitiveDependencies: z.array(z.string()).optional().describe('List of indirect dependencies'),
 });
 
-export type DependencyAnalysisResult = z.infer<
-  typeof DependencyAnalysisResultSchema
->;
+export type DependencyAnalysisResult = z.infer<typeof DependencyAnalysisResultSchema>;
 
 /**
  * Schema for code metrics result
@@ -246,15 +218,12 @@ export type DependencyAnalysisResult = z.infer<
  * ```
  */
 export const CodeMetricsResultSchema = z.object({
-  linesOfCode: z.number().describe("Total lines of code"),
-  commentLines: z.number().optional().describe("Total lines of comments"),
-  complexity: z.number().optional().describe("Cyclomatic complexity score"),
-  maintainability: z
-    .number()
-    .optional()
-    .describe("Maintainability index (0-100)"),
-  functions: z.number().optional().describe("Number of functions"),
-  classes: z.number().optional().describe("Number of classes"),
+  linesOfCode: z.number().describe('Total lines of code'),
+  commentLines: z.number().optional().describe('Total lines of comments'),
+  complexity: z.number().describe('Code complexity score'),
+  maintainability: z.number().describe('Maintainability index'),
+  functions: z.number().describe('Number of functions'),
+  classes: z.number().describe('Number of classes'),
 });
 
 export type CodeMetricsResult = z.infer<typeof CodeMetricsResultSchema>;

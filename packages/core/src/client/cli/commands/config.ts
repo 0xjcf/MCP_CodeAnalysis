@@ -1,6 +1,7 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
+import type { Command } from 'commander';
 import figures from 'figures';
+
 import { loadConfig, saveConfig, getConfigValue, setConfigValue } from '../utils/config.js';
 
 export function registerConfigCommands(program: Command) {

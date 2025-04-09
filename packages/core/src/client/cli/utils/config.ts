@@ -1,6 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import os from 'os';
+import path from 'path';
 
 // Configuration constants
 const CONFIG_DIR = path.join(os.homedir(), '.codeanalysis');

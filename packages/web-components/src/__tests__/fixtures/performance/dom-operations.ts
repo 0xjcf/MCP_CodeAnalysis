@@ -1,26 +1,28 @@
-import { Shared } from '@ignite/core';
-import { LitElement, html } from 'lit';
+export class TestComponent extends HTMLElement {
+  private shadow: ShadowRoot;
 
-@Shared('test-component')
-export class TestComponent extends LitElement {
+  constructor() {
+    super();
+    this.shadow = this.attachShadow({ mode: 'open' });
+  }
+
   connectedCallback() {
-    super.connectedCallback();
+    // Create container div
+    const container = document.createElement('div');
+    container.style.width = '100px';
+    container.style.height = '100px';
+    container.style.margin = '10px';
+    this.shadow.appendChild(container as Node);
 
-    // Multiple DOM operations
-    this.shadowRoot.querySelector('div').style.width = '100px';
-    this.shadowRoot.querySelector('div').style.height = '100px';
-    this.shadowRoot.querySelector('div').style.margin = '10px';
+    // Create content span
+    const content = document.createElement('span');
+    content.textContent = 'Content';
+    container.appendChild(content as Node);
 
     // Forced layout
-    const height = this.shadowRoot.querySelector('div').offsetHeight;
-    this.shadowRoot.querySelector('div').style.height = height + 'px';
-  }
-
-  render() {
-    return html`
-      <div>
-        <span>Content</span>
-      </div>
-    `;
+    const height = container.offsetHeight;
+    container.style.height = `${height}px`;
   }
 }
+
+customElements.define('test-component', TestComponent);

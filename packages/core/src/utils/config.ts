@@ -1,14 +1,45 @@
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
+
+/**
+ * Type definition for the MCP server configuration
+ */
+export type MCPConfig = {
+  server: {
+    name: string;
+    version: string;
+    transport: 'stdio' | 'http';
+  };
+  features: {
+    basicAnalysis: boolean;
+    memory: boolean;
+    visualization: boolean;
+    knowledgeGraph: boolean;
+    multiRepo: boolean;
+    evolution: boolean;
+    socioTechnical: boolean;
+    compliance: boolean;
+    coaching: boolean;
+    simulation: boolean;
+    domainSpecific: boolean;
+  };
+  http: {
+    port: number;
+    host: string;
+  };
+  storage: {
+    path: string;
+  };
+};
 
 /**
  * Default configuration for the MCP server
  */
-const defaultConfig = {
+const defaultConfig: MCPConfig = {
   server: {
-    name: "CodeAnalysisPro",
-    version: "1.0.0",
-    transport: "stdio" // stdio or http
+    name: 'CodeAnalysisPro',
+    version: '1.0.0',
+    transport: 'stdio', // stdio or http
   },
   features: {
     basicAnalysis: true,
@@ -21,32 +52,33 @@ const defaultConfig = {
     compliance: true,
     coaching: true,
     simulation: true,
-    domainSpecific: true
+    domainSpecific: true,
   },
   http: {
     port: 3000,
-    host: "localhost"
+    host: 'localhost',
   },
   storage: {
-    path: "./data"
-  }
+    path: './data',
+  },
 };
 
 /**
  * Load configuration from file or create default config file if none exists
  */
-export function loadConfig(): typeof defaultConfig {
-  const configPath = path.join(process.cwd(), "config", "config.json");
-  
+export function loadConfig(): MCPConfig {
+  const configPath = path.join(process.cwd(), 'config', 'config.json');
+
   try {
     if (fs.existsSync(configPath)) {
-      const userConfig = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      const fileContents = fs.readFileSync(configPath, 'utf8');
+      const userConfig = JSON.parse(fileContents) as Partial<MCPConfig>;
       return { ...defaultConfig, ...userConfig };
     }
   } catch (error) {
     console.warn(`Error loading config: ${(error as Error).message}`);
   }
-  
+
   // Save default config if none exists
   try {
     fs.mkdirSync(path.dirname(configPath), { recursive: true });
@@ -54,11 +86,11 @@ export function loadConfig(): typeof defaultConfig {
   } catch (error) {
     console.warn(`Error saving default config: ${(error as Error).message}`);
   }
-  
+
   return defaultConfig;
 }
 
 /**
  * Get the active configuration
  */
-export const config = loadConfig(); 
+export const config = loadConfig();

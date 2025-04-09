@@ -1,32 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": true,
+    "composite": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "composite": true,
+    "rootDir": "src",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"]
-    },
-    "types": ["node", "vitest"],
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "verbatimModuleSyntax": false,
-    "isolatedModules": true,
-    "rootDir": "src"
+      "@mcp/*": ["../*/src"]
+    }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [{ "path": "../shared" }, { "path": "../xstate" }]
+  "references": [{ "path": "../types" }, { "path": "../xstate" }, { "path": "../utils" }]
 }

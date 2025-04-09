@@ -1,13 +1,16 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import figures from 'figures';
 import fs from 'fs';
 import path from 'path';
-import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
-import { formatOutput } from '../utils/formatters.js';
-import { detectCurrentProject } from '../utils/project-detector.js';
+
+import chalk from 'chalk';
+import type { Command } from 'commander';
+import figures from 'figures';
+import ora from 'ora';
+
+
 import { getConfigValue } from '../utils/config.js';
+import { formatOutput } from '../utils/formatters.js';
+import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
+import { detectCurrentProject } from '../utils/project-detector.js';
 
 // Use Node.js built-in fs.watch instead of requiring an additional dependency
 let watchTimeout: NodeJS.Timeout | null = null;

@@ -1,9 +1,12 @@
-import { Command } from 'commander';
-import chalk from 'chalk';
-import ora from 'ora';
-import figures from 'figures';
 import fs from 'fs';
 import path from 'path';
+
+import chalk from 'chalk';
+import type { Command } from 'commander';
+import figures from 'figures';
+import ora from 'ora';
+
+
 import { getClient, callTool, closeClient } from '../utils/mcp-client.js';
 
 // Add this type at the top of the file

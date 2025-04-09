@@ -1,15 +1,29 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { createTestMachine, createTestComponent } from '../index';
 import { JSDOM } from 'jsdom';
+import { describe, it, expect, beforeAll } from 'vitest';
+import type { TransitionDefinition, UnknownAction } from 'xstate';
+
+import { createTestMachine, createTestComponent } from '../index';
+
+interface TestElement extends HTMLElement {
+  dispatchChange?: () => void;
+  dispatchSubmit?: () => void;
+}
+
+type TestTransition = TransitionDefinition<Record<string, never>, { type: 'NEXT' }> & {
+  guard?: string;
+  actions?: readonly UnknownAction[];
+};
 
 describe('Test Utilities', () => {
   beforeAll(() => {
     const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
-    global.window = dom.window as any;
-    global.document = dom.window.document;
-    global.customElements = dom.window.customElements;
-    global.HTMLElement = dom.window.HTMLElement;
-    global.CustomEvent = dom.window.CustomEvent;
+    Object.assign(global, {
+      window: dom.window,
+      document: dom.window.document,
+      customElements: dom.window.customElements,
+      HTMLElement: dom.window.HTMLElement,
+      CustomEvent: dom.window.CustomEvent,
+    });
   });
 
   describe('createTestMachine', () => {
@@ -30,14 +44,7 @@ describe('Test Utilities', () => {
 
     it('should create a machine with guards', () => {
       const config = { states: 2, guards: 2 };
-      if (!process.env.CI) {
-        console.log('Creating machine with config:', config);
-      }
       const machine = createTestMachine(config);
-      if (!process.env.CI) {
-        console.log('Machine states:', JSON.stringify(machine.states, null, 2));
-        console.log('Machine guards:', JSON.stringify((machine.config as any).guards, null, 2));
-      }
 
       const state1 = machine.states.state1;
       const state2 = machine.states.state2;
@@ -45,13 +52,8 @@ describe('Test Utilities', () => {
       expect(state1.on.NEXT).toBeDefined();
       expect(state2.on.NEXT).toBeDefined();
 
-      const state1NextEvent = state1.on.NEXT[0] as unknown as { guard: string };
-      const state2NextEvent = state2.on.NEXT[0] as unknown as { guard: string };
-
-      if (!process.env.CI) {
-        console.log('State1 Next Event:', JSON.stringify(state1NextEvent, null, 2));
-        console.log('State2 Next Event:', JSON.stringify(state2NextEvent, null, 2));
-      }
+      const state1NextEvent = state1.on.NEXT[0] as TestTransition;
+      const state2NextEvent = state2.on.NEXT[0] as TestTransition;
 
       expect(state1NextEvent.guard).toBe('guard1');
       expect(state2NextEvent.guard).toBe('guard2');
@@ -59,8 +61,8 @@ describe('Test Utilities', () => {
 
     it('should create a machine with actions', () => {
       const machine = createTestMachine({ states: 2, actions: 2 });
-      const state1NextEvent = machine.states.state1.on.NEXT[0] as any;
-      const state2NextEvent = machine.states.state2.on.NEXT[0] as any;
+      const state1NextEvent = machine.states.state1.on.NEXT[0] as TestTransition;
+      const state2NextEvent = machine.states.state2.on.NEXT[0] as TestTransition;
       expect(state1NextEvent).toBeDefined();
       expect(state2NextEvent).toBeDefined();
       expect(state1NextEvent.actions).toEqual(['action1']);
@@ -112,7 +114,7 @@ describe('Test Utilities', () => {
         events: ['Change', 'Submit'],
       });
       customElements.define('test-component-events', TestComponent);
-      const element = document.createElement('test-component-events') as any;
+      const element = document.createElement('test-component-events') as TestElement;
       expect(typeof element.dispatchChange).toBe('function');
       expect(typeof element.dispatchSubmit).toBe('function');
     });

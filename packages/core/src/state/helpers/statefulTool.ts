@@ -14,13 +14,29 @@
  * @module statefulTool
  */
 
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
-import { ToolExecutionService } from "../services/toolService.js";
+import type { IToolResult, IToolResponse } from '@mcp/types';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { z } from 'zod';
+
+import { createSuccessResponse, createErrorResponse } from '../../utils/responses.js';
+import { ToolExecutionService } from '../services/toolService.js';
 
 // Map to store sessions by ID
 const sessions = new Map<string, ToolExecutionService>();
 
+interface IToolCallbackArgs {
+  sessionId?: string;
+}
+
+interface ISdkExtra {
+  requestId?: string;
+  timestamp?: number;
+  severity?: 'info' | 'warning' | 'error';
+  metadata?: Record<string, unknown>;
+  context?: Record<string, unknown>;
+  sessionId?: string;
+}
+
 /**
  * Create a stateful tool that uses XState for state management
  *
@@ -34,141 +50,126 @@ const sessions = new Map<string, ToolExecutionService>();
  * @param handler Function to handle tool execution
  */
 export function createStatefulTool<
-  TParams = Record<string, unknown>,
-  TResult = Record<string, unknown>
+  TParams extends Record<string, unknown>,
+  TResult extends Record<string, unknown>,
 >(
   server: McpServer,
   name: string,
   schema: z.ZodRawShape,
-  handler: (params: TParams) => Promise<TResult>
-): void;
-
-/**
- * Create a stateful tool that uses XState for state management
- *
- * Registers a tool with the MCP server using the same signature pattern as McpServer.tool(),
- * but enhances it with session management and state persistence. This allows tools to maintain
- * context across multiple invocations.
- *
- * @param server MCP server instance
- * @param name Tool name
- * @param description Tool description
- * @param schema Zod schema for tool parameters
- * @param handler Function to handle tool execution
- */
-export function createStatefulTool<
-  TParams = Record<string, unknown>,
-  TResult = Record<string, unknown>
->(
-  server: McpServer,
-  name: string,
-  description: string,
-  schema: z.ZodRawShape,
-  handler: (params: TParams) => Promise<TResult>
-): void;
-
-// Implementation that handles both overloads
-export function createStatefulTool<
-  TParams = Record<string, unknown>,
-  TResult = Record<string, unknown>
->(
-  server: McpServer,
-  name: string,
-  descriptionOrSchema: string | z.ZodRawShape,
-  handlerOrSchema: ((params: TParams) => Promise<TResult>) | z.ZodRawShape,
-  handler?: (params: TParams) => Promise<TResult>
+  handler: (params: TParams, extra: ISdkExtra) => Promise<IToolResult<TResult>>,
 ): void {
-  // Determine if description was provided
-  const hasDescription = typeof descriptionOrSchema === "string";
+  // Register the tool with the server
+  server.tool(
+    name,
+    {
+      ...schema,
+      sessionId: z.string().optional(),
+    } as Record<string, z.ZodType>,
+    async (args: Record<string, unknown>, extra: ISdkExtra) => {
+      const startTime = Date.now();
+      try {
+        // Extract sessionId from params (or create new session)
+        const { sessionId, ...toolParams } = args as { sessionId?: string } & Record<
+          string,
+          unknown
+        >;
 
-  // Extract parameters based on which overload was used
-  const description = hasDescription
-    ? (descriptionOrSchema as string)
-    : undefined;
-  const schema = hasDescription
-    ? (handlerOrSchema as z.ZodRawShape)
-    : (descriptionOrSchema as z.ZodRawShape);
-  const toolHandler = hasDescription
-    ? (handler as (params: TParams) => Promise<TResult>)
-    : (handlerOrSchema as (params: TParams) => Promise<TResult>);
+        // Get or create session
+        let session: ToolExecutionService;
+        const sessionIdStr = sessionId;
 
-  // Add sessionId parameter to the schema
-  const enhancedSchema = {
-    ...schema,
-    sessionId: z
-      .string()
-      .optional()
-      .describe(
-        "Session ID for maintaining state between calls. If not provided, a new session will be created."
-      ),
-  };
+        if (sessionIdStr) {
+          const existingSession = sessions.get(sessionIdStr);
+          if (existingSession) {
+            session = existingSession;
+          } else {
+            session = new ToolExecutionService(sessionIdStr);
+            sessions.set(sessionIdStr, session);
+          }
+        } else {
+          const newSessionId = crypto.randomUUID();
+          session = new ToolExecutionService(newSessionId);
+          sessions.set(newSessionId, session);
+        }
 
-  // Create the tool callback that handles state management
-  const toolCallback = async (args: any, extra: any) => {
-    try {
-      // Extract sessionId from params (or create new session)
-      const { sessionId, ...toolParams } = args;
+        // Select the tool and set parameters
+        session.selectTool(name, async (parameters: Record<string, unknown>) => {
+          const result = await handler(parameters as TParams, {
+            ...extra,
+            sessionId: session.getSessionId(),
+            timestamp: Date.now(),
+          });
+          return result;
+        });
+        session.setParameters(toolParams);
 
-      // Get or create session
-      let session: ToolExecutionService;
-      const sessionIdStr = sessionId as string | undefined;
+        // Execute the tool
+        const result = await session.execute();
 
-      if (sessionIdStr && sessions.has(sessionIdStr)) {
-        session = sessions.get(sessionIdStr)!;
-      } else {
-        const newSessionId = sessionIdStr || crypto.randomUUID();
-        session = new ToolExecutionService(newSessionId);
-        sessions.set(newSessionId, session);
-      }
+        // Return MCP-formatted response with properly typed content
+        if (result.error) {
+          const errorResponse = createErrorResponse(String(result.error), name, {
+            sessionId: session.getSessionId(),
+            executionTime: Date.now() - startTime,
+          });
 
-      // Select the tool and set parameters
-      session.selectTool(name);
-      session.setParameters(toolParams);
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(errorResponse),
+              },
+            ],
+            isError: true,
+            _meta: {
+              requestId: extra?.requestId ?? crypto.randomUUID(),
+              timestamp: extra?.timestamp ?? Date.now(),
+              severity: extra?.severity ?? 'error',
+            },
+          };
+        }
 
-      // Execute the tool
-      const result = await session.execute(async (p) => {
-        return toolHandler(p as TParams);
-      });
+        const successResponse = createSuccessResponse(result.data, name, {
+          sessionId: session.getSessionId(),
+          executionTime: Date.now() - startTime,
+        });
 
-      // Add session ID to the response context
-      if (result.context) {
-        result.context.sessionId = session.getSessionId();
-      } else {
-        result.context = { sessionId: session.getSessionId() };
-      }
-
-      // Return MCP-formatted response with properly typed content
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text: JSON.stringify(result, null, 2),
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(successResponse),
+            },
+          ],
+          _meta: {
+            requestId: extra?.requestId ?? crypto.randomUUID(),
+            timestamp: extra?.timestamp ?? Date.now(),
+            severity: extra?.severity ?? 'info',
           },
-        ],
-      };
-    } catch (error) {
-      // Return MCP-formatted error response
-      return {
-        content: [
-          {
-            type: "text" as const,
-            text:
-              error instanceof Error
-                ? error.message.replace(/^Error:\s*/, "")
-                : `Error executing ${name}: ${String(error)}`,
-          },
-        ],
-        isError: true,
-      };
-    }
-  };
+        };
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorResponse = createErrorResponse(errorMessage, name, {
+          executionTime: Date.now() - startTime,
+        });
 
-  // Register the tool with the server using the appropriate overload
-  if (hasDescription && description) {
-    server.tool(name, description, enhancedSchema, toolCallback);
-  } else {
-    server.tool(name, enhancedSchema, toolCallback);
-  }
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(errorResponse),
+            },
+          ],
+          isError: true,
+          _meta: {
+            requestId: extra?.requestId ?? crypto.randomUUID(),
+            timestamp: extra?.timestamp ?? Date.now(),
+            severity: extra?.severity ?? 'error',
+          },
+        };
+      }
+    },
+  );
 }
 
 /**
@@ -182,8 +183,11 @@ export function createStatefulTool<
  * @returns Tool execution service for the session
  */
 export function getSession(sessionId?: string): ToolExecutionService {
-  if (sessionId && sessions.has(sessionId)) {
-    return sessions.get(sessionId)!;
+  if (sessionId) {
+    const existingSession = sessions.get(sessionId);
+    if (existingSession) {
+      return existingSession;
+    }
   }
 
   const newSessionId = sessionId || crypto.randomUUID();
@@ -220,3 +224,23 @@ export function clearSession(sessionId: string): boolean {
 export function getSessionIds(): string[] {
   return Array.from(sessions.keys());
 }
+
+const formatResponse = <T>(result: IToolResult<T>): IToolResponse<T> => {
+  return {
+    data: result.result,
+    metadata: {
+      tool: 'unknown',
+      version: '1.0.0',
+      executionTime: 0,
+      timestamp: new Date().toISOString(),
+    },
+    status: {
+      success: !result.error,
+      code: result.error ? 500 : 200,
+      message: result.error,
+    },
+    context: {
+      sessionId: crypto.randomUUID(),
+    },
+  };
+};

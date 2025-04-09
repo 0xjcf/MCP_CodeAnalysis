@@ -1,11 +1,12 @@
-import { getRepository, listFiles } from '../../utils/repository-analyzer.js';
-import { analyzeCode } from '../../features/basic-analysis/analyzer.js';
-import { buildKnowledgeGraph, queryKnowledgeGraph } from '../knowledge-graph/graph-manager.js';
-import { GraphNode, GraphRelationship } from '../../types/knowledge-graph.js';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
 
-interface PackageInfo {
+import { analyzeCode } from '../../features/basic-analysis/analyzer.js';
+import { GraphNode, GraphRelationship } from '../../types/knowledge-graph.js';
+import { getRepository, listFiles } from '../../utils/repository-analyzer.js';
+import { buildKnowledgeGraph, queryKnowledgeGraph } from '../knowledge-graph/graph-manager.js';
+
+interface IPackageInfo {
   name: string;
   version: string;
   dependencies: number;
@@ -186,7 +187,7 @@ async function summarizeRepository(repositoryUrl: string): Promise<any> {
 
     // Try to detect package.json or other project files
     const hasPackageJson = files.some(file => file.endsWith('package.json'));
-    let packageInfo: PackageInfo | null = null;
+    let packageInfo: IPackageInfo | null = null;
 
     if (hasPackageJson) {
       try {

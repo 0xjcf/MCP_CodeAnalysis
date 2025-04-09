@@ -1,16 +1,16 @@
-import { Tool } from '../../tools/interfaces.js';
+import type { ITool } from '../../tools/interfaces.js';
 
 /**
  * Represents the state of a tool during execution
  */
-export interface ToolState {
+export interface IToolState {
   [key: string]: any;
 }
 
 /**
  * Represents the result of a tool execution
  */
-export interface ToolExecutionResult {
+export interface IToolExecutionResult {
   /**
    * Unique ID for this execution
    */
@@ -65,7 +65,7 @@ export interface ToolExecutionResult {
 /**
  * Service for executing tools with state management
  */
-export interface ToolExecutionService {
+export interface IToolExecutionService {
   /**
    * Executes a tool with the given parameters and session ID
    *
@@ -80,14 +80,14 @@ export interface ToolExecutionService {
     params: any,
     sessionId?: string,
     useCached?: boolean,
-  ): Promise<ToolExecutionResult>;
+  ): Promise<IToolExecutionResult>;
 
   /**
    * Retrieves all available tools
    *
    * @returns Map of tools by ID
    */
-  getTools(): Map<string, Tool>;
+  getTools(): Map<string, ITool>;
 
   /**
    * Invalidates the cache for a specific tool

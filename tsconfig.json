@@ -14,11 +14,22 @@
     "baseUrl": ".",
     "paths": {
       "@mcp/*": ["packages/*/src"]
-    }
+    },
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "lib": ["ES2022", "DOM"]
   },
   "references": [
-    { "path": "packages/shared" },
+    { "path": "packages/types" },
+    { "path": "packages/core" },
     { "path": "packages/xstate" },
-    { "path": "packages/core" }
+    { "path": "packages/utils" }
   ]
 }

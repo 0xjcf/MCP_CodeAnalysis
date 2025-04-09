@@ -11,17 +11,17 @@ class InvalidComponent extends HTMLElement {
   connectedCallback() {
     this.render();
     // Cache DOM queries
-    this._container = this._shadow.querySelector('#container');
+    this._container = this._shadow.querySelector('#container') as HTMLElement;
     if (this._container) {
       // Use cached element
       this._container.classList.add('loaded');
     }
-    this.addEventListener('scroll', this.handleScroll);
+    this.addEventListener('scroll', this.handleScroll as EventListener);
   }
 
   disconnectedCallback() {
     // Clean up event listeners
-    this.removeEventListener('scroll', this.handleScroll);
+    this.removeEventListener('scroll', this.handleScroll as EventListener);
   }
 
   private render() {

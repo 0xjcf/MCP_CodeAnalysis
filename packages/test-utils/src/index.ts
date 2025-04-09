@@ -1,31 +1,47 @@
-import { setup } from 'xstate';
-import type { AnyStateMachine } from 'xstate';
+import { setup, type AnyStateMachine } from 'xstate';
+
+interface TestMachineConfig {
+  states?: number;
+  guards?: number;
+  actions?: number;
+  services?: number;
+}
+
+interface TestComponentConfig {
+  properties?: string[];
+  events?: string[];
+  slots?: string[];
+}
+
+interface TestComponent extends HTMLElement {
+  getAttribute(name: string): string | null;
+  setAttribute(name: string, value: string): void;
+  dispatchEvent(event: Event): boolean;
+}
+
+type TestComponentConstructor = {
+  new (): TestComponent;
+  observedAttributes: string[];
+};
 
 /**
  * Creates a simple test state machine for analyzer testing
  */
-export const createTestMachine = (
-  config: {
-    states?: number;
-    guards?: number;
-    actions?: number;
-    services?: number;
-  } = {},
-): AnyStateMachine => {
+export const createTestMachine = (config: TestMachineConfig = {}): AnyStateMachine => {
   const { states = 1, guards = 0, actions = 0, services = 0 } = config;
 
-  const stateObj: Record<string, any> = {};
+  const stateObj: Record<string, Record<string, unknown>> = {};
   const guardObj: Record<string, () => boolean> = {};
   const actionObj: Record<string, () => void> = {};
 
   // Create guards
   for (let i = 0; i < guards; i++) {
-    guardObj[`guard${i + 1}`] = () => true;
+    guardObj[`guard${i + 1}`] = (): boolean => true;
   }
 
   // Create actions
   for (let i = 0; i < actions; i++) {
-    actionObj[`action${i + 1}`] = () => {};
+    actionObj[`action${i + 1}`] = (): void => {};
   }
 
   // Create states
@@ -69,19 +85,13 @@ export const createTestMachine = (
   });
 };
 
-interface TestComponentConfig {
-  properties?: string[];
-  events?: string[];
-  slots?: string[];
-}
-
 /**
  * Creates a test web component class for analyzer testing
  */
-export const createTestComponent = (config: TestComponentConfig = {}): typeof HTMLElement => {
+export const createTestComponent = (config: TestComponentConfig = {}): TestComponentConstructor => {
   const { properties = [], events = [], slots = [] } = config;
 
-  return class TestComponent extends HTMLElement {
+  class TestWebComponent extends HTMLElement {
     static get observedAttributes(): string[] {
       return properties;
     }
@@ -101,20 +111,27 @@ export const createTestComponent = (config: TestComponentConfig = {}): typeof HT
       properties.forEach((prop: string) => {
         Object.defineProperty(this, prop, {
           get(): string | null {
-            return this.getAttribute(prop);
+            return HTMLElement.prototype.getAttribute.call(this, prop);
           },
-          set(value: string) {
-            this.setAttribute(prop, value);
+          set(value: string): void {
+            HTMLElement.prototype.setAttribute.call(this, prop, value);
           },
         });
       });
 
       // Add event dispatchers
       events.forEach((event: string) => {
-        (this as any)[`dispatch${event}`] = () => {
-          this.dispatchEvent(new CustomEvent(event.toLowerCase()));
-        };
+        const dispatchMethod = `dispatch${event}`;
+        Object.defineProperty(this, dispatchMethod, {
+          value: (): void => {
+            this.dispatchEvent(new CustomEvent(event.toLowerCase()));
+          },
+          writable: false,
+          configurable: true,
+        });
       });
     }
-  };
+  }
+
+  return TestWebComponent as TestComponentConstructor;
 };

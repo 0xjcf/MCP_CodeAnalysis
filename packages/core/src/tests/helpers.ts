@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { Tool } from '../tools/interfaces.js';
+
+import type { Tool } from '../tools/interfaces.js';
 
 export const createMockTool = (
   name: string,

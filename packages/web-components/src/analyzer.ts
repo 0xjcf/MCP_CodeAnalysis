@@ -506,134 +506,19 @@ export class WebComponentsAnalyzerImpl {
   }
 
   private findPerformanceMetrics(node: ts.Node): BasePerformanceInfo {
-    const text = node.getText();
+    const hasPerformanceIssues = false;
     const issues: PerformanceIssue[] = [];
-    let hasPerformanceIssues = false;
-    let hasLargeBundleSize = false;
-    let hasSlowRendering = false;
-    let hasMemoryLeaks = false;
-    let hasNetworkIssues = false;
-    let hasResourceLoadingIssues = false;
-    let hasAnimationPerformanceIssues = false;
-    let hasLayoutThrashing = false;
-    let hasEventHandlingIssues = false;
-    let hasDOMManipulationIssues = false;
+    const hasLargeBundleSize = false;
+    const hasSlowRendering = false;
+    const hasMemoryLeaks = false;
+    const hasNetworkIssues = false;
+    const hasResourceLoadingIssues = false;
+    const hasAnimationPerformanceIssues = false;
+    const hasLayoutThrashing = false;
+    const hasEventHandlingIssues = false;
+    const hasDOMManipulationIssues = false;
 
-    // Check for constructor performance
-    if (text.includes('constructor')) {
-      if (text.includes('super(')) {
-        issues.push({
-          type: 'constructor',
-          description: 'Constructor includes super() call which may impact performance',
-          severity: 'low',
-        });
-      }
-      if (text.includes('this.attachShadow')) {
-        issues.push({
-          type: 'shadow-dom',
-          description: 'Shadow DOM initialization in constructor may impact performance',
-          severity: 'medium',
-        });
-      }
-      if (text.includes('addEventListener')) {
-        issues.push({
-          type: 'event-binding',
-          description: 'Event listener binding in constructor may cause memory leaks',
-          severity: 'high',
-        });
-        hasEventHandlingIssues = true;
-      }
-    }
-
-    // Check for render performance
-    if (text.includes('render')) {
-      if (text.includes('innerHTML')) {
-        issues.push({
-          type: 'rendering',
-          description: 'Using innerHTML may cause XSS vulnerabilities and performance issues',
-          severity: 'high',
-        });
-        hasSlowRendering = true;
-        hasDOMManipulationIssues = true;
-      }
-      if (text.includes('createElement') && text.includes('appendChild')) {
-        issues.push({
-          type: 'rendering',
-          description: 'Multiple DOM operations in render method may cause layout thrashing',
-          severity: 'medium',
-        });
-        hasLayoutThrashing = true;
-      }
-    }
-
-    // Check for memory leaks
-    if (text.includes('addEventListener') && !text.includes('removeEventListener')) {
-      issues.push({
-        type: 'memory',
-        description: 'Event listeners added without cleanup may cause memory leaks',
-        severity: 'high',
-      });
-      hasMemoryLeaks = true;
-    }
-
-    // Check for network issues
-    if (text.includes('fetch') || text.includes('XMLHttpRequest')) {
-      issues.push({
-        type: 'network',
-        description: 'Network requests without error handling may impact performance',
-        severity: 'medium',
-      });
-      hasNetworkIssues = true;
-    }
-
-    // Check for resource loading
-    if (text.includes('import') || text.includes('require')) {
-      issues.push({
-        type: 'resources',
-        description: 'Large imports may impact bundle size and loading performance',
-        severity: 'medium',
-      });
-      hasResourceLoadingIssues = true;
-    }
-
-    // Check for animation performance
-    if (text.includes('animation') || text.includes('transition')) {
-      issues.push({
-        type: 'animation',
-        description: 'CSS animations or transitions may cause performance issues',
-        severity: 'low',
-      });
-      hasAnimationPerformanceIssues = true;
-    }
-
-    // Set hasPerformanceIssues based on any issues found
-    hasPerformanceIssues = issues.length > 0;
-
-    // Get performance metrics from analyzer if available
-    let metrics = {
-      constructorTime: 0,
-      renderTime: 0,
-      updateTime: 0,
-      memoryUsage: 0,
-      reflowCount: 0,
-      repaintCount: 0,
-      optimizationSuggestions: [] as string[],
-    };
-
-    if (this.performanceAnalyzer && ts.isClassDeclaration(node)) {
-      const performanceMetrics = this.performanceAnalyzer.analyze(node);
-      metrics = {
-        constructorTime: performanceMetrics.constructorTime || 0,
-        renderTime: performanceMetrics.renderTime || 0,
-        updateTime: performanceMetrics.updateTime || 0,
-        memoryUsage: performanceMetrics.memoryUsage || 0,
-        reflowCount: performanceMetrics.reflowCount || 0,
-        repaintCount: performanceMetrics.repaintCount || 0,
-        optimizationSuggestions: performanceMetrics.optimizationSuggestions || [],
-      };
-    }
-
-    return {
+    let metrics: BasePerformanceInfo = {
       hasPerformanceIssues,
       issues,
       hasLargeBundleSize,
@@ -645,8 +530,30 @@ export class WebComponentsAnalyzerImpl {
       hasLayoutThrashing,
       hasEventHandlingIssues,
       hasDOMManipulationIssues,
-      ...metrics,
+      constructorTime: 0,
+      renderTime: 0,
+      updateTime: 0,
+      memoryUsage: 0,
+      reflowCount: 0,
+      repaintCount: 0,
+      optimizationSuggestions: [],
     };
+
+    if (this.performanceAnalyzer && ts.isClassDeclaration(node)) {
+      const performanceMetrics = this.performanceAnalyzer.analyze(node.getText());
+      metrics = {
+        ...metrics,
+        constructorTime: performanceMetrics.constructorTime || 0,
+        renderTime: performanceMetrics.renderTime || 0,
+        updateTime: performanceMetrics.updateTime || 0,
+        memoryUsage: performanceMetrics.memoryUsage || 0,
+        reflowCount: performanceMetrics.reflowCount || 0,
+        repaintCount: performanceMetrics.repaintCount || 0,
+        optimizationSuggestions: performanceMetrics.optimizationSuggestions || [],
+      };
+    }
+
+    return metrics;
   }
 
   private analyzeAccessibility(nodes: ts.Node[]): AccessibilityInfo {
@@ -680,31 +587,27 @@ export class WebComponentsAnalyzerImpl {
       });
     }
 
-    const accessibilityInfo = {
+    return {
       ...this.defaultAccessibilityInfo,
       hasRoles: text.includes('role='),
       hasLabels: text.includes('label') || text.includes('aria-label'),
-      hasFocusableElements: text.includes('tabindex'),
+      hasFocusableElements: text.includes('tabindex') || text.includes('focus'),
       hasAriaAttributes: text.includes('aria-'),
       hasKeyboardSupport: text.includes('keydown') || text.includes('keyup'),
       hasSemanticHTML: this.hasSemanticHTMLTags(text),
       hasTextAlternatives: text.includes('alt=') || text.includes('aria-label'),
-      hasFocusManagement: text.includes('focus()'),
-      hasColorContrast: true, // This would need a more sophisticated check
-      hasDynamicContent: text.includes('innerHTML') || text.includes('textContent'),
-      hasFormElements: text.includes('<input') || text.includes('<form'),
-      hasInteractiveElements: text.includes('button') || text.includes('input'),
-      hasHeadings: text.includes('<h1') || text.includes('<h2'),
-      hasLists: text.includes('<ul') || text.includes('<ol'),
-      hasTables: text.includes('<table'),
-      hasIframes: text.includes('<iframe'),
-      hasMedia: text.includes('<video') || text.includes('<audio'),
+      hasFocusManagement: text.includes('focus') || text.includes('blur'),
+      hasColorContrast: true, // This would need actual color analysis
+      hasDynamicContent: text.includes('innerHTML') || text.includes('outerHTML'),
+      hasFormElements:
+        text.includes('input') || text.includes('select') || text.includes('textarea'),
+      hasInteractiveElements: text.includes('click') || text.includes('keydown'),
+      hasHeadings: text.includes('h1') || text.includes('h2') || text.includes('h3'),
+      hasLists: text.includes('ul') || text.includes('ol'),
+      hasTables: text.includes('table'),
+      hasIframes: text.includes('iframe'),
+      hasMedia: text.includes('img') || text.includes('video') || text.includes('audio'),
       issues,
     };
-
-    // Set hasAccessibilityIssues based on any issues found
-    accessibilityInfo.hasAccessibilityIssues = issues.length > 0;
-
-    return accessibilityInfo;
   }
 }

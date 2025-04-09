@@ -17,17 +17,27 @@
  * @module toolMachine
  */
 
-import { z } from "zod";
-import { setup } from "xstate";
-import { ToolExecutionService } from "../services/toolService.js";
+import type { IToolResult} from '@mcp/types';
+import { IExecutionResult } from '@mcp/types';
+import { setup, fromPromise, assign, AnyEventObject, EventObject, createMachine } from 'xstate';
+import { z } from 'zod';
+
+import type { ToolExecutionService } from '../services/toolService.js';
+
+import type {
+  IToolMachineContext,
+  IToolHistoryItem,
+  ToolMachineEvent,
+} from './toolMachine.types.js';
+
 // Export the unified createStatefulTool implementation from statefulTool.ts
-export { createStatefulTool } from "../helpers/statefulTool.js";
+export { createStatefulTool } from '../helpers/statefulTool.js';
 // We need to re-export these functions from the statefulTool to maintain API compatibility
 import {
   getSession as getSessionFromStatefulTool,
   clearSession as clearSessionFromStatefulTool,
   getSessionIds as getSessionIdsFromStatefulTool,
-} from "../helpers/statefulTool.js";
+} from '../helpers/statefulTool.js';
 
 /**
  * Get a session by ID, creating one if it doesn't exist
@@ -80,188 +90,182 @@ export function getSessionIds(): string[] {
  * - Result processing
  */
 
-// Define the context shape for the state machine
-export interface ToolMachineContext {
-  toolName: string | null;
-  parameters: Record<string, any> | null;
-  result: any | null;
-  error: Error | null;
-  sessionId: string | null;
-  selectedTool: string | null;
-  history: Array<{
-    tool: string;
-    result: any;
-    timestamp: string;
-  }>;
-}
-
-// Define the possible events for the state machine
-export type ToolMachineEvent =
-  | { type: "SELECT_TOOL"; toolName: string }
-  | { type: "SET_PARAMETERS"; parameters: Record<string, any> }
-  | { type: "EXECUTE" }
-  | { type: "RECEIVED_RESULT"; result: any }
-  | { type: "ERROR"; error: Error }
-  | { type: "CANCEL" }
-  | { type: "RESET" };
-
-/**
- * Tool execution state machine
- *
- * This machine defines the states and transitions for the tool execution flow:
- *
- * 1. idle: Initial state waiting for tool selection
- * 2. toolSelected: Tool has been selected but parameters not yet set
- * 3. parametersSet: Parameters have been set, ready for execution
- * 4. executing: Tool is currently executing
- * 5. succeeded: Tool execution succeeded
- * 6. failed: Tool execution failed
- */
 export const toolMachine = setup({
   types: {
-    context: {} as ToolMachineContext,
+    context: {} as IToolMachineContext,
     events: {} as ToolMachineEvent,
   },
   actions: {
-    // Define named actions for better type safety
-    setToolName: ({ context, event }) => {
-      if (event.type !== "SELECT_TOOL") return;
-      context.toolName = event.toolName;
-      context.selectedTool = event.toolName;
-      context.parameters = null;
-      context.result = null;
-      context.error = null;
-    },
-    setParameters: ({ context, event }) => {
-      if (event.type !== "SET_PARAMETERS") return;
-      context.parameters = event.parameters;
-    },
-    clearError: ({ context }) => {
-      context.error = null;
-    },
-    setResult: ({ context, event }) => {
-      if (event.type !== "RECEIVED_RESULT") return;
-      context.result = event.result;
-      context.history.push({
-        tool: context.selectedTool || "unknown",
-        result: event.result,
+    selectTool: assign(({ event }) => {
+      if (event.type !== 'SELECT_TOOL') return {};
+      return {
+        toolName: event.tool,
+        selectedTool: event.handler ? { name: event.tool, handler: event.handler } : null,
+        parameters: null,
+        result: null,
+        error: null,
+      };
+    }),
+    setParameters: assign(({ event, context }) => {
+      if (event.type !== 'SET_PARAMETERS') return {};
+      return {
+        parameters: event.parameters,
+      };
+    }),
+    reset: assign(() => ({
+      toolName: null,
+      selectedTool: null,
+      parameters: null,
+      result: null,
+      error: null,
+      history: [],
+    })),
+    setResult: assign(({ event, context }) => {
+      if (event.type !== 'RECEIVED_RESULT') return {};
+      if (!context.toolName) return {};
+
+      const historyItem: IToolHistoryItem = {
+        tool: context.toolName,
+        parameters: context.parameters,
+        result: {
+          result: event.result.data,
+          error: event.result.error ? event.result.error.toString() : undefined,
+          state: event.result.context,
+        },
         timestamp: new Date().toISOString(),
-      });
-    },
-    setError: ({ context, event }) => {
-      if (event.type !== "ERROR") return;
-      context.error = event.error;
-      context.result = null;
-    },
-    resetState: ({ context }) => {
-      context.toolName = null;
-      context.selectedTool = null;
-      context.parameters = null;
-      context.result = null;
-      context.error = null;
-      context.history = [];
-    },
+      };
+      return {
+        result: event.result as unknown as IToolResult,
+        history: [...context.history, historyItem],
+      };
+    }),
+    setError: assign(({ event, context }) => {
+      if (event.type !== 'ERROR') return {};
+      if (!context.toolName) return {};
+
+      return {
+        error: event.error,
+      };
+    }),
+    setCancelled: assign(({ context }) => {
+      if (!context.toolName) return { history: context.history };
+
+      const historyItem: IToolHistoryItem = {
+        tool: context.toolName,
+        parameters: context.parameters,
+        status: 'cancelled',
+        timestamp: new Date().toISOString(),
+      };
+
+      return {
+        history: [...context.history, historyItem],
+      };
+    }),
   },
 }).createMachine({
-  id: "toolExecution",
-  initial: "idle",
+  id: 'tool',
+  initial: 'idle',
   context: {
     toolName: null,
+    selectedTool: null,
     parameters: null,
     result: null,
     error: null,
-    sessionId: null,
-    selectedTool: null,
     history: [],
   },
   states: {
     idle: {
       on: {
         SELECT_TOOL: {
-          target: "toolSelected",
-          actions: "setToolName",
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
       },
     },
     toolSelected: {
       on: {
         SET_PARAMETERS: {
-          target: "parametersSet",
-          actions: "setParameters",
+          target: 'parametersSet',
+          actions: [{ type: 'setParameters' }],
         },
         SELECT_TOOL: {
-          target: "toolSelected",
-          actions: "setToolName",
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
         RESET: {
-          target: "idle",
-          actions: "resetState",
+          target: 'idle',
+          actions: [{ type: 'reset' }],
         },
       },
     },
     parametersSet: {
       on: {
-        EXECUTE: "executing",
-        SET_PARAMETERS: {
-          target: "parametersSet",
-          actions: "setParameters",
+        EXECUTE: {
+          target: 'executing',
+          actions: assign(() => ({
+            result: null,
+            error: null,
+          })),
+        },
+        SELECT_TOOL: {
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
         RESET: {
-          target: "idle",
-          actions: "resetState",
+          target: 'idle',
+          actions: [{ type: 'reset' }],
         },
       },
     },
     executing: {
       on: {
         RECEIVED_RESULT: {
-          target: "succeeded",
-          actions: "setResult",
+          target: 'succeeded',
+          actions: [{ type: 'setResult' }],
         },
         ERROR: {
-          target: "failed",
-          actions: "setError",
+          target: 'failed',
+          actions: [{ type: 'setError' }],
         },
-        CANCEL: "cancelled",
+        CANCEL: {
+          target: 'cancelled',
+          actions: [{ type: 'setCancelled' }],
+        },
       },
     },
     succeeded: {
       on: {
         SELECT_TOOL: {
-          target: "toolSelected",
-          actions: "setToolName",
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
         RESET: {
-          target: "idle",
-          actions: "resetState",
+          target: 'idle',
+          actions: [{ type: 'reset' }],
         },
       },
     },
     failed: {
       on: {
         SELECT_TOOL: {
-          target: "toolSelected",
-          actions: "setToolName",
-        },
-        SET_PARAMETERS: {
-          target: "parametersSet",
-          actions: ["setParameters", "clearError"],
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
         RESET: {
-          target: "idle",
-          actions: "resetState",
+          target: 'idle',
+          actions: [{ type: 'reset' }],
         },
       },
     },
     cancelled: {
       on: {
         SELECT_TOOL: {
-          target: "toolSelected",
-          actions: "setToolName",
+          target: 'toolSelected',
+          actions: [{ type: 'selectTool' }],
         },
         RESET: {
-          target: "idle",
-          actions: "resetState",
+          target: 'idle',
+          actions: [{ type: 'reset' }],
         },
       },
     },
@@ -278,8 +282,6 @@ export const toolMachine = setup({
  * @param sessionId Optional session ID for persistence
  * @returns Tool execution service with the state machine
  */
-export function createToolExecutionService(
-  sessionId?: string
-): ToolExecutionService {
+export function createToolExecutionService(sessionId?: string): ToolExecutionService {
   return getSession(sessionId);
 }

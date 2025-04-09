@@ -6,6 +6,7 @@ alwaysApply: true
 
 # Main Repository Guidelines
 
+- Security is the highest priority in all development activities
 - Follow all included rule sets for comprehensive code quality
 - Ensure consistent application of standards across the entire codebase
 - Prioritize maintainability and readability in all contributions
@@ -15,6 +16,16 @@ alwaysApply: true
 # Cursor Rules
 
 This document serves as the main entry point for cursor rules.
+
+## Security Rules
+
+Security is our top priority. The following rules ensure robust security across the codebase:
+
+1. [Web3 Security](mdc:web3_security/web3_security.mdc) - Core security guidelines for Web3 and blockchain development
+2. [API Security](mdc:web3_security/api_security.mdc) - Security standards for API development
+3. [Authentication & Authorization](mdc:web3_security/auth.mdc) - Guidelines for secure authentication and authorization
+4. [Data Protection](mdc:web3_security/data_protection.mdc) - Standards for handling sensitive data
+5. [Security Testing](mdc:web3_security/security_testing.mdc) - Security testing and validation procedures
 
 ## Global Rules
 
@@ -27,7 +38,6 @@ These rules apply to all files in the workspace:
 5. [Code Patterns](mdc:patterns/patterns.mdc) - Design patterns and code patterns guidelines
 6. [Metadata Standards](mdc:metadata/metadata.mdc) - Guidelines for code metadata and documentation
 7. [Accessibility](mdc:accessibility/accessibility.mdc) - Guidelines for creating accessible applications
-8. [Web3 Security](mdc:web3_security/web3_security.mdc) - Security guidelines for blockchain development
 
 ## Accessibility Rules
 

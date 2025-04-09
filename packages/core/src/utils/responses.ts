@@ -14,8 +14,10 @@
  */
 
 import { z } from "zod";
+
+import type {
+  ToolResponse} from "../types/responses.js";
 import {
-  ToolResponse,
   ToolResponseSchema,
   CodeAnalysisResult,
   DependencyAnalysisResult,

@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "servers": [
-    {
+  "mcpServers": {
+    "codeAnalysis": {
       "name": "Code Analysis MCP",
       "url": "http://localhost:3000/mcp",
       "description": "AI-powered code analysis and suggestions",
@@ -25,9 +25,23 @@
               "description": "Source code to analyze"
             }
           }
+        },
+        {
+          "name": "analyze_web_component",
+          "description": "Analyze web component code for best practices and performance",
+          "parameters": {
+            "code": {
+              "type": "string",
+              "description": "Web component source code to analyze"
+            },
+            "framework": {
+              "type": "string",
+              "description": "Framework used (vanilla, lit, ignite, etc)",
+              "enum": ["vanilla", "lit", "ignite"]
+            }
+          }
         }
       ]
     }
-  ]
+  }
 }
-
