@@ -29,9 +29,6 @@ importers:
       inquirer:
         specifier: ^9.2.12
         version: 9.3.7
-      ioredis:
-        specifier: ^5.6.0
-        version: 5.6.0
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -87,6 +84,10 @@ importers:
       vitest:
         specifier: ^3.0.9
         version: 3.0.9(@types/node@18.19.80)(@vitest/ui@1.6.1)
+    optionalDependencies:
+      ioredis:
+        specifier: ^5.3.2
+        version: 5.6.0
 
 packages:
 
@@ -1419,6 +1420,7 @@ packages:
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
     engines: {node: '>=10.5.0'}
+    deprecated: Use your platform's native DOMException instead
 
   node-fetch@3.3.2:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
@@ -2157,7 +2159,8 @@ snapshots:
 
   '@inquirer/figures@1.0.11': {}
 
-  '@ioredis/commands@1.2.0': {}
+  '@ioredis/commands@1.2.0':
+    optional: true
 
   '@isaacs/cliui@8.0.2':
     dependencies:
@@ -2658,7 +2661,8 @@ snapshots:
 
   clone@1.0.4: {}
 
-  cluster-key-slot@1.1.2: {}
+  cluster-key-slot@1.1.2:
+    optional: true
 
   color-convert@2.0.1:
     dependencies:
@@ -2745,7 +2749,8 @@ snapshots:
   delegates@1.0.0:
     optional: true
 
-  denque@2.1.0: {}
+  denque@2.1.0:
+    optional: true
 
   depd@2.0.0: {}
 
@@ -3188,6 +3193,7 @@ snapshots:
       standard-as-callback: 2.1.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   ip-address@9.0.5:
     dependencies:
@@ -3245,9 +3251,11 @@ snapshots:
   jsbn@1.1.0:
     optional: true
 
-  lodash.defaults@4.2.0: {}
+  lodash.defaults@4.2.0:
+    optional: true
 
-  lodash.isarguments@3.1.0: {}
+  lodash.isarguments@3.1.0:
+    optional: true
 
   log-symbols@4.1.0:
     dependencies:
@@ -3651,11 +3659,13 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
-  redis-errors@1.2.0: {}
+  redis-errors@1.2.0:
+    optional: true
 
   redis-parser@3.0.0:
     dependencies:
       redis-errors: 1.2.0
+    optional: true
 
   restore-cursor@3.1.0:
     dependencies:
@@ -3886,7 +3896,8 @@ snapshots:
 
   stackback@0.0.2: {}
 
-  standard-as-callback@2.1.0: {}
+  standard-as-callback@2.1.0:
+    optional: true
 
   statuses@2.0.1: {}
 
