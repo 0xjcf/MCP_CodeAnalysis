@@ -2,6 +2,10 @@
 
 A powerful codebase analysis toolkit that leverages the Model Context Protocol (MCP) for AI-assisted code understanding and transformation.
 
+<a href="https://glama.ai/mcp/servers/@0xjcf/MCP_CodeAnalysis">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@0xjcf/MCP_CodeAnalysis/badge" alt="CodeAnalysis Server MCP server" />
+</a>
+
 ## Features
 
 - **Code Analysis**: Parse and analyze codebases with abstract syntax trees
