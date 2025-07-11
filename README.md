@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/0xjcf-mcp-codeanalysis-badge.png)](https://mseep.ai/app/0xjcf-mcp-codeanalysis)
+
 # MCP Code Analysis
 
 A powerful codebase analysis toolkit that leverages the Model Context Protocol (MCP) for AI-assisted code understanding and transformation.
